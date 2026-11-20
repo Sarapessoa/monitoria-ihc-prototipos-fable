@@ -7,681 +7,551 @@
 <style>
   :root{
     --petroleo:#0D3B4C;
-    --petroleo-2:#124A5F;
+    --petroleo-2:#124a5f;
     --laranja:#FF7A00;
     --branco:#FFFFFF;
     --cinza:#F5F7FA;
-    --linha:#D5DDE2;
+    --linha:#DDE4EA;
     --texto:#0D3B4C;
-    --texto-2:#2F4F5C;
-    --side:288px;
+    --texto-2:#3C5560;
+    --side:284px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
   html,body{height:100%}
   body{
-    font-family:"Segoe UI",Inter,"Helvetica Neue",Arial,sans-serif;
-    color:var(--texto);background:var(--cinza);
-    font-size:15px;line-height:1.45;overflow:hidden;
+    font-family:"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--cinza);color:var(--texto);
+    min-width:1280px;min-height:720px;overflow:hidden;
+    font-size:15px;line-height:1.4;
   }
-  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-  a{color:inherit}
-  svg.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+  button,input,select{font:inherit;color:inherit}
+  button{background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
   :focus-visible{outline:3px solid var(--laranja);outline-offset:2px;border-radius:10px}
   .sidebar :focus-visible{outline-color:#FFFFFF}
+  svg.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
-  #app{display:grid;grid-template-columns:var(--side) 1fr;height:100vh;min-height:600px;transition:grid-template-columns .2s ease}
-  body.compacto #app{--side:112px}
+  .app{display:grid;grid-template-columns:var(--side) 1fr;height:100vh;transition:grid-template-columns .25s ease}
+  body.rail .app{grid-template-columns:104px 1fr}
+  body.sem-anim *{transition:none!important}
 
-  /* ---------- Menu lateral ---------- */
-  .sidebar{background:var(--petroleo);color:#fff;display:flex;flex-direction:column;padding:24px 18px 0;overflow:hidden}
-  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:25px;letter-spacing:-.3px;line-height:1}
-  .logo svg{width:38px;height:38px;flex:none}
-  .logo .ia{color:var(--laranja)}
-  .sidebar .logo{padding:2px 6px}
-  .desc{font-size:12.5px;line-height:1.5;color:#fff;opacity:.9;padding:12px 6px 0}
-  .sep{height:1px;background:rgba(255,255,255,.18);margin:20px 6px 16px}
+  /* ---------- Sidebar ---------- */
+  .sidebar{background:var(--petroleo);color:#fff;display:flex;flex-direction:column;padding:24px 18px 0;overflow:hidden;position:relative}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand svg{width:40px;height:40px;flex:none}
+  .brand .word{font-size:25px;font-weight:700;letter-spacing:-.3px;white-space:nowrap}
+  .word .ia{color:var(--laranja)}
+  .tagline{font-size:12.5px;line-height:1.45;color:#fff;margin:12px 2px 0;opacity:.92}
+  .sep{height:1px;background:rgba(255,255,255,.16);margin:20px 0 16px}
   nav ul{list-style:none;display:flex;flex-direction:column;gap:6px}
-  .item{
+  .nav-item{
     display:flex;align-items:center;gap:14px;width:100%;min-height:50px;padding:0 16px;
-    border-radius:12px;color:#fff;text-decoration:none;font-size:15.5px;font-weight:500;text-align:left;
+    border-radius:12px;color:#fff;font-size:15.5px;font-weight:500;text-align:left;
     transition:background .15s;
   }
-  .item:hover{background:rgba(255,255,255,.12)}
-  .item.ativo{background:var(--laranja);font-weight:700}
-  .item.ativo:hover{background:var(--laranja)}
+  .nav-item:hover{background:rgba(255,255,255,.10)}
+  .nav-item.active{background:var(--laranja);font-weight:700;box-shadow:0 6px 16px rgba(0,0,0,.22)}
+  .nav-item.active:hover{background:var(--laranja)}
   .side-foot{margin-top:auto}
-  .lgpd{
-    display:flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;width:100%;
-    color:#fff;font-size:14px;text-decoration:underline;text-underline-offset:3px;border-radius:10px;text-align:left;
-  }
-  .lgpd:hover{background:rgba(255,255,255,.12)}
-  .lgpd svg.ic{width:19px;height:19px}
-  .lgpd .curto{display:none}
-  .tech{display:block;width:calc(100% + 36px);margin:6px -18px 0;height:84px}
+  .lgpd{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 14px;border-radius:10px;color:#fff;font-size:13.5px;width:100%;text-align:left;text-decoration:underline;text-underline-offset:3px}
+  .lgpd:hover{background:rgba(255,255,255,.10)}
+  .lgpd svg{width:19px;height:19px}
+  .tech{display:block;width:calc(100% + 36px);margin:6px -18px 0;height:92px}
 
-  body.compacto .sidebar{padding:24px 8px 0}
-  body.compacto .sidebar .logo{justify-content:center;padding:2px 0}
-  body.compacto .sidebar .logo .nome,
-  body.compacto .desc{display:none}
-  body.compacto .sep{margin:18px 6px 12px}
-  body.compacto .item{flex-direction:column;justify-content:center;gap:4px;padding:8px 4px;min-height:62px;font-size:12px;text-align:center;line-height:1.2}
-  body.compacto .lgpd{flex-direction:column;justify-content:center;gap:4px;padding:8px 4px;font-size:12px;min-height:56px}
-  body.compacto .lgpd .longo{display:none}
-  body.compacto .lgpd .curto{display:inline}
-  body.compacto .tech{width:calc(100% + 16px);margin:6px -8px 0}
+  body.rail .sidebar{padding:24px 8px 0;align-items:stretch}
+  body.rail .brand{justify-content:center}
+  body.rail .brand .word, body.rail .tagline{display:none}
+  body.rail .nav-item{flex-direction:column;gap:4px;padding:8px 4px;font-size:11.5px;text-align:center;line-height:1.2;min-height:58px;justify-content:center}
+  body.rail .lgpd{flex-direction:column;gap:4px;font-size:11.5px;padding:8px 2px;text-align:center}
+  body.rail .lgpd .long{display:none}
+  body:not(.rail) .lgpd .short{display:none}
+  body.rail .tech{width:calc(100% + 16px);margin:6px -8px 0}
 
-  /* ---------- Cabeçalho ---------- */
-  .col{display:grid;grid-template-rows:76px 1fr;min-width:0;min-height:0}
-  header{
-    background:#fff;border-bottom:1px solid var(--linha);display:flex;align-items:center;
-    padding:0 24px 0 20px;gap:18px;position:relative;z-index:5;
+  /* ---------- Coluna principal ---------- */
+  .col{display:flex;flex-direction:column;min-width:0}
+  header.top{
+    height:76px;background:#fff;border-bottom:1px solid var(--linha);
+    display:flex;align-items:center;gap:16px;padding:0 24px 0 20px;position:relative;z-index:20;
+    box-shadow:0 2px 10px rgba(13,59,76,.05);
   }
-  .btn-menu{display:flex;align-items:center;gap:8px;min-height:48px;padding:0 8px 0 0;border-radius:24px;font-size:13.5px;font-weight:600}
-  .btn-menu .circ{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--petroleo);display:grid;place-items:center;transition:background .15s}
-  .btn-menu:hover .circ{background:var(--cinza)}
-  header .logo{font-size:23px;color:var(--petroleo)}
-  header .logo svg{width:34px;height:34px}
-  .espaco{flex:1}
-  .etiqueta{
-    display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--petroleo);
-    background:var(--cinza);border:1px solid var(--linha);border-radius:6px;padding:7px 12px;white-space:nowrap;
-  }
-  .etiqueta svg.ic{width:17px;height:17px}
-  .acoes{display:flex;align-items:center;gap:2px;position:relative}
-  .acao{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-    min-width:96px;min-height:56px;padding:4px 8px;border-radius:12px;font-size:13px;font-weight:500;color:var(--petroleo);
-  }
-  .acao:hover,.acao[aria-expanded="true"]{background:var(--cinza)}
-  .divisor{width:1px;height:40px;background:var(--linha)}
-  .sessao{display:flex;align-items:center;gap:6px;position:relative}
-  .perfil{display:flex;align-items:center;gap:10px;min-height:56px;padding:4px 8px;border-radius:12px;text-align:left}
-  .perfil:hover,.perfil[aria-expanded="true"]{background:var(--cinza)}
-  .foto{width:46px;height:46px;border-radius:50%;flex:none;border:2px solid var(--petroleo);overflow:hidden;display:block}
-  .perfil .nome{display:block;font-weight:700;font-size:15px;line-height:1.2;white-space:nowrap}
-  .perfil .funcao{display:block;font-size:13px;color:var(--texto-2);white-space:nowrap}
-  .perfil svg.ic{width:18px;height:18px;transition:transform .15s}
-  .perfil[aria-expanded="true"] svg.ic{transform:rotate(180deg)}
-  .sair{
-    display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:10px;
-    border:1.5px solid var(--petroleo);font-weight:600;font-size:14.5px;color:var(--petroleo);background:#fff;
-  }
+  .menu-btn{display:flex;align-items:center;gap:8px;min-height:44px;padding-right:8px;border-radius:24px;font-size:13.5px;font-weight:600}
+  .menu-btn .circle{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--petroleo);display:grid;place-items:center;transition:background .15s}
+  .menu-btn:hover .circle{background:var(--cinza)}
+  .top .brand .word{font-size:22px;color:var(--petroleo)}
+  .top .brand svg{width:34px;height:34px;color:var(--petroleo)}
+  .spacer{flex:1}
+  .demo-tag{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--petroleo);background:var(--cinza);border-left:3px solid var(--petroleo);padding:8px 12px;border-radius:4px;white-space:nowrap;cursor:default}
+  .demo-tag svg{width:18px;height:18px}
+  .tools{display:flex;gap:2px}
+  .tool{position:relative}
+  .tool-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:92px;height:56px;border-radius:12px;font-size:12px;font-weight:600;color:var(--petroleo)}
+  .tool-btn:hover,.tool-btn[aria-expanded="true"]{background:var(--cinza)}
+  .vline{width:1px;height:40px;background:var(--linha)}
+  .profile{display:flex;align-items:center;gap:10px;cursor:default}
+  .avatar{width:46px;height:46px;border-radius:50%;flex:none;box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--petroleo)}
+  .profile .nm{font-weight:700;font-size:14.5px;line-height:1.2;white-space:nowrap}
+  .profile .rl{font-size:12.5px;color:var(--texto-2);white-space:nowrap}
+  .chev{width:44px;height:44px;border-radius:50%;display:grid;place-items:center}
+  .chev:hover,.chev[aria-expanded="true"]{background:var(--cinza)}
+  .chev svg{transition:transform .2s}
+  .chev[aria-expanded="true"] svg{transform:rotate(180deg)}
+  .sair{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1.5px solid var(--petroleo);border-radius:12px;font-weight:600;font-size:14px}
   .sair:hover{background:var(--cinza)}
-  .sair svg.ic{width:19px;height:19px}
+  .sair svg{width:20px;height:20px}
 
-  /* Painéis suspensos */
-  .painel{
-    position:absolute;top:calc(100% + 12px);right:0;width:320px;background:#fff;border:1px solid var(--linha);
-    border-radius:16px;box-shadow:0 14px 36px rgba(13,59,76,.18);padding:18px;z-index:20;
+  .pop{
+    position:absolute;top:calc(100% + 10px);right:0;width:300px;background:#fff;border:1px solid var(--linha);
+    border-radius:14px;box-shadow:0 14px 34px rgba(13,59,76,.16);padding:16px;z-index:40;display:none;text-align:left;
   }
-  .painel[hidden]{display:none}
-  .painel h2{font-size:16px;margin-bottom:8px}
-  .painel p{font-size:14.5px;color:var(--texto)}
-  .linha-op{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--linha)}
-  .linha-op:first-of-type{border-top:0}
-  .linha-op span.rot{font-size:14.5px;font-weight:500}
-  .chave{
-    display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:22px;
-    border:1.5px solid var(--petroleo);font-size:13.5px;font-weight:600;min-width:118px;justify-content:center;background:#fff;
-  }
-  .chave .bola{width:14px;height:14px;border-radius:50%;border:2px solid var(--petroleo);background:#fff}
-  .chave[aria-checked="true"]{background:var(--petroleo);color:#fff}
-  .chave[aria-checked="true"] .bola{background:#fff;border-color:#fff}
-  .painel .sair{width:100%;justify-content:center;margin-top:14px}
+  .pop.open{display:block}
+  .pop h3{font-size:14.5px;margin-bottom:6px}
+  .pop p{font-size:13.5px;color:var(--texto-2)}
+  .sw-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:44px;font-size:14px;border-radius:8px;padding:0 4px;text-align:left}
+  .sw-row:hover{background:var(--cinza)}
+  .sw{width:40px;height:22px;border-radius:12px;border:1.5px solid var(--petroleo);position:relative;flex:none;background:#fff}
+  .sw::after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:var(--petroleo);transition:left .15s}
+  .sw-row[aria-checked="true"] .sw{background:var(--petroleo)}
+  .sw-row[aria-checked="true"] .sw::after{left:20px;background:#fff}
+  .sw-state{font-size:12px;font-weight:700;width:58px;text-align:right}
+  .menu-list{list-style:none}
+  .menu-list button{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:0 8px;border-radius:8px;font-size:14px;text-align:left}
+  .menu-list button:hover{background:var(--cinza)}
+  .menu-list svg{width:20px;height:20px}
 
   /* ---------- Área central ---------- */
-  main{padding:24px;min-height:0;min-width:0;background:var(--cinza)}
-  .palco{
-    position:relative;height:100%;background:#fff;border-radius:28px;overflow:hidden;
-    box-shadow:0 1px 2px rgba(13,59,76,.05),0 10px 30px rgba(13,59,76,.07);
+  main{flex:1;padding:24px;min-height:0;position:relative}
+  .canvas{
+    height:100%;background:#fff;border-radius:28px;border:1px solid #E7ECF1;
+    box-shadow:0 10px 30px rgba(13,59,76,.07),0 1px 3px rgba(13,59,76,.05);
+    position:relative;overflow:hidden;
   }
-  .palco > svg.decor{position:absolute;inset:0;width:100%;height:100%;transition:opacity .2s}
-  body.sem-decor .palco > svg.decor,body.sem-decor .tech{opacity:0}
+  .canvas > svg{position:absolute;inset:0;width:100%;height:100%}
+  body.sem-deco .canvas > svg{display:none}
 
-  /* ---------- Aviso ---------- */
-  .aviso{
-    position:fixed;left:50%;bottom:44px;transform:translateX(-50%);z-index:60;max-width:680px;
-    display:flex;align-items:center;gap:12px;background:var(--petroleo);color:#fff;
-    padding:10px 10px 10px 18px;border-radius:14px;box-shadow:0 12px 32px rgba(13,59,76,.3);font-size:15px;
+  .toast{
+    position:fixed;left:50%;top:92px;transform:translate(-50%,-20px);background:var(--petroleo);color:#fff;
+    padding:12px 18px;border-radius:12px;font-size:14px;display:flex;align-items:center;gap:10px;
+    box-shadow:0 12px 28px rgba(13,59,76,.28);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;
   }
-  .aviso[hidden]{display:none}
-  .aviso button{min-height:44px;padding:0 14px;border-radius:10px;border:1.5px solid #fff;color:#fff;font-weight:600;font-size:14px;white-space:nowrap}
-  .aviso button:hover{background:rgba(255,255,255,.14)}
-  .aviso :focus-visible{outline-color:#fff}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
 
   /* ---------- Diálogos ---------- */
-  dialog{
-    border:0;border-radius:20px;padding:28px;width:520px;max-width:90vw;margin:auto;color:var(--texto);
-    box-shadow:0 24px 60px rgba(13,59,76,.35);
-  }
-  dialog::backdrop{background:rgba(13,59,76,.45)}
-  dialog h2{font-size:20px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
-  dialog p{font-size:15px;margin-bottom:10px}
-  dialog ul{margin:0 0 10px 20px;font-size:15px}
-  dialog li{margin-bottom:6px}
-  .botoes{display:flex;justify-content:flex-end;gap:12px;margin-top:20px}
-  .bt{min-height:46px;padding:0 20px;border-radius:12px;font-weight:600;font-size:15px;border:1.5px solid var(--petroleo);background:#fff;color:var(--petroleo);display:inline-flex;align-items:center;gap:8px}
-  .bt:hover{background:var(--cinza)}
-  .bt.forte{background:var(--petroleo);color:#fff}
-  .bt.forte:hover{background:var(--petroleo-2)}
+  .overlay{position:fixed;inset:0;background:rgba(13,59,76,.45);display:none;place-items:center;z-index:80}
+  .overlay.open{display:grid}
+  .dialog{background:#fff;border-radius:20px;width:480px;max-width:92vw;padding:28px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+  .dialog h2{font-size:19px;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .dialog ul{padding-left:20px;margin:6px 0 4px;font-size:14.5px;color:var(--texto)}
+  .dialog li{margin:8px 0}
+  .dialog p{font-size:14.5px;color:var(--texto)}
+  .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:22px}
+  .btn{min-height:44px;padding:0 20px;border-radius:12px;font-weight:700;font-size:14.5px;border:1.5px solid var(--petroleo);color:var(--petroleo);background:#fff}
+  .btn:hover{background:var(--cinza)}
+  .btn.solid{background:var(--petroleo);color:#fff}
+  .btn.solid:hover{background:var(--petroleo-2)}
+  .out{position:fixed;inset:0;background:var(--petroleo);color:#fff;display:none;place-items:center;z-index:100;text-align:center}
+  .out.open{display:grid}
+  .out .brand{justify-content:center;margin-bottom:20px}
+  .out p{font-size:16px;margin-bottom:22px}
+  .out .btn{border-color:#fff}
 
-  /* ---------- Sessão encerrada ---------- */
-  .fora{position:fixed;inset:0;z-index:80;background:var(--petroleo);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center}
-  .fora[hidden]{display:none}
-  .fora .logo{font-size:34px}
-  .fora .logo svg{width:52px;height:52px}
-  .fora p{font-size:18px}
-  .fora .bt{border-color:#fff;margin-top:8px}
-  .fora :focus-visible{outline-color:#fff}
+  /* ================= MÓDULO DASHBOARD (slot de conteúdo) ================= */
+  .content{position:relative;z-index:1;height:100%;padding:18px 24px;display:flex;flex-direction:column;gap:12px;overflow:auto}
+  .content svg.ic{width:18px;height:18px}
+  .hello{display:flex;align-items:center;justify-content:space-between;gap:20px}
+  .hello h1{font-size:23px;line-height:1.2;letter-spacing:-.2px}
+  .hello p{font-size:14.5px;color:var(--texto-2);margin-top:2px}
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:6px;color:var(--petroleo);background:#EAF2F5;white-space:nowrap;cursor:default}
+  .tag svg.ic{width:15px;height:15px}
+  .tag.ia{background:#FFF1E3;box-shadow:inset 0 0 0 1px #F6B77C}
+  .tag.hum{background:#EAF2F5;box-shadow:inset 0 0 0 1px #A9C3CE}
+  .tag.prio{background:#FFF1E3;box-shadow:inset 0 0 0 1px var(--laranja);font-weight:700}
+  .tag.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--laranja)}
 
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .kpi{position:relative;background:#fff;border:1px solid var(--linha);border-radius:16px;padding:12px 12px 10px;box-shadow:0 4px 14px rgba(13,59,76,.06)}
+  .kpi .top-r{display:flex;align-items:center;gap:10px}
+  .kpi .ico{width:36px;height:36px;border-radius:10px;background:var(--cinza);display:grid;place-items:center;position:relative}
+  .kpi .ico svg.ic{width:21px;height:21px}
+  .kpi .ico::after{content:"";position:absolute;right:-3px;top:-3px;width:9px;height:9px;border-radius:50%;background:var(--laranja);border:2px solid #fff}
+  .kpi .val{font-size:25px;font-weight:700;line-height:1}
+  .kpi .lab{font-size:12.8px;color:var(--texto);margin-top:7px}
+  .kpi .info{position:absolute;top:0;right:0;width:44px;height:44px;display:grid;place-items:center;border-radius:12px}
+  .kpi .info:hover,.kpi .info[aria-expanded="true"]{background:var(--cinza)}
+  .tip{position:absolute;top:46px;right:6px;width:250px;background:var(--petroleo);color:#fff;font-size:13px;line-height:1.4;padding:10px 12px;border-radius:10px;z-index:6;box-shadow:0 10px 24px rgba(13,59,76,.28)}
 
-  /* =====================================================
-     MÓDULO DASHBOARD (somente o slot de conteúdo)
-     ===================================================== */
-  .conteudo{position:relative;height:100%;overflow-y:auto;padding:20px 28px 24px}
-  .conteudo [hidden]{display:none!important}
-  .topo{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:14px}
-  .topo h1{font-size:25px;line-height:1.2;letter-spacing:-.2px}
-  .topo p{font-size:15px;color:var(--texto-2);margin-top:2px}
-  .topo .dir{text-align:right;max-width:540px}
-  .topo .dir p{font-size:14px;margin-top:6px}
-  .selo{
-    display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;line-height:1.3;
-    padding:4px 10px;border-radius:6px;background:var(--cinza);border:1px solid var(--linha);color:var(--petroleo);white-space:nowrap;
-  }
-  .selo svg.ic{width:16px;height:16px}
-  .selo.ia{background:#FFF4E8;border-color:#F0B67C}
+  .panel{flex:1;min-height:0;background:var(--cinza);border-radius:20px;padding:12px 16px 14px;display:flex;flex-direction:column;gap:10px}
+  .panel-h{display:flex;align-items:center;gap:14px}
+  .panel-h h2{font-size:17px}
+  .panel-h span{font-size:13px;color:var(--texto-2)}
+  .cols{flex:1;min-height:0;display:grid;grid-template-columns:360px 1fr 430px;gap:14px}
+  .pc{background:#fff;border:1px solid var(--linha);border-radius:16px;padding:12px 16px;overflow:auto;min-height:0}
+  .pc h3{font-size:14.5px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 
-  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}
-  .kpi{
-    position:relative;background:#fff;border:1px solid var(--linha);border-radius:16px;padding:14px 14px 12px 18px;
-    box-shadow:0 4px 14px rgba(13,59,76,.06);overflow:hidden;
-  }
-  .kpi::before{content:"";position:absolute;left:0;top:16px;width:4px;height:38px;background:var(--laranja);border-radius:0 4px 4px 0}
-  .kpi .cab{display:flex;gap:12px;align-items:center}
-  .kpi .ico{width:42px;height:42px;border-radius:12px;background:var(--cinza);display:grid;place-items:center;color:var(--petroleo);flex:none}
-  .kpi .rot{font-size:13.500px;font-weight:600;line-height:1.25}
-  .kpi .val{font-size:26px;font-weight:700;line-height:1.15}
-  .kpi .def{display:flex;gap:6px;font-size:13px;color:var(--texto-2);margin-top:8px;line-height:1.35}
-  .kpi .def svg.ic{width:16px;height:16px;margin-top:1px}
+  .lk{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 4px;font-size:13.5px;font-weight:600;color:var(--petroleo);text-decoration:underline;text-underline-offset:3px;border-radius:8px}
+  .lk:hover{background:var(--cinza)}
+  .lk:disabled{text-decoration:none;color:var(--texto-2);cursor:not-allowed;background:none}
 
-  .apoio-cab{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:10px}
-  .apoio-cab h2{font-size:19px}
-  .apoio-cab p{font-size:14px;color:var(--texto-2)}
-  .cols{display:grid;grid-template-columns:350px 1fr 440px;gap:16px;align-items:start}
-  .bloco{background:#fff;border:1px solid var(--linha);border-radius:16px;padding:14px 16px;box-shadow:0 4px 14px rgba(13,59,76,.05)}
-  .bloco.decisao{border:2px solid var(--petroleo)}
-  .bloco-cab{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-  .bloco h3{font-size:16px;line-height:1.3}
+  .stus{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:8px}
+  .stu{border:1.5px solid var(--linha);border-radius:14px;background:#fff}
+  .stu.sel{border:2px solid var(--petroleo);background:#F3F8FA}
+  .stu-main{display:flex;flex-direction:column;gap:2px;width:100%;text-align:left;padding:10px 12px 2px;border-radius:12px}
+  .stu:not(.sel) .stu-main:hover{background:var(--cinza)}
+  .stu-main .nm{font-size:15.5px;font-weight:700}
+  .stu-main .ln{font-size:13px;color:var(--texto);display:flex;align-items:center;gap:6px}
+  .stu-main .ln svg.ic{width:15px;height:15px}
+  .stu-main .tag{align-self:flex-start;margin-top:4px}
+  .stu-foot{display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 12px}
+  .selmark{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700}
 
-  /* Lista de estudantes */
-  .est{border:1.500px solid var(--linha);border-radius:14px;padding:4px 12px 2px;margin-top:10px;background:#fff;cursor:pointer}
-  .est.sel{border:2px solid var(--petroleo);background:var(--cinza)}
-  .est-topo{display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .est-nome{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:700;font-size:16px;cursor:pointer}
-  .est-nome input{width:20px;height:20px;accent-color:var(--petroleo);cursor:pointer}
-  .prio{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;padding:3px 8px;border-radius:6px;background:#FFF4E8;border:1px solid var(--laranja);white-space:nowrap}
-  .prio svg.ic{width:16px;height:16px}
-  .est p{font-size:14px;line-height:1.5}
-  .est p.tempo{display:flex;align-items:center;gap:6px}
-  .est p.tempo svg.ic{width:16px;height:16px}
-  .est .conf{display:flex;align-items:center;gap:10px}
-  .barra{flex:1;height:8px;border-radius:5px;background:#fff;border:1px solid #7C929C;overflow:hidden}
-  .barra span{display:block;height:100%;background:var(--petroleo)}
-  .tag-estado{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;font-weight:600;padding:3px 8px;border-radius:6px;background:#fff;border:1px solid var(--petroleo)}
-  .tag-estado svg.ic{width:16px;height:16px}
-  .est-acoes{display:flex;gap:18px;align-items:center}
-  .lk{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:14px;font-weight:600;color:var(--petroleo);text-decoration:underline;text-underline-offset:3px;padding:0 2px}
-  .lk svg.ic{width:17px;height:17px}
-  .lk:hover{text-decoration-thickness:2px}
+  .conf{margin-top:2px;font-size:14px}
+  .conf strong{font-size:16px}
+  .bar{height:10px;border-radius:6px;background:#DDE4EA;margin-top:6px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--petroleo);border-radius:6px;transition:width .3s}
+  .why{border:1px solid var(--linha);border-radius:12px;padding:10px 12px;margin-top:12px}
+  .why h3{display:flex;align-items:flex-start;gap:8px;font-size:14px;line-height:1.3}
+  .why ul{list-style:none;margin-top:8px;display:flex;flex-direction:column;gap:5px}
+  .why li{display:flex;align-items:center;gap:8px;font-size:13.5px}
+  .rec{display:flex;gap:10px;align-items:flex-start;background:#FFF7EE;border-left:4px solid var(--laranja);border-radius:8px;padding:10px 12px;margin-top:12px;font-size:14px;font-weight:600;line-height:1.4}
+  .rec svg.ic{width:20px;height:20px;margin-top:1px}
+  .ana{font-size:13px;color:var(--texto);margin-top:8px;min-height:18px}
 
-  /* Coluna IA */
-  .rec{margin-top:10px;border-left:4px solid var(--laranja);background:#FFF9F2;border-radius:0 12px 12px 0;padding:10px 14px}
-  .rec .rt{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;font-weight:700;margin-bottom:2px}
-  .rec .xai{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600}
-  .rec .xai svg.ic{width:16px;height:16px}
-  .rec p{font-size:15px}
-  .confianca{margin-top:12px}
-  .confianca .l1{font-size:14.500px;font-weight:600}
-  .confianca .barra{height:10px;margin:6px 0 4px;flex:none}
-  .confianca .q{font-size:13.500px;color:var(--texto-2)}
-  .porque{margin-top:12px;border:1px solid var(--linha);border-radius:12px;padding:10px 14px;background:var(--cinza)}
-  .porque h4{font-size:14.500px;margin-bottom:4px}
-  .porque ul{list-style:none}
-  .porque li{display:flex;align-items:center;gap:8px;font-size:14.500px;line-height:1.75}
-  .porque li svg.ic{width:18px;height:18px}
-  .porque .nota{font-size:13px;color:var(--texto-2);margin-top:4px}
-  .analise{margin-top:10px;font-size:14px;display:flex;gap:8px;align-items:flex-start}
-  .analise svg.ic{width:18px;height:18px;margin-top:2px}
-
-  /* Coluna decisão */
-  .dec-aluno{font-size:14px;margin:6px 0 10px}
-  .bd{
-    display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:4px 10px;width:100%;
-    border-radius:12px;border:1.500px solid var(--petroleo);background:#fff;color:var(--petroleo);
-    font-weight:600;font-size:14.500px;line-height:1.2;text-align:left;
-  }
-  .bd svg.ic{width:19px;height:19px}
-  .bd:hover{background:var(--cinza)}
-  .bd.principal{background:var(--laranja);border-color:var(--laranja);color:#06222C;font-weight:700;font-size:15.500px}
-  .bd.principal:hover{background:#F07000}
-  .bd:disabled,.bd.principal:disabled{background:#EEF1F4;color:var(--texto-2);border:1.500px dashed #7C929C;cursor:not-allowed}
-  .grade{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-  .form{margin-top:10px;border:1px solid var(--linha);border-radius:12px;padding:12px;background:var(--cinza)}
-  .form label{display:block;font-size:14px;font-weight:600;margin-bottom:4px}
-  .form input[type=text],.form select{
-    width:100%;min-height:44px;border:1.500px solid var(--petroleo);border-radius:10px;padding:0 12px;font:inherit;color:var(--texto);background:#fff;
-  }
-  .form .duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .form .erro{font-size:14px;font-weight:600;margin-top:6px;display:flex;gap:6px;align-items:flex-start}
-  .form .erro svg.ic{width:17px;height:17px;margin-top:2px}
-  .form .botoes{margin-top:10px;gap:8px}
-  .form .bt{min-height:44px;font-size:14.500px;padding:0 14px}
-  .lembrete{font-size:14px;margin-top:10px;display:flex;gap:8px;align-items:flex-start}
-  .lembrete svg.ic{width:18px;height:18px;margin-top:2px}
-  .faixa{margin-top:10px;border:1.500px solid var(--petroleo);border-left-width:6px;border-radius:12px;background:var(--cinza);padding:8px 12px;display:flex;gap:10px;align-items:flex-start}
-  .faixa > svg.ic{width:20px;height:20px;margin-top:3px}
-  .faixa p{font-size:14.500px;font-weight:600;line-height:1.4}
-  .faixa .dica{font-weight:400;font-size:13.500px;color:var(--texto-2)}
-  .faixa .lk{min-height:44px;white-space:nowrap}
-  .feedback{margin-top:12px;padding-top:10px;border-top:1px solid var(--linha)}
-  .feedback .ft{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-  .feedback h4{font-size:14.500px}
-  .feedback .fb{display:flex;gap:8px}
-  .feedback .bd{width:auto;min-height:44px;padding:0 12px;font-size:14px}
-  .feedback .bd[aria-pressed="true"]{background:var(--petroleo);color:#fff}
-  .feedback p{font-size:13.500px;color:var(--texto-2);margin-top:6px}
+  .b1,.b2{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:4px 10px;border-radius:12px;font-weight:700;font-size:13.5px;line-height:1.2;width:100%}
+  .b1{background:var(--laranja);color:#0A2D3A;font-size:15px;min-height:46px;box-shadow:0 4px 12px rgba(255,122,0,.3)}
+  .b1:hover{background:#F07200}
+  .b2{border:1.5px solid var(--petroleo);background:#fff;color:var(--petroleo);font-weight:600;justify-content:flex-start;text-align:left}
+  .b2:hover{background:var(--cinza)}
+  .b1:disabled,.b2:disabled{background:#E7ECF1;color:var(--texto-2);border:1.5px solid #C5D0D8;box-shadow:none;cursor:not-allowed}
+  .dec-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  .ctrl{font-size:13px;color:var(--texto);margin-top:10px}
+  .slot{margin-top:10px}
+  .strip{display:flex;gap:10px;align-items:flex-start;background:#EAF2F5;border-left:4px solid var(--petroleo);border-radius:8px;padding:8px 8px 4px 12px;font-size:13.5px;line-height:1.4}
+  .strip svg.ic{width:20px;height:20px;margin-top:2px}
+  .strip .lk{min-height:36px}
+  .wait{font-size:13.5px;color:var(--texto);padding:6px 0}
+  .form{border:1.5px solid var(--petroleo);border-radius:12px;padding:10px 12px}
+  .form label{display:block;font-size:13px;font-weight:700;margin-bottom:4px}
+  .form input,.form select{width:100%;height:44px;border:1.5px solid var(--petroleo);border-radius:10px;padding:0 10px;background:#fff;font-size:14px}
+  .form .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .form .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  .form .b2{justify-content:center}
+  .form .b2.fill{background:var(--petroleo);color:#fff}
+  .err{font-size:13px;font-weight:600;color:#8A1F11;margin-top:6px;display:flex;gap:6px;align-items:center}
+  .fb{border-top:1px solid var(--linha);margin-top:12px;padding-top:8px}
+  .fb .q{font-size:13.5px;font-weight:700}
+  .fb .btns{display:flex;gap:8px;margin-top:6px}
+  .fb .b2{width:auto;padding:4px 14px}
+  .fb .b2[aria-pressed="true"]{background:var(--petroleo);color:#fff}
+  .fb .thanks{font-size:13px;margin-top:6px}
 
   /* Painel lateral de explicação */
-  dialog.gaveta{margin:0 0 0 auto;width:600px;max-width:95vw;height:100vh;max-height:100vh;border-radius:24px 0 0 24px;padding:26px 28px;overflow-y:auto}
-  dialog.gaveta h2{font-size:20px;margin:10px 0 8px}
-  dialog.gaveta h3{font-size:16px;margin:16px 0 6px}
-  dialog.gaveta table{width:100%;border-collapse:collapse;font-size:14.500px}
-  dialog.gaveta th,dialog.gaveta td{text-align:left;padding:8px 8px 8px 0;border-bottom:1px solid var(--linha);vertical-align:top}
-  dialog.gaveta th{font-size:13.500px}
-  .peso{display:inline-flex;align-items:center;gap:6px;font-weight:600;white-space:nowrap}
-  .peso svg{width:18px;height:16px}
-  dialog.gaveta .barra{height:10px;margin:6px 0}
-  .bt.principal{background:var(--laranja);border-color:var(--laranja);color:#06222C;font-weight:700}
-  .bt.principal:hover{background:#F07000}
+  .overlay.side.open{display:flex;justify-content:flex-end}
+  .drawer{background:#fff;width:470px;height:100%;padding:24px 26px;overflow:auto;border-radius:22px 0 0 22px;box-shadow:-18px 0 50px rgba(0,0,0,.25)}
+  .drawer svg.ic{width:18px;height:18px}
+  .drawer h2{font-size:19px}
+  .drawer h3{font-size:14.5px;margin:18px 0 6px}
+  .drawer p,.drawer li{font-size:14px;line-height:1.45}
+  .drawer ul{list-style:none}
+  .drawer .lim li{padding-left:16px;position:relative;margin:5px 0}
+  .drawer .lim li::before{content:"";position:absolute;left:2px;top:9px;width:6px;height:6px;border-radius:50%;background:var(--petroleo)}
+  .wt li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--linha)}
+  .wt .w{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13px;white-space:nowrap}
+  .meter{display:inline-flex;gap:3px}
+  .meter i{width:12px;height:8px;border-radius:2px;border:1.5px solid var(--petroleo)}
+  .meter i.on{background:var(--petroleo)}
+  .xbtn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--petroleo)}
+  .xbtn:hover{background:var(--cinza)}
+  .btn.primary{background:var(--laranja);border-color:var(--laranja);color:#0A2D3A}
+  .btn.primary:hover{background:#F07200}
 </style>
 </head>
 <body>
 
-<!-- Símbolos reutilizados -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <symbol id="marca" viewBox="0 0 40 40">
-      <path d="M8 31V11L20 23L32 11V31" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M8 11L20 6L32 11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>
-      <circle cx="8" cy="11" r="3.4" fill="currentColor"/>
-      <circle cx="32" cy="11" r="3.4" fill="currentColor"/>
-      <circle cx="8" cy="31" r="2.4" fill="currentColor"/>
-      <circle cx="32" cy="31" r="2.4" fill="currentColor"/>
-      <circle cx="20" cy="6" r="2" fill="currentColor"/>
-      <circle cx="20" cy="23" r="4.6" fill="#FF7A00"/>
-      <circle cx="20" cy="23" r="1.6" fill="#FFFFFF"/>
+    <!-- Símbolo fixo da marca: pessoas (nós com arco), dados (nós) e IA (núcleo laranja) conectados -->
+    <symbol id="logo-mark" viewBox="0 0 40 40">
+      <rect x="1.25" y="1.25" width="37.5" height="37.5" rx="11" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none">
+        <path d="M20 20 L11 12 M20 20 L29 12 M20 20 L20 30"/>
+        <path d="M11 12 L29 12" opacity=".45"/>
+        <path d="M13.5 31.5 a6.5 6.5 0 0 1 13 0"/>
+      </g>
+      <circle cx="11" cy="12" r="3" fill="currentColor"/>
+      <circle cx="29" cy="12" r="3" fill="currentColor"/>
+      <circle cx="20" cy="20" r="4.6" fill="#FF7A00"/>
+      <circle cx="20" cy="20" r="1.5" fill="#FFFFFF"/>
     </symbol>
-    <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="8" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"/><rect x="3.5" y="14.5" width="7" height="6" rx="1.5"/></symbol>
-    <symbol id="i-alunos" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M17.5 14.4c2.4.7 4 2.7 4 5.6"/></symbol>
-    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-8l-5 3.5v-3.5H4a1 1 0 0 1-1-1v-10a1 1 0 0 1 1-1z"/><path d="M8 10h8M8 13.5h5"/></symbol>
-    <symbol id="i-ia" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M9.5 3v3.5M14.5 3v3.5M9.5 17.5V21M14.5 17.5V21M3 9.5h3.5M3 14.5h3.5M17.5 9.5H21M17.5 14.5H21"/></symbol>
-    <symbol id="i-rel" viewBox="0 0 24 24"><path d="M6 3h8.5L19 7.5V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/><path d="M9 17v-3M12 17v-5.5M15 17v-2"/></symbol>
-    <symbol id="i-ajuda" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.4 9.3a2.7 2.7 0 1 1 3.9 2.4c-.8.5-1.3 1-1.3 2"/><path d="M12 17.2v.1"/></symbol>
-    <symbol id="i-cadeado" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/><path d="M12 14.5v2.5"/></symbol>
-    <symbol id="i-sino" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></symbol>
-    <symbol id="i-carta" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6.5L20.5 7"/></symbol>
-    <symbol id="i-ajustes" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 12h3M11 12h9M4 17h11M19 17h1"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17" r="2"/></symbol>
-    <symbol id="i-sair" viewBox="0 0 24 24"><path d="M10 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="M15 8l4 4-4 4M19 12H9.5"/></symbol>
-    <symbol id="i-seta" viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></symbol>
+    <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="9" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"/><rect x="3.5" y="15.5" width="7" height="5" rx="1.5"/></symbol>
+    <symbol id="i-alunos" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M18 14.6c2.1.8 3.5 2.7 3.5 5.4"/></symbol>
+    <symbol id="i-com" viewBox="0 0 24 24"><path d="M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-8l-4.5 3.5v-3.5H4A1.5 1.5 0 0 1 2.5 16V7A1.5 1.5 0 0 1 4 5.5z"/><path d="M7 10h10M7 13.5h6"/></symbol>
+    <symbol id="i-ia" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="2.5"/><path d="M12 10v4M10 12h4"/><path d="M9.5 3v3.5M14.5 3v3.5M9.5 17.5V21M14.5 17.5V21M3 9.5h3.5M3 14.5h3.5M17.5 9.5H21M17.5 14.5H21"/></symbol>
+    <symbol id="i-rel" viewBox="0 0 24 24"><path d="M6 3.5h8.5L19 8v11a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19V5a1.5 1.5 0 0 1 1-1.5z"/><path d="M14 3.5V8h5"/><path d="M9 17v-3M12 17v-5.5M15 17v-2"/></symbol>
+    <symbol id="i-ajuda" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2 1-1.2 1.9"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 14.5v2"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M5 7.5h14M5 12h14M5 16.5h14"/></symbol>
-    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.1"/></symbol>
-    <!-- ícones do módulo -->
-    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M7.800 12.300l2.900 2.900 5.500-6"/></symbol>
-    <symbol id="i-alerta" viewBox="0 0 24 24"><path d="M12 4L21 19.500H3z"/><path d="M12 10v4.500M12 17v.1"/></symbol>
-    <symbol id="i-graf" viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M7.500 15.500l4-4.500 3 2.500 4.500-6"/></symbol>
-    <symbol id="i-lapis" viewBox="0 0 24 24"><path d="M4 20h4L19.500 8.500l-4-4L4 16z"/><path d="M13.500 6.500l4 4"/></symbol>
-    <symbol id="i-atualizar" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.500-4M4.500 3.500V7H8"/><path d="M4 13a8 8 0 0 0 14.500 4M19.500 20.500V17H16"/></symbol>
-    <symbol id="i-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.800 8.800l6.400 6.400M15.200 8.800l-6.400 6.400"/></symbol>
-    <symbol id="i-direita" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-    <symbol id="i-pessoa" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.800"/><path d="M4.500 20.500c0-4 3.300-6.500 7.500-6.500s7.500 2.500 7.500 6.500"/></symbol>
-    <symbol id="i-relogio" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.300l3.500 2"/></symbol>
-    <symbol id="i-lamp" viewBox="0 0 24 24"><path d="M9.500 18h5M10.500 21h3"/><path d="M12 3a6 6 0 0 0-3.500 10.900c.6.5 1 1.300 1 2.100h5c0-.8.4-1.600 1-2.100A6 6 0 0 0 12 3z"/></symbol>
-    <symbol id="i-joia" viewBox="0 0 24 24"><path d="M7 10v12"/><path d="M15 5.880 14 10h5.830a2 2 0 0 1 1.920 2.560l-2.330 8A2 2 0 0 1 17.500 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.760a2 2 0 0 0 1.790-1.110L12 2a3.130 3.130 0 0 1 3 3.880z"/></symbol>
-    <symbol id="i-joia-b" viewBox="0 0 24 24"><path d="M17 14V2"/><path d="M9 18.120 10 14H4.170a2 2 0 0 1-1.920-2.560l2.330-8A2 2 0 0 1 6.500 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.760a2 2 0 0 0-1.790 1.110L12 22a3.130 3.130 0 0 1-3-3.880z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6.5L20.5 7"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M5.5 18.5l1.8-1.8M16.7 7.3l1.8-1.8"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6.5 9.5l5.5 5.5 5.5-5.5"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24"><path d="M10 4H6.5A1.5 1.5 0 0 0 5 5.5v13A1.5 1.5 0 0 0 6.5 20H10"/><path d="M14.5 8l4 4-4 4M18.5 12H9.5"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5h.01"/></symbol>
+    <!-- Ícones do módulo -->
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.3l2.8 2.8L16 9.5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 15.5H3z"/><path d="M12 10v4.5M12 17h.01"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M7.5 15l3.5-4 3 2.5 4.5-6"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19z"/><path d="M14.5 6.5l3 3"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13.5 6.5L19 12l-5.5 5.5"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M7 10.5v9H4.5a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1z"/><path d="M7 10.5l3.5-6.5a2 2 0 0 1 2.5 2.3l-.5 3.2H18a2 2 0 0 1 2 2.4l-1.200 6a2 2 0 0 1-2 1.6H7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><g transform="rotate(180 12 12)"><path d="M7 10.5v9H4.5a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1z"/><path d="M7 10.5l3.5-6.5a2 2 0 0 1 2.5 2.3l-.5 3.2H18a2 2 0 0 1 2 2.4l-1.200 6a2 2 0 0 1-2 1.6H7"/></g></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3-6 7-6s7 2.400 7 6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 17.5h6M10 20.5h4"/><path d="M12 3.500a6 6 0 0 0-3.500 10.900c.6.5 1 1.100 1 1.900h5c0-.8.4-1.400 1-1.900A6 6 0 0 0 12 3.500z"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5.5 21V4M5.500 5h11l-2 3.500 2 3.500h-11"/></symbol>
   </defs>
 </svg>
 
-<div id="app">
-  <!-- MENU LATERAL -->
+<div class="app">
+  <!-- MENU LATERAL FIXO -->
   <aside class="sidebar" aria-label="Menu do sistema">
-    <div class="logo" role="img" aria-label="MonitorIA">
-      <svg aria-hidden="true"><use href="#marca"/></svg>
-      <span class="nome" aria-hidden="true">Monitor<span class="ia">IA</span></span>
+    <div class="brand" aria-label="MonitorIA">
+      <svg aria-hidden="true"><use href="#logo-mark"/></svg>
+      <span class="word">Monitor<span class="ia">IA</span></span>
     </div>
-    <p class="desc">Sistema Inteligente de Apoio à Jornada Digital do Estudante em Ambientes Virtuais de Aprendizagem</p>
-    <div class="sep" aria-hidden="true"></div>
-
+    <p class="tagline">Sistema Inteligente de Apoio à Jornada Digital do Estudante em Ambientes Virtuais de Aprendizagem</p>
+    <div class="sep"></div>
     <nav aria-label="Módulos">
       <ul>
-        <li><a class="item ativo" href="dashboard.html" aria-current="page"><svg class="ic" aria-hidden="true"><use href="#i-dash"/></svg><span>Dashboard</span></a></li>
-        <li><a class="item" href="alunos.html"><svg class="ic" aria-hidden="true"><use href="#i-alunos"/></svg><span>Alunos</span></a></li>
-        <li><button class="item" type="button" data-fora="Comunicação"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><span>Comunicação</span></button></li>
-        <li><button class="item" type="button" data-fora="Inteligência Artificial"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg><span>Inteligência Artificial</span></button></li>
-        <li><a class="item" href="relatorios.html"><svg class="ic" aria-hidden="true"><use href="#i-rel"/></svg><span>Relatórios</span></a></li>
-        <li><button class="item" type="button" data-fora="Ajuda"><svg class="ic" aria-hidden="true"><use href="#i-ajuda"/></svg><span>Ajuda</span></button></li>
+        <li><a class="nav-item active" href="dashboard.html" aria-current="page"><svg class="ic" aria-hidden="true"><use href="#i-dash"/></svg><span>Dashboard</span></a></li>
+        <li><a class="nav-item" href="alunos.html"><svg class="ic" aria-hidden="true"><use href="#i-alunos"/></svg><span>Alunos</span></a></li>
+        <li><button class="nav-item" type="button" data-fora="Comunicação"><svg class="ic" aria-hidden="true"><use href="#i-com"/></svg><span>Comunicação</span></button></li>
+        <li><button class="nav-item" type="button" data-fora="Inteligência Artificial"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg><span>Inteligência Artificial</span></button></li>
+        <li><a class="nav-item" href="relatorios.html"><svg class="ic" aria-hidden="true"><use href="#i-rel"/></svg><span>Relatórios</span></a></li>
+        <li><button class="nav-item" type="button" data-fora="Ajuda"><svg class="ic" aria-hidden="true"><use href="#i-ajuda"/></svg><span>Ajuda</span></button></li>
       </ul>
     </nav>
-
     <div class="side-foot">
       <button class="lgpd" type="button" id="btnLgpd" aria-haspopup="dialog">
-        <svg class="ic" aria-hidden="true"><use href="#i-cadeado"/></svg>
-        <span class="longo">Privacidade e dados (LGPD)</span><span class="curto">Privacidade (LGPD)</span>
+        <svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>
+        <span class="long">Privacidade e dados (LGPD)</span><span class="short">Privacidade (LGPD)</span>
       </button>
-      <svg class="tech" viewBox="0 0 288 84" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-        <g fill="none" stroke="#FFFFFF" stroke-width="1" opacity=".28">
-          <path d="M-4 70L38 46L84 62L128 30L176 54L222 28L292 58"/>
-          <path d="M38 46L60 84M128 30L112 84M176 54L196 84M222 28L250 84M84 62L128 84"/>
+      <svg class="tech" viewBox="0 0 284 92" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <g stroke="#FFFFFF" stroke-opacity=".22" stroke-width="1" fill="none">
+          <path d="M-5 70 L38 48 L84 66 L128 34 L176 58 L222 30 L290 54"/>
+          <path d="M38 48 L60 92 M84 66 L128 92 M128 34 L150 10 M176 58 L196 92 M222 30 L250 8 M128 34 L84 20 L38 48"/>
         </g>
-        <g fill="#FFFFFF" opacity=".5">
-          <circle cx="38" cy="46" r="3"/><circle cx="84" cy="62" r="2.4"/><circle cx="176" cy="54" r="2.4"/><circle cx="222" cy="28" r="3"/>
+        <g fill="#FFFFFF" fill-opacity=".5">
+          <circle cx="38" cy="48" r="3"/><circle cx="84" cy="66" r="2.5"/><circle cx="176" cy="58" r="3"/><circle cx="222" cy="30" r="2.5"/><circle cx="84" cy="20" r="2"/><circle cx="150" cy="10" r="2"/><circle cx="250" cy="8" r="2"/>
         </g>
-        <circle cx="128" cy="30" r="3.4" fill="#FF7A00" opacity=".9"/>
+        <circle cx="128" cy="34" r="4" fill="#FF7A00"/>
       </svg>
     </div>
   </aside>
 
   <div class="col">
-    <!-- CABEÇALHO -->
-    <header>
-      <button class="btn-menu" type="button" id="btnMenu" aria-pressed="false" title="Recolher menu lateral">
-        <span class="circ"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></span>
-        <span id="btnMenuTxt">Recolher menu</span>
+    <!-- CABEÇALHO SUPERIOR FIXO -->
+    <header class="top">
+      <button class="menu-btn" type="button" id="btnMenu" aria-expanded="true" aria-label="Recolher ou expandir o menu lateral">
+        <span class="circle"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></span>
+        <span>Menu</span>
       </button>
-      <div class="logo" role="img" aria-label="MonitorIA">
-        <svg aria-hidden="true"><use href="#marca"/></svg>
-        <span aria-hidden="true">Monitor<span class="ia">IA</span></span>
+      <div class="brand" aria-label="MonitorIA">
+        <svg aria-hidden="true"><use href="#logo-mark"/></svg>
+        <span class="word">Monitor<span class="ia">IA</span></span>
       </div>
 
-      <div class="espaco"></div>
+      <div class="spacer"></div>
 
-      <div class="etiqueta">
-        <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>
-        Dados fictícios – protótipo de demonstração
-      </div>
+      <div class="demo-tag"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>Dados fictícios – protótipo de demonstração</div>
 
-      <div class="acoes">
-        <button class="acao" type="button" data-painel="pNotif" aria-expanded="false" aria-controls="pNotif">
-          <svg class="ic" aria-hidden="true"><use href="#i-sino"/></svg>Notificações
-        </button>
-        <button class="acao" type="button" data-painel="pMsg" aria-expanded="false" aria-controls="pMsg">
-          <svg class="ic" aria-hidden="true"><use href="#i-carta"/></svg>Mensagens
-        </button>
-        <button class="acao" type="button" data-painel="pConf" aria-expanded="false" aria-controls="pConf">
-          <svg class="ic" aria-hidden="true"><use href="#i-ajustes"/></svg>Configurações
-        </button>
-
-        <div class="painel" id="pNotif" hidden>
-          <h2>Notificações</h2>
-          <p>Você não tem notificações novas no momento.</p>
+      <div class="tools">
+        <div class="tool">
+          <button class="tool-btn" type="button" data-pop="popNotif" aria-expanded="false" aria-haspopup="true"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg>Notificações</button>
+          <div class="pop" id="popNotif" role="region" aria-label="Notificações"><h3>Notificações</h3><p>Nenhuma notificação nova no momento.</p></div>
         </div>
-        <div class="painel" id="pMsg" hidden>
-          <h2>Mensagens</h2>
-          <p>Você não tem mensagens novas no momento.</p>
+        <div class="tool">
+          <button class="tool-btn" type="button" data-pop="popMsg" aria-expanded="false" aria-haspopup="true"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg>Mensagens</button>
+          <div class="pop" id="popMsg" role="region" aria-label="Mensagens"><h3>Mensagens</h3><p>Nenhuma mensagem nova no momento.</p></div>
         </div>
-        <div class="painel" id="pConf" hidden>
-          <h2>Configurações da tela</h2>
-          <div class="linha-op">
-            <span class="rot" id="rotCompacto">Menu lateral compacto</span>
-            <button class="chave" type="button" role="switch" aria-checked="false" aria-labelledby="rotCompacto" id="chCompacto"><span class="bola"></span><span class="est">Desativado</span></button>
-          </div>
-          <div class="linha-op">
-            <span class="rot" id="rotDecor">Detalhes decorativos de fundo</span>
-            <button class="chave" type="button" role="switch" aria-checked="true" aria-labelledby="rotDecor" id="chDecor"><span class="bola"></span><span class="est">Ativado</span></button>
+        <div class="tool">
+          <button class="tool-btn" type="button" data-pop="popCfg" aria-expanded="false" aria-haspopup="true"><svg class="ic" aria-hidden="true"><use href="#i-gear"/></svg>Configurações</button>
+          <div class="pop" id="popCfg" role="region" aria-label="Configurações">
+            <h3>Configurações de exibição</h3>
+            <button class="sw-row" type="button" role="switch" aria-checked="false" data-cls="rail"><span>Recolher menu lateral</span><span class="sw-state">Desligado</span><span class="sw"></span></button>
+            <button class="sw-row" type="button" role="switch" aria-checked="false" data-cls="sem-deco"><span>Ocultar detalhes de fundo</span><span class="sw-state">Desligado</span><span class="sw"></span></button>
+            <button class="sw-row" type="button" role="switch" aria-checked="false" data-cls="sem-anim"><span>Reduzir animações</span><span class="sw-state">Desligado</span><span class="sw"></span></button>
           </div>
         </div>
       </div>
 
-      <div class="divisor" aria-hidden="true"></div>
+      <div class="vline"></div>
 
-      <div class="sessao">
-        <button class="perfil" type="button" data-painel="pSessao" aria-expanded="false" aria-controls="pSessao" aria-label="Maria Monitor, Monitoria EaD. Abrir menu da sessão">
-          <svg class="foto" viewBox="0 0 48 48" aria-hidden="true">
+      <div class="tool" style="display:flex;align-items:center;gap:4px">
+        <div class="profile">
+          <svg class="avatar" viewBox="0 0 48 48" role="img" aria-label="Foto de Maria Monitor">
             <defs>
-              <linearGradient id="fBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DCE9EE"/><stop offset="1" stop-color="#B9D0D9"/></linearGradient>
-              <linearGradient id="fPele" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDBE9C"/><stop offset="1" stop-color="#DBA07C"/></linearGradient>
-              <linearGradient id="fCab" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4A2E22"/><stop offset="1" stop-color="#2A1711"/></linearGradient>
+              <clipPath id="avc"><circle cx="24" cy="24" r="24"/></clipPath>
+              <linearGradient id="avbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E4EEF2"/><stop offset="1" stop-color="#B9D0D9"/></linearGradient>
+              <linearGradient id="avsk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0C7A6"/><stop offset="1" stop-color="#DDA883"/></linearGradient>
+              <linearGradient id="avhr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4A2E22"/><stop offset="1" stop-color="#2A1812"/></linearGradient>
             </defs>
-            <rect width="48" height="48" fill="url(#fBg)"/>
-            <path d="M10 40C7 26 9 8 24 7s17 19 14 33z" fill="url(#fCab)"/>
-            <path d="M4 50c1-9 7-13 14-14h12c7 1 13 5 14 14z" fill="#0D3B4C"/>
-            <path d="M19 36l5 7 5-7-1-2h-8z" fill="#FFFFFF"/>
-            <path d="M20 29h8v6c0 2-2 4-4 4s-4-2-4-4z" fill="#D39A76"/>
-            <ellipse cx="24" cy="21.5" rx="8.2" ry="10" fill="url(#fPele)"/>
-            <path d="M15.2 21c-.6-8 3-12.500 9-12.500 6.500 0 9.400 4.500 8.600 12.500-1.500-4-3.500-6.500-6.500-7.500-3.500 2.500-8 3-11.100 7.500z" fill="url(#fCab)"/>
-            <path d="M19 19.300c1-.8 2.500-.8 3.400 0M25.600 19.300c1-.8 2.500-.8 3.400 0" stroke="#3A2218" stroke-width=".8" fill="none" stroke-linecap="round"/>
-            <ellipse cx="20.700" cy="21.600" rx="1" ry="1.100" fill="#2A1711"/><ellipse cx="27.300" cy="21.600" rx="1" ry="1.100" fill="#2A1711"/>
-            <path d="M24 22.500v3.200l-1 .5" stroke="#C48563" stroke-width=".7" fill="none" stroke-linecap="round"/>
-            <path d="M21 27.600c1.800 1.500 4.200 1.500 6 0" stroke="#A8493F" stroke-width="1.100" fill="none" stroke-linecap="round"/>
-            <path d="M19 36l-3 2 5 6 3-1zM29 36l3 2-5 6-3-1z" fill="#124A5F"/>
+            <g clip-path="url(#avc)">
+              <rect width="48" height="48" fill="url(#avbg)"/>
+              <path d="M11 22c0-10 5.500-15.500 13-15.500S37 12 37 22c0 8 1.500 14 3 19H8c1.500-5 3-11 3-19z" fill="url(#avhr)"/>
+              <path d="M4 50c0-9 8-13.500 20-13.500S44 41 44 50z" fill="#0D3B4C"/>
+              <path d="M18.500 37l5.500 7 5.500-7-5.500-2z" fill="#FFFFFF"/>
+              <path d="M20.500 30h7v6.500c0 2-7 2-7 0z" fill="#D39C78"/>
+              <ellipse cx="24" cy="22.500" rx="8.200" ry="9.800" fill="url(#avsk)"/>
+              <path d="M15.500 21c0-7 3.500-10.500 8.500-10.500 5.500 0 9 3.500 8.800 10.500-2.300-1.500-4.300-4-5.300-6.500-2.500 3.500-7 6-12 6.500z" fill="url(#avhr)"/>
+              <path d="M19.300 20.300q1.700-1 3.400 0M25.300 20.300q1.700-1 3.400 0" stroke="#3A241B" stroke-width=".9" fill="none" stroke-linecap="round"/>
+              <ellipse cx="21" cy="22.600" rx="1" ry="1.100" fill="#2B1A14"/><ellipse cx="27" cy="22.600" rx="1" ry="1.100" fill="#2B1A14"/>
+              <path d="M21 27.300q3 2.300 6 0" stroke="#B4574D" stroke-width="1.200" fill="none" stroke-linecap="round"/>
+              <ellipse cx="18.800" cy="26" rx="1.800" ry="1.100" fill="#E79C8A" opacity=".45"/><ellipse cx="29.200" cy="26" rx="1.800" ry="1.100" fill="#E79C8A" opacity=".45"/>
+            </g>
           </svg>
-          <span>
-            <span class="nome">Maria Monitor</span>
-            <span class="funcao">Monitoria EaD</span>
-          </span>
-          <svg class="ic" aria-hidden="true"><use href="#i-seta"/></svg>
-        </button>
-        <button class="sair" type="button" data-sair><svg class="ic" aria-hidden="true"><use href="#i-sair"/></svg>Sair</button>
-
-        <div class="painel" id="pSessao" hidden>
-          <h2>Sessão</h2>
-          <p>Você está conectada como <strong>Maria Monitor</strong>, Monitoria EaD.</p>
-          <button class="sair" type="button" data-sair><svg class="ic" aria-hidden="true"><use href="#i-sair"/></svg>Sair da conta</button>
+          <div><div class="nm">Maria Monitor</div><div class="rl">Monitoria EaD</div></div>
+        </div>
+        <button class="chev" type="button" data-pop="popPerfil" aria-expanded="false" aria-haspopup="true" aria-label="Abrir menu do perfil"><svg class="ic" aria-hidden="true"><use href="#i-chev"/></svg></button>
+        <div class="pop" id="popPerfil" style="width:270px;padding:8px">
+          <ul class="menu-list">
+            <li><button type="button" id="mLgpd"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>Ver privacidade e dados</button></li>
+            <li><button type="button" id="mSair"><svg class="ic" aria-hidden="true"><use href="#i-out"/></svg>Sair da sessão</button></li>
+          </ul>
         </div>
       </div>
+      <button class="sair" type="button" id="btnSair"><svg class="ic" aria-hidden="true"><use href="#i-out"/></svg>Sair</button>
     </header>
 
-    <!-- ÁREA CENTRAL DINÂMICA: MÓDULO DASHBOARD -->
-    <main aria-label="Dashboard">
-      <div class="palco" id="conteudo">
-        <svg class="decor" viewBox="0 0 1336 817" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <!-- ÁREA CENTRAL DINÂMICA: módulo Dashboard -->
+    <main aria-label="Área de conteúdo do módulo">
+      <div class="canvas">
+        <svg viewBox="0 0 1340 817" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
           <defs>
-            <pattern id="pts" width="34" height="34" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.200" fill="#0D3B4C" opacity=".07"/></pattern>
-            <radialGradient id="fade" cx=".5" cy=".5" r=".62"><stop offset=".45" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+            <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.200" fill="#0D3B4C" opacity=".07"/></pattern>
+            <radialGradient id="fadeA" cx="1" cy="0" r=".6"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>
+            <radialGradient id="fadeB" cx="0" cy="1" r=".5"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>
+            <mask id="mA"><rect width="1340" height="817" fill="url(#fadeA)"/></mask>
+            <mask id="mB"><rect width="1340" height="817" fill="url(#fadeB)"/></mask>
           </defs>
-          <rect width="1336" height="817" fill="url(#pts)"/>
-          <rect width="1336" height="817" fill="url(#fade)"/>
-          <g fill="none" stroke="#0D3B4C" stroke-width="1.200" opacity=".09">
-            <path d="M1040 -10L1120 84L1228 58L1290 150L1346 128"/>
-            <path d="M1120 84L1150 190L1290 150M1228 58L1250 -10"/>
-            <path d="M-10 660L70 706L128 650L214 742L300 720L352 827"/>
-            <path d="M70 706L96 827M214 742L190 827M128 650L60 590L-10 600"/>
+          <rect width="1340" height="817" fill="url(#dots)" mask="url(#mA)"/>
+          <rect width="1340" height="817" fill="url(#dots)" mask="url(#mB)"/>
+          <g fill="none" stroke="#0D3B4C" stroke-opacity=".08" stroke-width="1.200">
+            <path d="M1000 -10 L1080 70 L1180 40 L1250 130 L1350 110"/>
+            <path d="M1080 70 L1110 170 L1250 130 L1290 240 L1350 260"/>
+            <path d="M1180 40 L1230 -10 M1110 170 L1040 210"/>
+            <path d="M-10 640 L70 690 L60 790 M70 690 L170 720 L230 830 M170 720 L250 680 L330 760 L350 830"/>
+            <path d="M400 900 C 700 700, 1000 760, 1400 560" stroke-opacity=".05"/>
           </g>
+          <g fill="#0D3B4C" fill-opacity=".14">
+            <circle cx="1080" cy="70" r="4"/><circle cx="1180" cy="40" r="3"/><circle cx="1110" cy="170" r="3"/><circle cx="1290" cy="240" r="3"/><circle cx="1040" cy="210" r="2.500"/>
+            <circle cx="70" cy="690" r="4"/><circle cx="250" cy="680" r="3"/><circle cx="330" cy="760" r="3"/><circle cx="60" cy="790" r="2.500"/>
+          </g>
+          <circle cx="1250" cy="130" r="5" fill="#FF7A00" fill-opacity=".35"/>
+          <circle cx="170" cy="720" r="5" fill="#FF7A00" fill-opacity=".35"/>
         </svg>
 
-        <div class="conteudo">
-          <!-- Saudação -->
-          <div class="topo">
+        <div class="content">
+          <div class="hello">
             <div>
               <h1>Olá, Maria Monitor!</h1>
               <p>A IA encontrou situações que precisam da sua atenção hoje.</p>
             </div>
-            <div class="dir">
-              <span class="selo ia"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg>Monitoramento inteligente ativo</span>
-              <p>A IA prioriza alunos e recomenda contatos; quem decide é a monitoria.</p>
-            </div>
+            <span class="tag live"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg>Monitoramento inteligente ativo</span>
           </div>
 
-          <!-- Indicadores -->
-          <section class="kpis" aria-label="Indicadores das turmas">
+          <section class="kpis" aria-label="Indicadores">
             <div class="kpi">
-              <div class="cab"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-alunos"/></svg></span>
-                <div><div class="rot">Total de alunos acompanhados</div><div class="val">1.030</div></div></div>
-              <p class="def"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>Alunos matriculados nas turmas do período atual.</span></p>
+              <div class="top-r"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-alunos"/></svg></span><span class="val">1.030</span></div>
+              <div class="lab">Total de alunos acompanhados</div>
+              <button class="info" type="button" aria-expanded="false" aria-label="Ver definição: total de alunos acompanhados" title="Ver definição"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg></button>
+              <div class="tip" role="note" hidden>Alunos matriculados sob acompanhamento da monitoria – turmas do período atual.</div>
             </div>
             <div class="kpi">
-              <div class="cab"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span>
-                <div><div class="rot">Primeiro acesso realizado</div><div class="val">726</div></div></div>
-              <p class="def"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>Alunos que já entraram no AVA: 726 de 1.030 – período atual.</span></p>
+              <div class="top-r"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span><span class="val">726</span></div>
+              <div class="lab">Primeiro acesso realizado</div>
+              <button class="info" type="button" aria-expanded="false" aria-label="Ver definição: primeiro acesso realizado" title="Ver definição"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg></button>
+              <div class="tip" role="note" hidden>Alunos que já entraram no AVA ao menos uma vez (726 de 1.030) – turmas do período atual.</div>
             </div>
             <div class="kpi">
-              <div class="cab"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-alerta"/></svg></span>
-                <div><div class="rot">Aguardando primeiro acesso ao AVA</div><div class="val">304</div></div></div>
-              <p class="def"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>Alunos ainda sem acesso ao AVA: 304 de 1.030 – período atual.</span></p>
+              <div class="top-r"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg></span><span class="val">304</span></div>
+              <div class="lab">Aguardando primeiro acesso ao AVA</div>
+              <button class="info" type="button" aria-expanded="false" aria-label="Ver definição: aguardando primeiro acesso ao AVA" title="Ver definição"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg></button>
+              <div class="tip" role="note" hidden>Alunos matriculados que ainda não entraram no AVA (304 de 1.030) – turmas do período atual.</div>
             </div>
             <div class="kpi">
-              <div class="cab"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-graf"/></svg></span>
-                <div><div class="rot">Taxa de ativação das turmas</div><div class="val">70%</div></div></div>
-              <p class="def"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>Alunos com primeiro acesso / total acompanhado (726 de 1.030) – turmas do período atual.</span></p>
+              <div class="top-r"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-chart"/></svg></span><span class="val">70%</span></div>
+              <div class="lab">Taxa de ativação das turmas</div>
+              <button class="info" type="button" aria-expanded="false" aria-label="Ver definição: taxa de ativação das turmas" title="Ver definição"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg></button>
+              <div class="tip" role="note" hidden>Taxa de ativação: alunos com primeiro acesso / total acompanhado (726 de 1.030) – turmas do período atual.</div>
             </div>
             <div class="kpi">
-              <div class="cab"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg></span>
-                <div><div class="rot">Prioridades identificadas pela IA</div><div class="val">45 casos</div></div></div>
-              <p class="def"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>Casos que a IA sugere ver primeiro, entre os 304 que aguardam acesso – triagem de hoje.</span></p>
+              <div class="top-r"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg></span><span class="val">45 casos</span></div>
+              <div class="lab">Prioridades identificadas pela IA</div>
+              <button class="info" type="button" aria-expanded="false" aria-label="Ver definição: prioridades identificadas pela IA" title="Ver definição"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg></button>
+              <div class="tip" role="note" hidden>Casos que a IA sugere priorizar hoje, entre os 304 que aguardam o primeiro acesso – período atual.</div>
             </div>
           </section>
 
-          <!-- Painel de apoio à decisão -->
-          <section aria-labelledby="tApoio">
-            <div class="apoio-cab">
-              <h2 id="tApoio">Painel Inteligente de Apoio à Decisão</h2>
-              <p>Triagem de hoje: mostrando os 2 primeiros dos 45 casos priorizados.</p>
-            </div>
-
+          <section class="panel" aria-labelledby="pTitle">
+            <div class="panel-h"><h2 id="pTitle">Painel Inteligente de Apoio à Decisão</h2><span>Triagem de hoje</span></div>
             <div class="cols">
-              <!-- Lista -->
-              <div class="bloco">
-                <div class="bloco-cab">
-                  <h3 id="tLista">Estudantes priorizados pela IA</h3>
-                  <span class="selo ia"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg>Gerado pela IA</span>
-                </div>
-                <div role="radiogroup" aria-labelledby="tLista">
-                  <div class="est sel" data-id="maria">
-                    <div class="est-topo">
-                      <label class="est-nome"><input type="radio" name="aluno" value="maria" checked>Maria Oliveira</label>
-                      <span class="prio"><svg class="ic" aria-hidden="true"><use href="#i-alerta"/></svg>Prioridade ALTA</span>
-                    </div>
-                    <p>Curso: Assistente Administrativo</p>
-                    <p>Status: Aguardando primeiro acesso ao AVA</p>
-                    <p class="tempo"><svg class="ic" aria-hidden="true"><use href="#i-relogio"/></svg>Aguarda o primeiro acesso há 9 dias</p>
-                    <p>Melhor horário de contato: noite, 19h–21h</p>
-                    <p class="conf"><span>Confiança da IA: 87%</span><span class="barra" aria-hidden="true"><span style="width:87%"></span></span></p>
-                    <span class="tag-estado" data-tag hidden></span>
-                    <div class="est-acoes">
-                      <a class="lk" href="alunos.html#maria-oliveira" aria-label="Abrir perfil de Maria Oliveira">Abrir perfil<svg class="ic" aria-hidden="true"><use href="#i-direita"/></svg></a>
-                      <button class="lk" type="button" data-dispensar aria-label="Dispensar por hoje a recomendação para Maria Oliveira">Dispensar por hoje</button>
-                    </div>
-                  </div>
 
-                  <div class="est" data-id="joao">
-                    <div class="est-topo">
-                      <label class="est-nome"><input type="radio" name="aluno" value="joao">João Pereira</label>
-                      <span class="prio"><svg class="ic" aria-hidden="true"><use href="#i-alerta"/></svg>Prioridade ALTA</span>
-                    </div>
-                    <p>Curso: Técnico em Logística</p>
-                    <p>Status: Aguardando primeiro acesso</p>
-                    <p class="tempo"><svg class="ic" aria-hidden="true"><use href="#i-relogio"/></svg>Aguarda o primeiro acesso há 12 dias</p>
-                    <p>Melhor horário de contato: tarde, 14h–16h</p>
-                    <p class="conf"><span>Confiança da IA: 42%</span><span class="barra" aria-hidden="true"><span style="width:42%"></span></span></p>
-                    <span class="tag-estado" data-tag hidden></span>
-                    <div class="est-acoes">
-                      <a class="lk" href="alunos.html#joao-pereira" aria-label="Abrir perfil de João Pereira">Abrir perfil<svg class="ic" aria-hidden="true"><use href="#i-direita"/></svg></a>
-                      <button class="lk" type="button" data-dispensar aria-label="Dispensar por hoje a recomendação para João Pereira">Dispensar por hoje</button>
-                    </div>
-                  </div>
-                </div>
+              <!-- Lista priorizada -->
+              <div class="pc">
+                <h3>Estudantes priorizados</h3>
+                <ul class="stus" id="lista"></ul>
+                <a class="lk" href="alunos.html">Ver os 45 casos<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
               </div>
 
-              <!-- Análise da IA -->
-              <div class="bloco" aria-live="polite">
-                <div class="bloco-cab">
-                  <h3>Análise gerada por Inteligência Artificial</h3>
-                  <span class="selo ia"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg>Gerado pela IA</span>
+              <!-- Recomendação e explicação da IA -->
+              <div class="pc" aria-live="polite">
+                <div class="row">
+                  <span class="tag ia" title="Análise gerada por Inteligência Artificial"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg>Gerado pela IA</span>
+                  <button class="lk" type="button" id="btnDispensar">Dispensar por hoje</button>
                 </div>
-
-                <div class="rec">
-                  <div class="rt"><span id="recTit">Recomendação para Maria Oliveira</span>
-                    <span class="xai"><svg class="ic" aria-hidden="true"><use href="#i-lamp"/></svg>IA explicável</span></div>
-                  <p id="recTxt"></p>
+                <div class="conf">
+                  <span id="confTxt"></span>
+                  <div class="bar" id="confBar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i></i></div>
                 </div>
-
-                <div class="confianca">
-                  <div class="l1" id="confTxt"></div>
-                  <div class="barra" aria-hidden="true"><span id="confBarra"></span></div>
-                  <div class="q" id="confQual"></div>
-                </div>
-
-                <div class="porque">
-                  <h4>Por que a IA classificou este aluno como prioridade?</h4>
+                <div class="why">
+                  <h3><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg>Por que a IA classificou este aluno como prioridade?</h3>
                   <ul id="fatores"></ul>
-                  <p class="nota">Aparecem aqui apenas os fatores que influenciaram esta recomendação.</p>
                 </div>
-
-                <p class="analise" id="analise" hidden><svg class="ic" aria-hidden="true"><use href="#i-atualizar"/></svg><span id="analiseTxt"></span></p>
+                <div class="rec"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg><span id="recTxt"></span></div>
+                <div class="ana" id="anaTxt" role="status"></div>
               </div>
 
-              <!-- Decisão -->
-              <div class="bloco decisao">
-                <div class="bloco-cab">
+              <!-- Decisão da monitoria -->
+              <div class="pc">
+                <div class="row">
                   <h3>Decisão da Monitoria</h3>
-                  <span class="selo"><svg class="ic" aria-hidden="true"><use href="#i-pessoa"/></svg>Registrado por Maria Monitor</span>
+                  <span class="tag hum"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>Registrado por Maria Monitor</span>
                 </div>
-                <p class="dec-aluno" id="decAluno"></p>
-
-                <button class="bd principal" type="button" id="bAceitar"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Aceitar recomendação</button>
-                <div class="grade">
-                  <button class="bd" type="button" id="bAjustar" aria-expanded="false" aria-controls="fAjuste"><svg class="ic" aria-hidden="true"><use href="#i-lapis"/></svg>Ajustar estratégia</button>
-                  <button class="bd" type="button" id="bRejeitar" aria-expanded="false" aria-controls="fRejeicao"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Rejeitar recomendação</button>
-                  <button class="bd" type="button" id="bAnalise"><svg class="ic" aria-hidden="true"><use href="#i-atualizar"/></svg><span id="bAnaliseTxt">Solicitar nova análise</span></button>
-                  <button class="bd" type="button" id="bExplica" aria-haspopup="dialog"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>Ver explicação completa</button>
+                <div style="margin-top:10px">
+                  <button class="b1" type="button" id="btnAceitar"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Aceitar recomendação</button>
                 </div>
-
-                <form class="form" id="fAjuste" hidden novalidate>
-                  <div class="duo">
-                    <div><label for="selCanal">Canal de contato</label>
-                      <select id="selCanal"><option>WhatsApp</option><option>E-mail</option><option>SMS</option><option>Ligação telefônica</option></select></div>
-                    <div><label for="selPeriodo">Período do contato</label>
-                      <select id="selPeriodo"><option value="manhã">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select></div>
-                  </div>
-                  <div class="botoes">
-                    <button class="bt" type="button" id="cancAjuste">Cancelar ajuste</button>
-                    <button class="bt forte" type="submit">Salvar ajuste</button>
-                  </div>
-                </form>
-
-                <form class="form" id="fRejeicao" hidden novalidate>
-                  <label for="motivo">Motivo da rejeição</label>
-                  <input type="text" id="motivo" maxlength="120" autocomplete="off" aria-describedby="erroMotivo">
-                  <p class="erro" id="erroMotivo" role="alert" hidden><svg class="ic" aria-hidden="true"><use href="#i-alerta"/></svg><span>O motivo está em branco. Escreva um motivo curto para registrar a rejeição.</span></p>
-                  <div class="botoes">
-                    <button class="bt" type="button" id="cancRejeicao">Cancelar rejeição</button>
-                    <button class="bt forte" type="submit">Confirmar rejeição</button>
-                  </div>
-                </form>
-
-                <p class="lembrete"><svg class="ic" aria-hidden="true"><use href="#i-pessoa"/></svg><span>A decisão final pertence ao monitor. A IA apenas recomenda ações de apoio.</span></p>
-
-                <div class="faixa" id="faixa" role="status" hidden>
-                  <svg class="ic" aria-hidden="true"><use id="faixaIco" href="#i-check"/></svg>
-                  <div style="flex:1">
-                    <p id="faixaTxt"></p>
-                    <p class="dica" id="faixaDica">Para decidir de outra forma, use Desfazer.</p>
-                  </div>
-                  <button class="lk" type="button" id="bDesfazer">Desfazer</button>
+                <div class="dec-grid">
+                  <button class="b2" type="button" id="btnAjustar"><svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg>Ajustar estratégia</button>
+                  <button class="b2" type="button" id="btnRejeitar"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Rejeitar recomendação</button>
+                  <button class="b2" type="button" id="btnNova"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg><span>Solicitar nova análise</span></button>
+                  <button class="b2" type="button" id="btnExpl" aria-haspopup="dialog"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>Ver explicação completa</button>
                 </div>
-
-                <div class="feedback">
-                  <div class="ft">
-                    <h4 id="tFb">Essa recomendação foi útil?</h4>
-                    <div class="fb" role="group" aria-labelledby="tFb">
-                      <button class="bd" type="button" id="fbSim" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-joia"/></svg>Sim</button>
-                      <button class="bd" type="button" id="fbNao" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-joia-b"/></svg>Precisa melhorar</button>
-                    </div>
+                <p class="ctrl">A IA prioriza alunos e recomenda contatos; quem decide é a monitoria.</p>
+                <div class="slot" id="slot" aria-live="polite"></div>
+                <div class="fb">
+                  <div class="q">Essa recomendação foi útil?</div>
+                  <div class="btns">
+                    <button class="b2" type="button" data-fb="sim" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg>Sim</button>
+                    <button class="b2" type="button" data-fb="melhorar" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg>Precisa melhorar</button>
                   </div>
-                  <p id="fbMsg" role="status">Sua avaliação ajuda a IA a aprender com a monitoria e a melhorar as próximas recomendações.</p>
+                  <div class="thanks" id="fbTxt" role="status"></div>
                 </div>
               </div>
+
             </div>
           </section>
         </div>
@@ -690,421 +560,339 @@
   </div>
 </div>
 
-<!-- Aviso -->
-<div class="aviso" id="aviso" role="status" aria-live="polite" hidden>
-  <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>
-  <span id="avisoTxt"></span>
-  <button type="button" id="avisoFechar">Fechar aviso</button>
-</div>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span id="toastTxt"></span></div>
 
 <!-- Diálogo LGPD -->
-<dialog id="dlgLgpd" aria-labelledby="tLgpd">
-  <h2 id="tLgpd"><svg class="ic" aria-hidden="true"><use href="#i-cadeado"/></svg>Privacidade e dados (LGPD)</h2>
-  <p>O MonitorIA mostra apenas os dados pessoais necessários para cada tarefa da monitoria.</p>
-  <ul>
-    <li>E-mail e telefone de alunos aparecem sempre mascarados.</li>
-    <li>A IA não usa dados sensíveis para priorizar alunos.</li>
-    <li>As sugestões da IA são apoio: a decisão é sempre da monitoria.</li>
-    <li>Todos os dados deste protótipo são fictícios.</li>
-  </ul>
-  <div class="botoes">
-    <button class="bt forte" type="button" data-fechar>Fechar</button>
+<div class="overlay" id="dlgLgpd" role="dialog" aria-modal="true" aria-labelledby="tLgpd">
+  <div class="dialog">
+    <h2 id="tLgpd"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>Privacidade e dados (LGPD)</h2>
+    <ul>
+      <li>O MonitorIA mostra só os dados necessários para cada tarefa.</li>
+      <li>E-mail e telefone de alunos aparecem sempre mascarados.</li>
+      <li>A IA não usa dados sensíveis para priorizar alunos.</li>
+      <li>A IA apenas recomenda; a decisão é sempre da monitoria.</li>
+    </ul>
+    <div class="actions"><button class="btn solid" type="button" data-close>Fechar aviso</button></div>
   </div>
-</dialog>
+</div>
 
 <!-- Diálogo Sair -->
-<dialog id="dlgSair" aria-labelledby="tSair">
-  <h2 id="tSair"><svg class="ic" aria-hidden="true"><use href="#i-sair"/></svg>Sair do MonitorIA?</h2>
-  <p>Sua sessão como Maria Monitor será encerrada. Você pode entrar novamente quando quiser.</p>
-  <div class="botoes">
-    <button class="bt" type="button" data-fechar>Continuar no sistema</button>
-    <button class="bt forte" type="button" id="confSair"><svg class="ic" aria-hidden="true"><use href="#i-sair"/></svg>Sair da conta</button>
+<div class="overlay" id="dlgSair" role="dialog" aria-modal="true" aria-labelledby="tSair">
+  <div class="dialog">
+    <h2 id="tSair"><svg class="ic" aria-hidden="true"><use href="#i-out"/></svg>Deseja sair do MonitorIA?</h2>
+    <p>Sua sessão como Maria Monitor será encerrada neste dispositivo.</p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Continuar no sistema</button>
+      <button class="btn solid" type="button" id="confSair">Sair da sessão</button>
+    </div>
   </div>
-</dialog>
+</div>
 
-<!-- Diálogo de confirmação de envio -->
-<dialog id="dlgConf" aria-labelledby="confTit">
-  <h2 id="confTit"></h2>
-  <p id="confSub"></p>
-  <div class="botoes">
-    <button class="bt" type="button" data-fechar>Cancelar</button>
-    <button class="bt principal" type="button" id="confOk">Confirmar envio</button>
+<!-- Confirmação antes do envio -->
+<div class="overlay" id="dlgConf" role="dialog" aria-modal="true" aria-labelledby="tConf">
+  <div class="dialog">
+    <h2 id="tConf"></h2>
+    <p id="pConf"></p>
+    <div class="actions">
+      <button class="btn" type="button" data-close>Cancelar</button>
+      <button class="btn primary" type="button" id="confEnvio">Confirmar envio</button>
+    </div>
   </div>
-</dialog>
+</div>
 
 <!-- Painel lateral: explicação completa -->
-<dialog id="dlgExp" class="gaveta" aria-labelledby="expTit">
-  <span class="selo ia"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg>Gerado pela IA</span>
-  <h2 id="expTit"></h2>
-  <p id="expRec"></p>
-  <h3>Confiança</h3>
-  <p id="expConf" style="margin-bottom:0"></p>
-  <div class="barra" aria-hidden="true"><span id="expBarra"></span></div>
-  <p id="expQual"></p>
-  <h3>Fatores e peso relativo de cada um</h3>
-  <table>
-    <thead><tr><th scope="col">Fator</th><th scope="col">O que a IA observou</th><th scope="col">Peso relativo</th></tr></thead>
-    <tbody id="expFat"></tbody>
-  </table>
-  <h3>Limitações dos dados</h3>
-  <ul id="expLim"></ul>
-  <div class="botoes">
-    <button class="bt forte" type="button" data-fechar>Fechar explicação</button>
+<div class="overlay side" id="dlgExpl" role="dialog" aria-modal="true" aria-labelledby="tExpl">
+  <div class="drawer">
+    <div class="row">
+      <h2 id="tExpl">Explicação completa</h2>
+      <button class="xbtn" type="button" data-close aria-label="Fechar explicação" title="Fechar explicação"><svg class="ic" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <span class="tag ia" style="margin-top:6px"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg>Gerado pela IA</span>
+    <div id="explBody"></div>
+    <div class="actions" style="justify-content:flex-start"><button class="btn solid" type="button" data-close>Fechar explicação</button></div>
   </div>
-</dialog>
+</div>
 
-<!-- Sessão encerrada -->
-<div class="fora" id="fora" hidden role="region" aria-label="Sessão encerrada">
-  <div class="logo" role="img" aria-label="MonitorIA">
-    <svg aria-hidden="true"><use href="#marca"/></svg>
-    <span aria-hidden="true">Monitor<span class="ia">IA</span></span>
+<div class="out" id="telaOut" role="dialog" aria-modal="true" aria-label="Sessão encerrada">
+  <div>
+    <div class="brand"><svg aria-hidden="true" style="width:48px;height:48px"><use href="#logo-mark"/></svg><span class="word" style="font-size:30px">Monitor<span class="ia">IA</span></span></div>
+    <p>Sessão encerrada com segurança. Até breve, Maria.</p>
+    <button class="btn" type="button" id="btnEntrar">Entrar novamente</button>
   </div>
-  <p>Você saiu do MonitorIA. Sua sessão foi encerrada com segurança.</p>
-  <button class="bt" type="button" id="btnEntrar">Entrar novamente como Maria Monitor</button>
 </div>
 
 <script>
+/* ===== Moldura fixa (Frame Master) ===== */
 (function(){
-  var $ = function(s,r){return (r||document).querySelector(s)};
-  var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
-  var body = document.body, app = $('#app');
+  var $=function(s,c){return (c||document).querySelector(s)}, $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+  var body=document.body, lastFocus=null, toastTimer;
 
-  /* Aviso */
-  var aviso = $('#aviso'), avisoTxt = $('#avisoTxt'), tAviso;
-  function avisar(msg){
-    avisoTxt.textContent = msg; aviso.hidden = false;
-    clearTimeout(tAviso); tAviso = setTimeout(function(){aviso.hidden = true}, 7000);
+  function toast(msg){
+    $('#toastTxt').textContent=msg;
+    var t=$('#toast'); t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove('show')},3600);
   }
-  $('#avisoFechar').addEventListener('click', function(){aviso.hidden = true; clearTimeout(tAviso)});
 
-  /* Módulos fora do protótipo */
+  function closePops(except){
+    $$('[data-pop]').forEach(function(b){
+      if(b!==except){ b.setAttribute('aria-expanded','false'); $('#'+b.dataset.pop).classList.remove('open'); }
+    });
+  }
+  $$('[data-pop]').forEach(function(b){
+    b.addEventListener('click',function(e){
+      e.stopPropagation(); closePops(b);
+      var open=$('#'+b.dataset.pop).classList.toggle('open');
+      b.setAttribute('aria-expanded',open);
+    });
+  });
+  $$('.pop').forEach(function(p){p.addEventListener('click',function(e){e.stopPropagation()})});
+  document.addEventListener('click',function(){closePops()});
+
+  function syncRail(){
+    var rail=body.classList.contains('rail');
+    $('#btnMenu').setAttribute('aria-expanded',!rail);
+    $$('.sw-row').forEach(function(s){
+      var on=body.classList.contains(s.dataset.cls);
+      s.setAttribute('aria-checked',on); $('.sw-state',s).textContent=on?'Ligado':'Desligado';
+    });
+  }
+  $('#btnMenu').addEventListener('click',function(){body.classList.toggle('rail');syncRail()});
+  $$('.sw-row').forEach(function(s){s.addEventListener('click',function(){body.classList.toggle(s.dataset.cls);syncRail()})});
+
   $$('[data-fora]').forEach(function(b){
-    b.addEventListener('click', function(){
-      avisar('O módulo ' + b.dataset.fora + ' não faz parte deste protótipo de demonstração. Você continua na tela atual.');
-    });
+    b.addEventListener('click',function(){toast('O módulo '+b.dataset.fora+' ainda não está disponível neste protótipo.')});
   });
 
-  /* Menu compacto */
-  var btnMenu = $('#btnMenu'), chCompacto = $('#chCompacto'), chDecor = $('#chDecor');
-  function setChave(ch, on){
-    ch.setAttribute('aria-checked', on ? 'true' : 'false');
-    $('.est', ch).textContent = on ? 'Ativado' : 'Desativado';
+  function openDlg(id){
+    closePops(); lastFocus=document.activeElement;
+    var d=$('#'+id); d.classList.add('open');
+    var f=$('button',d); if(f) f.focus();
   }
-  function setCompacto(on){
-    body.classList.toggle('compacto', on);
-    btnMenu.setAttribute('aria-pressed', on ? 'true' : 'false');
-    btnMenu.title = on ? 'Expandir menu lateral' : 'Recolher menu lateral';
-    $('#btnMenuTxt').textContent = on ? 'Expandir menu' : 'Recolher menu';
-    setChave(chCompacto, on);
+  function closeDlgs(){
+    $$('.overlay.open').forEach(function(d){d.classList.remove('open')});
+    if(lastFocus&&lastFocus.focus) lastFocus.focus();
   }
-  btnMenu.addEventListener('click', function(){setCompacto(!body.classList.contains('compacto'))});
-  chCompacto.addEventListener('click', function(){setCompacto(!body.classList.contains('compacto'))});
-  chDecor.addEventListener('click', function(){
-    var on = body.classList.toggle('sem-decor');
-    setChave(chDecor, !on);
+  $('#btnLgpd').addEventListener('click',function(){openDlg('dlgLgpd')});
+  $('#mLgpd').addEventListener('click',function(){openDlg('dlgLgpd')});
+  $('#btnSair').addEventListener('click',function(){openDlg('dlgSair')});
+  $('#mSair').addEventListener('click',function(){openDlg('dlgSair')});
+  $$('[data-close]').forEach(function(b){b.addEventListener('click',closeDlgs)});
+  $$('.overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o) closeDlgs()})});
+  $('#confSair').addEventListener('click',function(){
+    $$('.overlay.open').forEach(function(d){d.classList.remove('open')});
+    $('#telaOut').classList.add('open'); $('#btnEntrar').focus();
   });
-
-  /* Painéis suspensos */
-  var gatilhos = $$('[data-painel]');
-  function fecharPaineis(exceto){
-    gatilhos.forEach(function(g){
-      if(g === exceto) return;
-      g.setAttribute('aria-expanded','false');
-      document.getElementById(g.dataset.painel).hidden = true;
-    });
-  }
-  gatilhos.forEach(function(g){
-    g.addEventListener('click', function(e){
-      e.stopPropagation();
-      var p = document.getElementById(g.dataset.painel);
-      var abrir = p.hidden;
-      fecharPaineis(g);
-      p.hidden = !abrir;
-      g.setAttribute('aria-expanded', abrir ? 'true' : 'false');
-    });
+  $('#btnEntrar').addEventListener('click',function(){
+    $('#telaOut').classList.remove('open'); $('#btnSair').focus();
+    toast('Sessão iniciada. Boas-vindas de volta, Maria.');
   });
-  $$('.painel').forEach(function(p){p.addEventListener('click', function(e){e.stopPropagation()})});
-  document.addEventListener('click', function(){fecharPaineis()});
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape'){
-      var aberto = gatilhos.filter(function(g){return g.getAttribute('aria-expanded') === 'true'})[0];
-      if(aberto){fecharPaineis(); aberto.focus()}
-    }
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){ if($('.overlay.open')) closeDlgs(); else closePops(); }
   });
-
-  /* Diálogos */
-  var dlgLgpd = $('#dlgLgpd'), dlgSair = $('#dlgSair');
-  $('#btnLgpd').addEventListener('click', function(){fecharPaineis(); dlgLgpd.showModal()});
-  $$('[data-sair]').forEach(function(b){
-    b.addEventListener('click', function(){fecharPaineis(); dlgSair.showModal()});
-  });
-  $$('[data-fechar]').forEach(function(b){
-    b.addEventListener('click', function(){b.closest('dialog').close()});
-  });
-  [dlgLgpd, dlgSair].forEach(function(d){
-    d.addEventListener('click', function(e){ if(e.target === d) d.close() });
-  });
-
-  /* Sessão */
-  var fora = $('#fora');
-  $('#confSair').addEventListener('click', function(){
-    dlgSair.close(); aviso.hidden = true;
-    app.inert = true; fora.hidden = false; $('#btnEntrar').focus();
-  });
-  $('#btnEntrar').addEventListener('click', function(){
-    fora.hidden = true; app.inert = false;
-    avisar('Sessão iniciada novamente. Boas-vindas, Maria Monitor.');
-    btnMenu.focus();
-  });
+  window.MIA={toast:toast,openDlg:openDlg,closeDlgs:closeDlgs};
 })();
-</script>
 
-<script>
 /* ===== Módulo Dashboard ===== */
 (function(){
-  var $ = function(s,r){return (r||document).querySelector(s)};
-  var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var $=function(s,c){return (c||document).querySelector(s)}, $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+  var ic=function(n){return '<svg class="ic" aria-hidden="true"><use href="#i-'+n+'"/></svg>'};
+  var esc=function(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+  var agora=function(){return new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})};
 
-  var alunos = {
-    maria:{
-      nome:'Maria Oliveira', curso:'Assistente Administrativo', conf:87, periodo:'noite', horario:'noite, 19h–21h',
+  var S={
+    maria:{id:'maria',ancora:'maria-oliveira',nome:'Maria Oliveira',curso:'Assistente Administrativo',
+      status:'Aguardando primeiro acesso ao AVA',dias:9,horario:'noite, 19h–21h',conf:87,nivel:'alta',
       rec:'A IA recomenda contato via WhatsApp, pois apresentou maior efetividade em situações semelhantes.',
-      qual:'Confiança alta: há registros suficientes de casos semelhantes.',
-      fatores:[
-        ['Tempo sem acessar o AVA','9 dias desde a matrícula, sem primeiro acesso','alto'],
-        ['Histórico de tentativas de contato','1 tentativa por e-mail, sem resposta','médio'],
-        ['Último canal utilizado','E-mail','médio'],
-        ['Respostas anteriores','Respondeu por WhatsApp durante a matrícula','alto'],
-        ['Dados cadastrais disponíveis','Telefone e e-mail informados no cadastro','baixo']
-      ],
+      fatores:[['Tempo sem acessar o AVA','alto'],['Histórico de tentativas de contato','alto'],['Último canal utilizado','médio'],['Respostas anteriores','médio'],['Dados cadastrais disponíveis','baixo']],
       limites:[],
-      estado:{tipo:'aceita', hora:'10:42', canal:'WhatsApp'}, nota:null, fb:null, analise:null
-    },
-    joao:{
-      nome:'João Pereira', curso:'Técnico em Logística', conf:42, periodo:'tarde', horario:'tarde, 14h–16h',
-      rec:'A IA não tem dados suficientes para indicar um canal com segurança. Como ponto de partida, a IA recomenda contato via WhatsApp no horário informado no cadastro. Vale conferir os dados do aluno antes de decidir.',
-      qual:'Confiança baixa: a IA tem poucos registros de contato com este aluno.',
-      fatores:[
-        ['Tempo sem acessar o AVA','12 dias desde a matrícula, sem primeiro acesso','alto'],
-        ['Histórico de tentativas de contato','Nenhuma tentativa registrada','baixo'],
-        ['Último canal utilizado','Sem registro de canal','baixo'],
-        ['Respostas anteriores','Sem respostas registradas','baixo'],
-        ['Dados cadastrais disponíveis','Apenas telefone informado no cadastro','médio']
-      ],
-      limites:['Há poucos registros de contato com João Pereira; por isso a confiança é baixa.'],
-      estado:null, nota:null, fb:null, analise:null
-    }
+      decisao:{tipo:'aceita',hora:'10:42',canal:'WhatsApp'},fb:null,ana:''},
+    joao:{id:'joao',ancora:'joao-pereira',nome:'João Pereira',curso:'Técnico em Logística',
+      status:'Aguardando primeiro acesso',dias:6,horario:'tarde, 14h–16h',conf:42,nivel:'baixa',
+      rec:'A IA tem poucos dados sobre este aluno. Sugere, com cautela, contato via WhatsApp.',
+      fatores:[['Tempo sem acessar o AVA','alto'],['Dados cadastrais disponíveis','médio'],['Histórico de tentativas de contato','baixo']],
+      limites:['Há apenas uma tentativa de contato registrada para este aluno.'],
+      decisao:null,fb:null,ana:''}
   };
-  var sel = 'maria', pendente = null;
+  var ordem=['maria','joao'], sel='maria', form=null, erro='', pend=null;
+  var VIA={'WhatsApp':'via WhatsApp','E-mail':'via e-mail','Mensagem no AVA':'via mensagem no AVA','Ligação':'por ligação'};
 
-  function agora(){var d=new Date(), p=function(n){return (n<10?'0':'')+n}; return p(d.getHours())+':'+p(d.getMinutes())}
-  function ehMensagem(canal){return canal !== 'Ligação telefônica'}
-  function contato(canal){return ehMensagem(canal) ? 'Contato via ' + canal : 'Contato por ligação telefônica'}
-
-  var tags = {
-    aceita:'Contato planejado pela monitoria',
-    ajustada:'Contato planejado pela monitoria',
-    rejeitada:'Recomendação rejeitada pela monitoria',
-    dispensada:'Dispensada por hoje pela monitoria'
-  };
-
-  var bAceitar=$('#bAceitar'), bAjustar=$('#bAjustar'), bRejeitar=$('#bRejeitar'), bAnalise=$('#bAnalise'), bExplica=$('#bExplica');
-  var fAjuste=$('#fAjuste'), fRejeicao=$('#fRejeicao'), faixa=$('#faixa'), bDesfazer=$('#bDesfazer');
-  var dlgConf=$('#dlgConf'), dlgExp=$('#dlgExp');
-
-  function fecharForms(){
-    fAjuste.hidden = true; fRejeicao.hidden = true;
-    bAjustar.setAttribute('aria-expanded','false'); bRejeitar.setAttribute('aria-expanded','false');
-    $('#erroMotivo').hidden = true; $('#motivo').removeAttribute('aria-invalid');
+  function tagDecisao(d){
+    if(!d) return '';
+    if(d.tipo==='rejeitada') return '<span class="tag hum">'+ic('x')+'Recomendação rejeitada pela monitoria</span>';
+    if(d.tipo==='dispensada') return '<span class="tag hum">'+ic('clock')+'Dispensado por hoje</span>';
+    return '<span class="tag hum">'+ic('user')+'Contato planejado pela monitoria</span>';
   }
 
-  function render(){
-    var a = alunos[sel], st = a.estado;
-
-    /* lista */
-    $$('.est').forEach(function(c){
-      var id = c.dataset.id, e = alunos[id].estado, tag = $('[data-tag]', c);
-      c.classList.toggle('sel', id === sel);
-      $('input', c).checked = (id === sel);
-      if(e){
-        tag.hidden = false;
-        tag.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-pessoa"/></svg>';
-        tag.appendChild(document.createTextNode(tags[e.tipo]));
-      } else { tag.hidden = true; tag.textContent = ''; }
-      $('[data-dispensar]', c).hidden = !!e;
-    });
-
-    /* análise da IA */
-    $('#recTit').textContent = 'Recomendação para ' + a.nome;
-    $('#recTxt').textContent = a.rec;
-    $('#confTxt').textContent = 'Confiança da IA nesta recomendação para ' + a.nome + ': ' + a.conf + '%';
-    $('#confBarra').style.width = a.conf + '%';
-    $('#confQual').textContent = a.qual;
-    $('#fatores').innerHTML = a.fatores.map(function(f){
-      return '<li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>' + f[0] + '</li>';
+  function renderLista(){
+    $('#lista').innerHTML=ordem.map(function(k){
+      var s=S[k], on=k===sel;
+      return '<li class="stu'+(on?' sel':'')+'">'+
+        '<button class="stu-main" type="button" data-sel="'+k+'" aria-pressed="'+on+'" aria-label="Analisar caso de '+s.nome+'">'+
+          '<span class="row"><span class="nm">'+s.nome+'</span><span class="tag prio">'+ic('flag')+'Prioridade ALTA</span></span>'+
+          '<span class="ln">'+s.curso+'</span>'+
+          '<span class="ln">'+ic('clock')+s.status+' · há '+s.dias+' dias</span>'+
+          '<span class="ln">Melhor horário de contato: '+s.horario+'</span>'+
+          '<span class="ln">Confiança da IA: '+s.conf+'%</span>'+
+          tagDecisao(s.decisao)+
+        '</button>'+
+        '<div class="stu-foot"><span class="selmark">'+(on?ic('check')+'Selecionado':'')+'</span>'+
+          '<a class="lk" href="alunos.html#'+s.ancora+'" aria-label="Abrir perfil de '+s.nome+'">Abrir perfil'+ic('arrow')+'</a></div>'+
+      '</li>';
     }).join('');
-    var an = $('#analise');
-    if(a.analise){ an.hidden = false; $('#analiseTxt').textContent = a.analise.txt; } else { an.hidden = true; }
-    var carregando = !!(a.analise && a.analise.carregando);
-    bAnalise.disabled = carregando;
-    $('#bAnaliseTxt').textContent = carregando ? 'Analisando…' : 'Solicitar nova análise';
-
-    /* decisão */
-    $('#decAluno').textContent = 'Estudante selecionado: ' + a.nome + ' – ' + a.curso + '. Melhor horário de contato: ' + a.horario + '.';
-    bAceitar.disabled = bAjustar.disabled = bRejeitar.disabled = !!st;
-    if(st) fecharForms();
-
-    var txt = '', ico = '#i-check';
-    if(st){
-      if(st.tipo === 'aceita') txt = 'Recomendação aceita por Maria Monitor às ' + st.hora + '. ' + contato(st.canal) + ' registrado no histórico do aluno.';
-      if(st.tipo === 'ajustada') txt = 'Estratégia ajustada por Maria Monitor às ' + st.hora + '. ' + contato(st.canal) + ', no período da ' + st.periodo + ', registrado no histórico do aluno.';
-      if(st.tipo === 'rejeitada'){ txt = 'Recomendação rejeitada por Maria Monitor às ' + st.hora + '. Motivo: “' + st.motivo + '”. Nenhuma mensagem foi enviada ao aluno.'; ico = '#i-x'; }
-      if(st.tipo === 'dispensada'){ txt = 'Recomendação dispensada por hoje por Maria Monitor às ' + st.hora + '. Ela volta à triagem de amanhã.'; ico = '#i-relogio'; }
-    } else if(a.nota){ txt = a.nota; ico = '#i-info'; }
-    faixa.hidden = !txt;
-    $('#faixaTxt').textContent = txt;
-    $('#faixaIco').setAttribute('href', ico);
-    bDesfazer.hidden = !st;
-    $('#faixaDica').hidden = !st;
-
-    /* retorno para a IA */
-    $('#fbSim').setAttribute('aria-pressed', a.fb === 'sim' ? 'true' : 'false');
-    $('#fbNao').setAttribute('aria-pressed', a.fb === 'nao' ? 'true' : 'false');
-    $('#fbMsg').textContent =
-      a.fb === 'sim' ? 'Avaliação registrada por Maria Monitor: “Sim, foi útil”. Obrigada! A IA usa esse retorno para aprender com a monitoria.' :
-      a.fb === 'nao' ? 'Avaliação registrada por Maria Monitor: “Precisa melhorar”. Obrigada! A IA vai considerar esse retorno nas próximas análises.' :
-      'Sua avaliação ajuda a IA a aprender com a monitoria e a melhorar as próximas recomendações.';
   }
 
-  /* seleção de estudante */
-  function selecionar(id){ if(id === sel) return; sel = id; fecharForms(); render(); }
-  $$('.est').forEach(function(c){
-    c.addEventListener('click', function(e){
-      if(e.target.closest('a,button')) return;
-      selecionar(c.dataset.id);
-    });
-    $('input', c).addEventListener('change', function(){ selecionar(c.dataset.id) });
-    $('[data-dispensar]', c).addEventListener('click', function(){
-      sel = c.dataset.id; fecharForms();
-      alunos[sel].estado = {tipo:'dispensada', hora:agora()}; alunos[sel].nota = null;
-      render(); bDesfazer.focus();
-    });
-  });
-
-  /* confirmação antes de envio */
-  function pedirConfirmacao(acao){
-    var a = alunos[sel]; pendente = acao;
-    var per = acao.periodo || a.periodo;
-    if(ehMensagem(acao.canal)){
-      $('#confTit').textContent = 'Confirmar envio de mensagem via ' + acao.canal + ' para ' + a.nome + '?';
-      $('#confSub').textContent = 'O contato será planejado para o período da ' + per + ' e registrado no histórico do aluno. Você poderá desfazer essa decisão nesta tela.';
-      $('#confOk').textContent = 'Confirmar envio';
-    } else {
-      $('#confTit').textContent = 'Confirmar registro de ligação telefônica para ' + a.nome + '?';
-      $('#confSub').textContent = 'Nenhuma mensagem será enviada. A ligação será planejada para o período da ' + per + ' e registrada no histórico do aluno.';
-      $('#confOk').textContent = 'Confirmar registro';
-    }
-    dlgConf.showModal();
+  function renderIA(){
+    var s=S[sel];
+    $('#confTxt').innerHTML='Confiança da IA nesta recomendação para '+s.nome+': <strong>'+s.conf+'%</strong> ('+s.nivel+')';
+    var b=$('#confBar'); b.setAttribute('aria-valuenow',s.conf); b.setAttribute('aria-label','Confiança da IA: '+s.conf+'%');
+    $('i',b).style.width=s.conf+'%';
+    $('#fatores').innerHTML=s.fatores.map(function(f){return '<li>'+ic('check')+f[0]+'</li>'}).join('');
+    $('#recTxt').textContent=s.rec;
+    $('#anaTxt').textContent=s.ana;
+    $('#btnDispensar').disabled=!!s.decisao;
   }
-  $('#confOk').addEventListener('click', function(){
-    if(!pendente) return;
-    var a = alunos[sel];
-    a.estado = {tipo:pendente.tipo, hora:agora(), canal:pendente.canal, periodo:pendente.periodo || a.periodo};
-    a.nota = null; pendente = null;
-    dlgConf.close(); render(); bDesfazer.focus();
+
+  function stripTxt(s){
+    var d=s.decisao, h=d.hora;
+    if(d.tipo==='aceita') return 'Recomendação aceita por Maria Monitor às '+h+'. Contato via WhatsApp registrado no histórico do aluno.';
+    if(d.tipo==='ajustada') return 'Estratégia ajustada por Maria Monitor às '+h+'. Contato '+VIA[d.canal]+' ('+d.periodo.toLowerCase()+') registrado no histórico do aluno.';
+    if(d.tipo==='rejeitada') return 'Recomendação rejeitada por Maria Monitor às '+h+'. Motivo registrado: “'+d.motivo+'”.';
+    return 'Recomendação dispensada por Maria Monitor às '+h+'. Ela volta à triagem amanhã.';
+  }
+
+  function renderDecisao(){
+    var s=S[sel], d=s.decisao, slot=$('#slot');
+    $('#btnAceitar').disabled=!!d; $('#btnRejeitar').disabled=!!d;
+    var dica=d?'Use “Desfazer” para decidir novamente':'';
+    $('#btnAceitar').title=dica; $('#btnRejeitar').title=dica;
+    if(form==='rejeitar'){
+      slot.innerHTML='<div class="form"><label for="motivo">Motivo da rejeição</label>'+
+        '<input id="motivo" type="text" maxlength="80" autocomplete="off" aria-describedby="errM">'+
+        (erro?'<div class="err" id="errM">'+ic('alert')+erro+'</div>':'')+
+        '<div class="acts"><button class="b2 fill" type="button" data-act="salvarRej">Registrar rejeição</button><button class="b2" type="button" data-act="cancelar">Cancelar</button></div></div>';
+    }else if(form==='ajustar'){
+      slot.innerHTML='<div class="form"><div class="two">'+
+        '<div><label for="canal">Canal de contato</label><select id="canal"><option>WhatsApp</option><option>Ligação</option><option>E-mail</option><option>Mensagem no AVA</option></select></div>'+
+        '<div><label for="periodo">Horário do contato</label><select id="periodo"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div></div>'+
+        '<div class="acts"><button class="b2 fill" type="button" data-act="salvarAj">Salvar ajuste</button><button class="b2" type="button" data-act="cancelar">Cancelar</button></div></div>';
+      $('#periodo').value=s.horario.indexOf('noite')===0?'Noite':s.horario.indexOf('tarde')===0?'Tarde':'Manhã';
+      if(d&&d.canal) $('#canal').value=d.canal;
+    }else if(d){
+      slot.innerHTML='<div class="strip">'+ic(d.tipo==='rejeitada'?'x':d.tipo==='dispensada'?'clock':'check')+
+        '<div><span>'+esc(stripTxt(s))+'</span> <button class="lk" type="button" data-act="desfazer">Desfazer</button></div></div>';
+    }else{
+      slot.innerHTML='<p class="wait">Nenhuma decisão registrada para '+s.nome+'.</p>';
+    }
+    $$('[data-fb]').forEach(function(b){b.setAttribute('aria-pressed',s.fb===b.dataset.fb)});
+    $('#fbTxt').textContent=s.fb?'Obrigada! Seu retorno ajuda a IA a aprender.':'';
+  }
+
+  function render(){renderLista();renderIA();renderDecisao()}
+
+  function registrar(d){
+    d.hora=agora(); S[sel].decisao=d; form=null; erro=''; render();
+    var u=$('[data-act="desfazer"]'); if(u) u.focus();
+  }
+
+  function pedirConfirmacao(d){
+    var s=S[sel], lig=d.canal==='Ligação';
+    pend=d;
+    $('#tConf').textContent=lig?'Confirmar registro de ligação para '+s.nome+'?':'Confirmar envio de mensagem '+VIA[d.canal]+' para '+s.nome+'?';
+    $('#pConf').textContent=lig?'O contato será registrado no histórico do aluno.':'A mensagem só será enviada após a sua confirmação.';
+    $('#confEnvio').textContent=lig?'Confirmar registro':'Confirmar envio';
+    MIA.openDlg('dlgConf');
+    $('#confEnvio').focus();
+  }
+
+  /* Lista: selecionar estudante */
+  $('#lista').addEventListener('click',function(e){
+    var b=e.target.closest('[data-sel]'); if(!b) return;
+    sel=b.dataset.sel; form=null; erro=''; render();
+    var n=$('[data-sel="'+sel+'"]'); if(n) n.focus();
   });
-  dlgConf.addEventListener('close', function(){ pendente = null });
 
-  bAceitar.addEventListener('click', function(){ fecharForms(); pedirConfirmacao({tipo:'aceita', canal:'WhatsApp'}) });
+  /* Decisões */
+  $('#btnAceitar').addEventListener('click',function(){pedirConfirmacao({tipo:'aceita',canal:'WhatsApp'})});
+  $('#confEnvio').addEventListener('click',function(){
+    var d=pend; pend=null;
+    $$('.overlay.open').forEach(function(o){o.classList.remove('open')});
+    if(d) registrar(d);
+  });
+  $('#btnAjustar').addEventListener('click',function(){form=form==='ajustar'?null:'ajustar';erro='';renderDecisao();var c=$('#canal');if(c)c.focus()});
+  $('#btnRejeitar').addEventListener('click',function(){form=form==='rejeitar'?null:'rejeitar';erro='';renderDecisao();var m=$('#motivo');if(m)m.focus()});
+  $('#btnDispensar').addEventListener('click',function(){registrar({tipo:'dispensada'})});
 
-  /* ajustar estratégia */
-  bAjustar.addEventListener('click', function(){
-    var abrir = fAjuste.hidden; fecharForms();
-    if(abrir){
-      fAjuste.hidden = false; bAjustar.setAttribute('aria-expanded','true');
-      $('#selCanal').value = 'WhatsApp'; $('#selPeriodo').value = alunos[sel].periodo; $('#selCanal').focus();
+  $('#slot').addEventListener('click',function(e){
+    var b=e.target.closest('[data-act]'); if(!b) return;
+    var a=b.dataset.act;
+    if(a==='cancelar'){form=null;erro='';renderDecisao();}
+    else if(a==='desfazer'){
+      S[sel].decisao=null; render();
+      MIA.toast('Decisão desfeita. O registro foi removido do histórico.');
+      $('#btnAceitar').focus();
+    }
+    else if(a==='salvarRej'){
+      var v=$('#motivo').value.trim();
+      if(!v){erro='Motivo em branco. Escreva o motivo para registrar a rejeição.';renderDecisao();$('#motivo').focus();return;}
+      registrar({tipo:'rejeitada',motivo:v});
+    }
+    else if(a==='salvarAj'){
+      pedirConfirmacao({tipo:'ajustada',canal:$('#canal').value,periodo:$('#periodo').value});
     }
   });
-  $('#cancAjuste').addEventListener('click', function(){ fecharForms(); bAjustar.focus() });
-  fAjuste.addEventListener('submit', function(e){
-    e.preventDefault();
-    pedirConfirmacao({tipo:'ajustada', canal:$('#selCanal').value, periodo:$('#selPeriodo').value});
+  $('#slot').addEventListener('keydown',function(e){
+    if(e.key==='Enter'&&e.target.id==='motivo'){e.preventDefault();$('[data-act="salvarRej"]').click();}
   });
 
-  /* rejeitar */
-  bRejeitar.addEventListener('click', function(){
-    var abrir = fRejeicao.hidden; fecharForms();
-    if(abrir){
-      fRejeicao.hidden = false; bRejeitar.setAttribute('aria-expanded','true');
-      $('#motivo').value = ''; $('#motivo').focus();
-    }
-  });
-  $('#cancRejeicao').addEventListener('click', function(){ fecharForms(); bRejeitar.focus() });
-  $('#motivo').addEventListener('input', function(){ $('#erroMotivo').hidden = true; this.removeAttribute('aria-invalid') });
-  fRejeicao.addEventListener('submit', function(e){
-    e.preventDefault();
-    var m = $('#motivo').value.trim();
-    if(!m){ $('#erroMotivo').hidden = false; $('#motivo').setAttribute('aria-invalid','true'); $('#motivo').focus(); return; }
-    var a = alunos[sel];
-    a.estado = {tipo:'rejeitada', hora:agora(), motivo:m}; a.nota = null;
-    render(); bDesfazer.focus();
-  });
-
-  /* desfazer */
-  bDesfazer.addEventListener('click', function(){
-    var a = alunos[sel];
-    a.estado = null;
-    a.nota = 'Decisão desfeita por Maria Monitor às ' + agora() + '. A recomendação voltou a aguardar a sua decisão.';
-    render(); bAceitar.focus();
-  });
-
-  /* nova análise */
-  bAnalise.addEventListener('click', function(){
-    var id = sel, a = alunos[id];
-    a.analise = {carregando:true, txt:'A IA está analisando novamente os dados de ' + a.nome + '. Isso leva alguns segundos.'};
-    render();
+  /* Nova análise */
+  $('#btnNova').addEventListener('click',function(){
+    var b=this, alvo=sel, s=S[alvo];
+    b.disabled=true; $('span',b).textContent='Analisando…';
+    s.ana='A IA está analisando o caso novamente…'; if(sel===alvo) $('#anaTxt').textContent=s.ana;
     setTimeout(function(){
-      a.analise = {txt:'Nova análise concluída às ' + agora() + '. A IA não encontrou dados novos desde a última análise e manteve a recomendação, com confiança de ' + a.conf + '%.'};
-      render();
-    }, 1600);
+      b.disabled=false; $('span',b).textContent='Solicitar nova análise';
+      s.ana='Análise atualizada às '+agora()+'. A recomendação foi mantida.';
+      if(sel===alvo) $('#anaTxt').textContent=s.ana;
+    },1300);
   });
 
-  /* explicação completa */
-  function iconePeso(p){
-    var n = p === 'alto' ? 3 : p === 'médio' ? 2 : 1, s = '<svg viewBox="0 0 18 16" aria-hidden="true">';
-    for(var i=0;i<3;i++){
-      var h = 6 + i*4;
-      s += '<rect x="'+(1+i*6)+'" y="'+(15-h)+'" width="4" height="'+h+'" rx="1" fill="'+(i<n?'#0D3B4C':'#FFFFFF')+'" stroke="#0D3B4C" stroke-width="1"/>';
-    }
-    return s + '</svg>';
+  /* Explicação completa */
+  $('#btnExpl').addEventListener('click',function(){
+    var s=S[sel], n={alto:3,'médio':2,baixo:1};
+    $('#explBody').innerHTML=
+      '<h3>Recomendação para '+s.nome+'</h3><p>'+s.rec+'</p>'+
+      '<h3>Fatores e peso relativo</h3><ul class="wt">'+s.fatores.map(function(f){
+        var m=''; for(var i=1;i<=3;i++) m+='<i'+(i<=n[f[1]]?' class="on"':'')+'></i>';
+        return '<li><span>'+f[0]+'</span><span class="w"><span class="meter" aria-hidden="true">'+m+'</span>Peso '+f[1]+'</span></li>';
+      }).join('')+'</ul>'+
+      '<h3>Confiança</h3><p>Confiança da IA nesta recomendação para '+s.nome+': <strong>'+s.conf+'%</strong> ('+s.nivel+'). É uma estimativa baseada em casos semelhantes do período atual, não uma garantia de resposta.</p>'+
+      '<h3>Limitações dos dados</h3><ul class="lim">'+
+        ['A IA não conhece o motivo pessoal da ausência do aluno.'].concat(s.limites,['Contatos feitos fora do MonitorIA não entram na análise.','A IA não usa dados sensíveis para priorizar alunos.']).map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul>'+
+      '<h3>Controle da monitoria</h3><p>A decisão final pertence ao monitor. A IA apenas recomenda ações de apoio.</p>';
+    MIA.openDlg('dlgExpl');
+  });
+
+  /* Feedback para a IA */
+  $$('[data-fb]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var s=S[sel]; s.fb=s.fb===b.dataset.fb?null:b.dataset.fb; renderDecisao(); b.focus();
+    });
+  });
+
+  /* Definições dos indicadores */
+  function fecharTips(ex){
+    $$('.kpi .info').forEach(function(b){
+      if(b!==ex){b.setAttribute('aria-expanded','false');b.nextElementSibling.hidden=true;}
+    });
   }
-  bExplica.addEventListener('click', function(){
-    var a = alunos[sel];
-    $('#expTit').textContent = 'Explicação completa – ' + a.nome;
-    $('#expRec').textContent = a.rec;
-    $('#expConf').textContent = 'Confiança da IA nesta recomendação para ' + a.nome + ': ' + a.conf + '%';
-    $('#expBarra').style.width = a.conf + '%';
-    $('#expQual').textContent = a.qual + ' A confiança é uma estimativa e pode estar errada.';
-    $('#expFat').innerHTML = a.fatores.map(function(f){
-      return '<tr><th scope="row">'+f[0]+'</th><td>'+f[1]+'</td><td><span class="peso">'+iconePeso(f[2])+'Peso '+f[2]+'</span></td></tr>';
-    }).join('');
-    var lim = [
-      'A IA não conhece o motivo pessoal da ausência do aluno.',
-      'A IA usa apenas os dados de acesso e de contato registrados no MonitorIA.',
-      'A IA não usa dados sensíveis para priorizar alunos.'
-    ].concat(a.limites);
-    $('#expLim').innerHTML = lim.map(function(l){return '<li>'+l+'</li>'}).join('');
-    dlgExp.showModal();
+  $$('.kpi .info').forEach(function(b){
+    b.addEventListener('click',function(e){
+      e.stopPropagation(); fecharTips(b);
+      var t=b.nextElementSibling; t.hidden=!t.hidden; b.setAttribute('aria-expanded',!t.hidden);
+    });
   });
-
-  [dlgConf, dlgExp].forEach(function(d){
-    d.addEventListener('click', function(e){ if(e.target === d) d.close() });
-  });
-
-  /* retorno humano para a IA */
-  function fb(v){ var a = alunos[sel]; a.fb = (a.fb === v) ? null : v; render(); }
-  $('#fbSim').addEventListener('click', function(){ fb('sim') });
-  $('#fbNao').addEventListener('click', function(){ fb('nao') });
+  document.addEventListener('click',function(){fecharTips()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape') fecharTips()});
 
   render();
 })();

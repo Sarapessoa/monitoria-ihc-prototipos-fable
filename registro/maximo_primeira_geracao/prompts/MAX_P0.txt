@@ -1,0 +1,167 @@
+PROMPT FRAME MASTER
+CRIAR TEMPLATE BASE FIXO DE INTERFACE WEB SaaS (UI/UX)
+Criar uma interface de alta fidelidade para o sistema:
+MonitorIA – Sistema Inteligente de Apoio à Jornada Digital do Estudante em Ambientes Virtuais de Aprendizagem.
+OBJETIVO DESTA TELA:
+Criar somente o TEMPLATE ESTRUTURAL BASE do sistema.
+Esta será a tela mãe utilizada para todos os módulos futuros.
+IMPORTANTE:
+A área central deve permanecer vazia, funcionando como área dinâmica onde futuramente serão carregados os módulos:
+Dashboard, Alunos, Comunicação, Inteligência Artificial, Relatórios e Ajuda.
+Não inserir gráficos, tabelas, cards ou informações dentro da área central neste momento.
+IDENTIDADE VISUAL FIXA DA MARCA
+Criar logo:
+MonitorIA
+Características:
+- manter texto “MonitorIA”;
+- destacar “IA” em laranja;
+- criar símbolo minimalista representando:
+conexão entre pessoas,
+dados,
+inteligência artificial.
+Estilo:
+EdTech premium,
+tecnológico,
+acadêmico,
+moderno,
+minimalista.
+A logo deve aparecer:
+1. no topo da barra lateral esquerda;
+2. no cabeçalho superior.
+Nunca modificar esta logo nas próximas telas.
+LAYOUT FIXO DO SISTEMA
+Criar estrutura composta por:
+1. MENU LATERAL ESQUERDO FIXO
+Cor:
+Azul petróleo #0D3B4C
+Estilo:
+SaaS profissional.
+Adicionar no topo:
+Logo MonitorIA
+Descrição pequena:
+"Sistema Inteligente de Apoio à Jornada Digital do Estudante em Ambientes Virtuais de Aprendizagem"
+Adicionar menu:
+Dashboard
+Alunos
+Comunicação
+Inteligência Artificial
+Relatórios
+Ajuda
+Cada item deve possuir:
+- ícone linear minimalista branco;
+- texto branco;
+- espaçamento confortável.
+O item selecionado deve usar:
+fundo laranja #FF7A00;
+cantos arredondados.
+Adicionar detalhe tecnológico discreto no rodapé:
+linhas e pontos representando conexões de IA.
+2. CABEÇALHO SUPERIOR FIXO
+Criar barra superior branca.
+À esquerda:
+- botão menu circular;
+- logo MonitorIA.
+À direita:
+ícones lineares:
+- notificações;
+- mensagens;
+- configurações.
+Perfil fixo:
+Foto realista profissional de uma mulher.
+Nome:
+Maria Monitor
+Função:
+Monitoria EaD
+IMPORTANTE:
+Maria Monitor é sempre a usuária logada.
+Nunca trocar nome ou perfil.
+3. ÁREA CENTRAL DINÂMICA
+Criar um grande container branco.
+Características:
+- ocupar todo espaço principal;
+- fundo branco predominante;
+- bordas arredondadas grandes;
+- sombra leve;
+- aparência limpa.
+Esta área deve ficar vazia.
+Não adicionar textos.
+Não adicionar dados.
+Não adicionar componentes.
+Será utilizada posteriormente para carregar módulos.
+Adicionar apenas detalhes visuais discretos:
+- pontos suaves;
+- linhas abstratas de conexão;
+- elementos tecnológicos quase transparentes.
+DESIGN SYSTEM
+Manter:
+Paleta:
+Azul petróleo:
+#0D3B4C
+Laranja:
+#FF7A0
+Branco:
+#FFFFF
+Cinza claro:
+#F5F7FA
+Componentes:
+- cantos arredondados;
+- sombras suaves;
+- ícones lineares;
+- aparência clean;
+- espaçamento amplo;
+- tipografia moderna sem serifa.
+Estilo inspirado em:
+- plataformas EdTech;
+- dashboards SaaS;
+- sistemas de Learning Analytics;
+- produtos profissionais de IA.
+REGRAS OBRIGATÓRIAS:
+Não alterar:
+- posição da logo;
+- menu lateral;
+- usuário Maria Monitor;
+- cores;
+- tipografia;
+- estilo dos ícones;
+- estrutura da página.
+Criar sensação de que:
+"Maria Monitor está navegando dentro do MonitorIA."
+ESPECIFICAÇÕES ADICIONAIS DE IHC – CENÁRIO MÁXIMO
+As especificações abaixo complementam o texto acima. Em caso de conflito, prevalecem as especificações abaixo.
+M30 – RÓTULO GLOBAL DE DADOS DE EXEMPLO:
+No cabeçalho superior, à esquerda dos ícones de notificações, mensagens e configurações, adicionar uma etiqueta discreta e legível:
+"Dados fictícios – protótipo de demonstração"
+Esta etiqueta faz parte da moldura fixa e deve aparecer, sem alteração, em todas as telas.
+M31 – PRIVACIDADE E DADOS (LGPD):
+No rodapé do menu lateral, acima do detalhe tecnológico, adicionar um link pequeno e legível com ícone linear de cadeado:
+"Privacidade e dados (LGPD)"
+Em todas as telas, exibir apenas os dados pessoais necessários para a tarefa; e-mail e telefone de alunos aparecem sempre mascarados.
+M41 – SESSÃO:
+Ao lado do perfil de Maria Monitor, adicionar uma seta de menu e a opção visível "Sair", com ícone linear de saída.
+M32 – MOLDURA FIXA (FRAME MASTER) – LISTA DE VERIFICAÇÃO:
+A moldura definida aqui deve ser reproduzida de forma idêntica em todas as telas seguintes:
+1. logo MonitorIA com "Monitor" em azul petróleo ou branco e "IA" em laranja #FF7A00, com o mesmo símbolo de conexão;
+2. menu lateral azul petróleo #0D3B4C com exatamente seis itens, nesta ordem: Dashboard, Alunos, Comunicação, Inteligência Artificial, Relatórios, Ajuda;
+3. apenas o item do módulo ativo com fundo laranja #FF7A00, texto branco e ícone branco;
+4. cabeçalho branco com botão de menu, logo, etiqueta de dados fictícios, ícones de notificações, mensagens e configurações;
+5. perfil com a mesma foto, o nome "Maria Monitor", a função "Monitoria EaD" e a opção "Sair";
+6. link "Privacidade e dados (LGPD)" no rodapé do menu.
+Códigos corretos da paleta (corrigem os erros de digitação do texto acima): laranja #FF7A00; branco #FFFFFF; azul petróleo #0D3B4C; cinza claro #F5F7FA.
+M34 – HEURÍSTICAS DE NIELSEN QUE A MOLDURA DEVE SUSTENTAR:
+- Visibilidade do status do sistema: item ativo do menu sempre destacado.
+- Consistência e padrões: a mesma moldura, os mesmos ícones e os mesmos rótulos em todas as telas.
+- Reconhecimento em vez de memorização: menu sempre visível, com ícone e texto.
+- Controle e liberdade do usuário: opção "Sair" visível.
+- Estética e design minimalista: moldura limpa, sem elementos decorativos que disputem atenção com o conteúdo.
+- Ajuda e documentação: item Ajuda e link de privacidade sempre acessíveis.
+M35 – DIRETRIZES DE INTERAÇÃO HUMANO–IA (HAX) QUE ORIENTAM TODO O PRODUTO:
+G1 – Deixar claro o que o sistema pode fazer; G2 – Deixar claro quão bem o sistema faz o que faz; G5 – Seguir normas sociais relevantes (tom respeitoso); G6 – Mitigar vieses sociais (não usar dados sensíveis para priorizar alunos); G17 – Oferecer controles globais (a monitoria decide).
+REGRAS GERAIS DO CENÁRIO MÁXIMO (valem para esta tela e para todas as telas seguintes):
+- Nunca usar emojis em nenhum lugar da interface. Usar apenas ícones lineares minimalistas (contorno fino, mesma espessura e mesmo estilo em todas as telas), sempre acompanhados de rótulo de texto (M37).
+- Todo texto da interface deve ser texto legível em português do Brasil, com tamanho confortável de leitura e alto contraste com o fundo: texto escuro sobre fundo claro ou texto branco sobre azul petróleo #0D3B4C. Não usar texto cinza-claro sobre branco nem texto branco sobre laranja claro (M33).
+- Botões e itens clicáveis devem ter área de clique ampla (altura mínima aproximada de 44 px), rótulo específico com verbo de ação e foco visível. A prioridade e os estados nunca devem ser indicados só por cor: usar sempre cor + texto + ícone (M33).
+- Só desenhar com aparência de botão, link ou campo aquilo que for uma ação real; textos informativos não devem parecer clicáveis (M40).
+- Distinguir sempre o conteúdo gerado pela IA (selo "Gerado pela IA", ícone de IA) do conteúdo registrado pela monitoria (selo "Registrado por Maria Monitor", ícone de pessoa) (M29).
+- Microtextos em linguagem simples, cordial e respeitosa, sem jargão técnico e sem termos que estigmatizem o aluno; mensagens de erro devem dizer a causa e o próximo passo; a IA fala de forma cautelosa ("a IA recomenda", "a IA não tem dados suficientes"), nunca de forma imperativa ou alarmista (M36).
+- Reduzir a densidade visual: no máximo uma ação principal (laranja) por área, espaço em branco generoso entre os blocos e destaque visual apenas para o que é essencial à tarefa da tela (M38).
+Gerar imagem de interface web desktop 16:9 em alta fidelidade.

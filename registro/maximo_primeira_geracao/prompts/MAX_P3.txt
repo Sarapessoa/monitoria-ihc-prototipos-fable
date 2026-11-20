@@ -1,0 +1,217 @@
+PROMPT SLOT RELATORIOS
+(TELA 03 - NAVEGAÇÃO)
+USAR O FRAME MASTER FIXO DO MONITORIA.
+IMPORTANTE:
+Modificar SOMENTE a área central branca (slot de conteúdo).
+Manter completamente iguais:
+- logo MonitorIA;
+- símbolo da marca;
+- barra lateral esquerda;
+- menu de navegação;
+- cabeçalho superior;
+- foto da usuária;
+- usuário logado: Maria Monitor;
+- função: Monitoria EaD;
+- cores institucionais;
+- tipografia;
+- botões;
+- estilo dos ícones;
+- espaçamentos.
+Não redesenhar o sistema.
+Apenas preencher o módulo selecionado.
+A sensação deve ser:
+"Maria Monitor clicou no menu Relatórios e abriu o módulo de Relatórios Inteligentes dentro do mesmo sistema MonitorIA."
+MÓDULO ATIVO:
+RELATÓRIOS
+Tela:
+Relatórios Inteligentes – Evolução da Jornada Digital
+OBJETIVO DA TELA:
+Representar a navegação de Maria Monitor pelo módulo de Relatórios Inteligentes.
+Mostrar como os dados gerados pelas interações são transformados em:
+- indicadores;
+- análises;
+- melhoria contínua;
+- recomendações mais inteligentes da IA.
+Esta tela representa o momento HAX Toolkit:
+"Over Time"
+A IA aprende ao longo do tempo, mas mantém:
+- transparência;
+- controle humano;
+- validação pela monitoria.
+ÁREA SUPERIOR DO SLOT:
+Título:
+Relatórios Inteligentes
+Subtítulo:
+"Transforme dados de acompanhamento em decisões mais inteligentes."
+Adicionar selo discreto:
+Aprendizado da IA em acompanhamento
+NAVEGAÇÃO INTERNA DO MÓDULO:
+Criar abas horizontais:
+- Visão Geral
+- Engajamento dos Alunos
+- Efetividade da Comunicação
+- Aprendizado da IA
+- Histórico de Recomendações
+Aba ativa:
+Visão Geral
+Usar destaque em laranja #FF7A00.
+CARDS ANALÍTICOS:
+Criar 5 cards modernos:
+1.Total de alunos acompanhados
+Valor exemplo:
+1.030
+2.Evolução do primeiro acesso ao AVA
+Valor exemplo:
++24%
+3.Percentual de ativação
+Valor exemplo:
+70%
+4. Casos solucionados pela monitoria
+Valor exemplo:
+186
+5. Redução de alunos prioritários
+Valor exemplo:
+-38%
+Características:
+- cards brancos;
+- bordas arredondadas;
+- sombras leves;
+- ícones lineares;
+- detalhes em laranja;
+- visual SaaS educacional premium.
+ÁREA DE GRÁFICOS:
+Criar dois cards grandes lado a lado.
+Gráfico 1:
+"Evolução dos acessos ao AVA"
+Mostrar linha crescente indicando aumento dos acessos após as ações realizadas pela monitoria.
+Adicionar pequena legenda:
+Antes da intervenção
+Após recomendação da IA
+Após validação da monitoria
+Gráfico 2:
+"Efetividade dos canais"
+Comparar:
+- WhatsApp
+- E-mail
+- Contato manual
+Mostrar barras simples com melhor desempenho para WhatsApp.
+ÁREA:
+APRENDIZADO DA INTELIGÊNCIA ARTIFICIAL
+Criar card explicativo:
+Título: Aprendizado da Inteligência Artificial
+Texto: "A IA identificou padrões a partir dos resultados anteriores."
+Mostrar insights:
+(ícone de confirmação) WhatsApp apresentou maior taxa de retorno nesta turma
+(ícone de confirmação) Contatos realizados nos primeiros dias aumentaram a ativação
+(ícone de confirmação) Recomendações futuras foram ajustadas pelo histórico
+Adicionar aviso de transparência:
+"As recomendações são atualizadas com base nos resultados, mas continuam sendo validadas pelo monitor."
+Usar ícone linear de IA + dados.
+ÁREA:
+HISTÓRICO DE RECOMENDAÇÕES DA IA
+Criar tabela moderna com colunas:
+Data
+Recomendação realizada
+Resultado obtido
+Avaliação do monitor
+Exemplos de linhas:
+18/06/2026
+Contato via WhatsApp
+Aluno realizou primeiro acesso
+Útil
+17/06/2026
+Reenvio por e-mail
+Sem retorno
+Precisa melhorar
+16/06/2026
+Contato manual
+Dados cadastrais atualizados
+Útil
+FEEDBACK GRANULAR DO MONITOR:
+Criar componente pequeno: "Esta análise representa corretamente sua experiência?"
+Botões:
+(ícone de polegar para cima) Confirmar aprendizado
+(ícone de lápis) Ajustar interpretação
+Botão principal:
+laranja #FF7A00
+Botão secundário:
+contorno azul petróleo #0D3B4C
+NOTIFICAÇÃO DE MUDANÇA:
+Adicionar pequeno alerta informativo:
+"A IA atualizou a efetividade dos canais com base nas últimas interações registradas."
+Mostrar como aviso discreto, não alarmista.
+APLICAR MICROSOFT HUMAN-AI INTERACTION GUIDELINES:
+G12 – Remember recent interactions
+Representar:
+A IA mantém histórico das interações e decisões anteriores.
+G13 – Learn from user behavior
+Representar:
+A IA aprende quais estratégias apresentam melhores resultados.
+G14 – Update and adapt cautiously
+Representar:Mostrar claramente quando recomendações foram modificadas pelo aprendizado.
+G15 – Encourage granular feedback
+Representar:Permitir que o monitor avalie os resultados da IA.
+G16 – Convey the consequences of user actions
+Representar:
+Mostrar impacto das ações tomadas pela monitoria.
+G18 – Notify users about changes
+Representar:Informar mudanças relevantes nos indicadores e padrões da IA.
+ESTILO VISUAL:
+Seguir Design System MonitorIA:
+- SaaS educacional premium;
+- acadêmico;
+- profissional;
+- limpo;
+- confiável.
+Usar:
+Azul petróleo #0D3B4C
+Laranja #FF7A00
+Branco predominante
+Cinza claro para divisões suaves
+Evitar aparência futurista exagerada.
+Transmitir:
+segurança,
+transparência,
+aprendizado contínuo,
+confiança,
+controle humano,
+colaboração entre monitor e Inteligência Artificial.
+ESPECIFICAÇÕES ADICIONAIS DE IHC – CENÁRIO MÁXIMO
+As especificações abaixo complementam o texto acima. Em caso de conflito, prevalecem as especificações abaixo.
+M32 – MOLDURA IDÊNTICA AO FRAME MASTER:
+Reproduzir a moldura exatamente como no Frame Master e nas telas Dashboard e Alunos: mesma logo (com "IA" em laranja #FF7A00), mesmo menu de seis itens na mesma ordem, item Relatórios ativo em laranja, mesmo cabeçalho com a etiqueta "Dados fictícios – protótipo de demonstração", mesmo perfil de Maria Monitor com a opção "Sair" e o link "Privacidade e dados (LGPD)".
+M24 – MODELO DE DADOS COMUM A TODAS AS TELAS:
+Usar os mesmos valores das demais telas: 1.030 alunos acompanhados; 726 com primeiro acesso; 70% de ativação. O valor 186 significa sempre "casos solucionados pela monitoria: alunos que realizaram o primeiro acesso após contato da monitoria", com esse mesmo significado em qualquer módulo.
+M25 – DEFINIÇÃO, BASE E PERÍODO DAS MÉTRICAS:
+Adicionar no topo do slot o seletor de período "Período: últimos 30 dias" e, em cada card, um ícone de informação com definição e base. Exemplos: "Evolução do primeiro acesso: variação em relação aos 30 dias anteriores"; "Redução de alunos prioritários: casos ALTA no início e no fim do período".
+Nos gráficos, mostrar eixos nomeados, valores escritos e legenda em texto, não apenas cor.
+M29 e M26 – AUTORIA E CONSEQUÊNCIAS NO HISTÓRICO:
+Na tabela "Histórico de recomendações da IA", acrescentar as colunas "Decidido por" (por exemplo, "Maria Monitor") e "Origem" (selo "Gerado pela IA" para a recomendação; selo "Registrado por Maria Monitor" para a decisão e a avaliação). Incluir uma linha recente coerente com as outras telas: "Hoje – Contato via WhatsApp para Maria Oliveira – Aguardando retorno – Decidido por Maria Monitor".
+M27 – CORREÇÃO DA AVALIAÇÃO:
+Cada avaliação registrada no histórico tem o link "Editar avaliação", para corrigir uma avaliação dada por engano.
+M39 – CONTEXTO TEMPORAL:
+Mostrar as datas do histórico também em tempo relativo ("há 2 dias") e, no card de aprendizado, o insight "Contatos no horário informado pelo aluno tiveram maior retorno".
+M35 – DIRETRIZES HAX REPRESENTADAS NESTA TELA (Amershi et al., 2019):
+G2 – Deixar claro quão bem o sistema faz o que faz: métricas com definição, base e período.
+G12 – Lembrar interações recentes: histórico com as decisões mais recentes do Dashboard e de Alunos.
+G13 – Aprender com o comportamento do usuário: card de aprendizado.
+G14 – Atualizar e adaptar com cautela: aviso "Mudanças nas recomendações só valem após validação da monitoria."
+G15 – Incentivar feedback granular: avaliação por linha do histórico.
+G16 – Comunicar as consequências das ações do usuário: resultado de cada decisão no histórico.
+G18 – Notificar sobre mudanças: alerta informativo com data e o que mudou ("Desde 15/06/2026, WhatsApp passou a ser o canal recomendado para esta turma").
+M34 – HEURÍSTICAS DE NIELSEN APLICADAS NESTA TELA:
+- Correspondência entre o sistema e o mundo real: métricas definidas na linguagem da monitoria.
+- Ajuda e documentação: ícones de informação em cada métrica.
+- Consistência e padrões: os mesmos números e significados das outras telas.
+- Estética e design minimalista: apenas os dois gráficos principais em destaque; detalhes nas abas.
+- Controle e liberdade do usuário: editar avaliação.
+REGRAS GERAIS DO CENÁRIO MÁXIMO (valem para esta tela e para todas as telas seguintes):
+- Nunca usar emojis em nenhum lugar da interface. Usar apenas ícones lineares minimalistas (contorno fino, mesma espessura e mesmo estilo em todas as telas), sempre acompanhados de rótulo de texto (M37).
+- Todo texto da interface deve ser texto legível em português do Brasil, com tamanho confortável de leitura e alto contraste com o fundo: texto escuro sobre fundo claro ou texto branco sobre azul petróleo #0D3B4C. Não usar texto cinza-claro sobre branco nem texto branco sobre laranja claro (M33).
+- Botões e itens clicáveis devem ter área de clique ampla (altura mínima aproximada de 44 px), rótulo específico com verbo de ação e foco visível. A prioridade e os estados nunca devem ser indicados só por cor: usar sempre cor + texto + ícone (M33).
+- Só desenhar com aparência de botão, link ou campo aquilo que for uma ação real; textos informativos não devem parecer clicáveis (M40).
+- Distinguir sempre o conteúdo gerado pela IA (selo "Gerado pela IA", ícone de IA) do conteúdo registrado pela monitoria (selo "Registrado por Maria Monitor", ícone de pessoa) (M29).
+- Microtextos em linguagem simples, cordial e respeitosa, sem jargão técnico e sem termos que estigmatizem o aluno; mensagens de erro devem dizer a causa e o próximo passo; a IA fala de forma cautelosa ("a IA recomenda", "a IA não tem dados suficientes"), nunca de forma imperativa ou alarmista (M36).
+- Reduzir a densidade visual: no máximo uma ação principal (laranja) por área, espaço em branco generoso entre os blocos e destaque visual apenas para o que é essencial à tarefa da tela (M38).
+Resultado esperado:
+Parecer que Maria Monitor navegou até o menu Relatórios e visualizou a evolução dos dados dentro do mesmo sistema MonitorIA.
