@@ -1,0 +1,68 @@
+{
+ "cenario": "MIN",
+ "modelo": "claude-fable-5-2",
+ "sessao": "883c03ba-4f00-4ee4-bb0f-6485f01d680f",
+ "sistema_sha256": "5af4ef65ed72a4b7a9f0d59c84d7b20f7796334ba26463aa9e2b2650e2129fd3",
+ "etapas": [
+  {
+   "etapa": "P0",
+   "tela": "moldura",
+   "inicio": "2026-11-19T22:21:07-03:00",
+   "prompt_sha256": "f0aed4f2392ed591ec06c581e0376a1ad33ea5c47808a638592fac8cf41fbc6c",
+   "modelos_usados": [
+    "claude-haiku-5-5",
+    "claude-fable-5-2"
+   ],
+   "tokens_saida": 3411,
+   "duracao_ms": 30243,
+   "html_encontrado": true,
+   "tentativas": 1,
+   "html_sha256": "db51e888b72c13843c2bec9e5eb32b9bf4e43eae1ec80e6ada8c9ec01e6052ab"
+  },
+  {
+   "etapa": "P1",
+   "tela": "dashboard",
+   "inicio": "2026-11-19T22:21:38-03:00",
+   "prompt_sha256": "0c4caedff035f9d1ea63a2cee069b5108447cc93521d62ad73db5e0482d2992b",
+   "modelos_usados": [
+    "claude-haiku-5-5",
+    "claude-fable-5-2"
+   ],
+   "tokens_saida": 11861,
+   "duracao_ms": 92650,
+   "html_encontrado": true,
+   "tentativas": 1,
+   "html_sha256": "a86cd120a4e9f8a804c67ef382eca549a7a56a0b81f68e7356673af34c794201"
+  },
+  {
+   "etapa": "P2",
+   "tela": "alunos",
+   "inicio": "2026-11-19T22:23:12-03:00",
+   "prompt_sha256": "71a443e5284ab3a623e1038b3fe87ce7ba2b9b89996ef56a9ebf62fd49de442d",
+   "modelos_usados": [
+    "claude-haiku-5-5",
+    "claude-fable-5-2"
+   ],
+   "tokens_saida": 12732,
+   "duracao_ms": 97221,
+   "html_encontrado": true,
+   "tentativas": 1,
+   "html_sha256": "585f4a509d7826f54e1eddb6190216cd65b7ef4568120c55a2d2ca69a8c189d8"
+  },
+  {
+   "etapa": "P3",
+   "tela": "relatorios",
+   "inicio": "2026-11-19T22:24:51-03:00",
+   "prompt_sha256": "301246b1ac219820478d1b6866e535e7b3df50f1cb8a1231fc755e313284a084",
+   "modelos_usados": [
+    "claude-haiku-5-5",
+    "claude-fable-5-2"
+   ],
+   "tokens_saida": 10128,
+   "duracao_ms": 78333,
+   "html_encontrado": true,
+   "tentativas": 1,
+   "html_sha256": "daf6a86a02caf47823d1e48b615a309ba44107bf499c3ec24cc87c42bc47a92a"
+  }
+ ]
+}

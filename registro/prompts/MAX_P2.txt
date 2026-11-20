@@ -1,0 +1,207 @@
+PROMPT SLOT ALUNOS
+(TELA 02 - TRATAMENTO DE ERRO)
+USAR O FRAME MASTER FIXO DO MONITORIA.
+IMPORTANTE:
+Modificar SOMENTE a área central branca (slot de conteúdo).
+Manter completamente iguais:
+- logo MonitorIA;
+- símbolo da marca;
+- barra lateral esquerda;
+- menu de navegação;
+- cabeçalho superior;
+- foto da usuária;
+- usuário logado: Maria Monitor;
+- função: Monitoria EaD;
+- cores institucionais;
+- tipografia;
+- botões;
+- estilo dos ícones;
+- espaçamentos.
+Não redesenhar o sistema.
+Apenas preencher o módulo selecionado.
+A sensação deve ser:
+"Maria Monitor clicou no menu Alunos e abriu o perfil de um estudante acompanhado."
+MÓDULO ATIVO:
+ALUNOS
+Tela:
+Perfil do Aluno – Análise Inteligente e Tratamento de Inconsistências
+OBJETIVO DA TELA:
+Representar uma situação onde a Inteligência Artificial encontrou limitações nos dados disponíveis.
+Mostrar o momento:
+HAX Toolkit:
+"When Wrong"
+A IA:
+- identifica problema;
+- explica a limitação;
+- evita uma recomendação insegura;
+- permite correção humana.
+A IA não executa nenhuma ação automaticamente.
+LAYOUT DO SLOT CENTRAL:
+Criar organização em três áreas:
+1. Perfil do estudante
+2. Alerta inteligente da IA
+3. Controle do monitor
+Usar cards brancos arredondados,
+sombras suaves,
+ícones lineares.
+ÁREA SUPERIOR:
+Título: Perfil do Aluno
+Subtítulo:
+"Análise inteligente e acompanhamento do primeiro acesso"
+Adicionar etiqueta:
+IA analisando dados do estudante
+CARD PERFIL DO ESTUDANTE:
+Aluno:
+João Pereira
+Curso:
+Técnico em Logística
+Status AVA:
+Aguardando primeiro acesso
+Prioridade:
+ALTA
+Mostrar indicadores:
+Data de matrícula:
+10/06/2026
+Última tentativa de contato:
+18/06/2026
+Canal utilizado:
+E-mail institucional
+Situação do e-mail:
+Não ativado
+Telefone:
+Necessita confirmação
+Usar: Prioridade ALTA com destaque laranja.
+CARD ALERTA INTELIGENTE DA IA:
+Criar destaque visual:
+(ícone de alerta) Atenção
+Título: "A IA encontrou uma inconsistência"
+Mensagem principal: "Não foi possível confirmar com segurança o melhor canal de comunicação."
+Explicação: "Identifiquei possíveis problemas nos dados antes de recomendar uma nova ação."
+Mostrar fatores encontrados:
+(ícone de alerta) E-mail institucional ainda não ativado
+(ícone de alerta) Última mensagem enviada não foi entregue
+(ícone de alerta) Telefone precisa de confirmação
+Adicionar:
+Nível de confiança da IA:
+42%
+Criar barra de confiança baixa.
+Mensagem:
+"Confiança reduzida devido à ausência de dados suficientes."
+CARD EXPLICAÇÃO DA IA:
+Título:
+"Por que a IA sinalizou este problema?"
+Mostrar:
+A IA analisou:
+(ícone de confirmação) Histórico de comunicação
+(ícone de confirmação) Dados cadastrais
+(ícone de confirmação) Tentativas anteriores
+(ícone de confirmação) Status de acesso ao AVA
+Adicionar elemento visual:
+IA explicável / transparência
+RECOMENDAÇÃO DA IA:
+Criar card: "Recomendação segura"
+Texto: "Atualize os dados de contato ou escolha uma nova estratégia antes de enviar uma comunicação automática."
+Mostrar que a IA está aguardando validação humana.
+CONTROLE DO MONITOR:
+Título: Decisão da Monitoria
+Criar botões:
+(ícone de confirmação) Atualizar dados cadastrais
+(ícone de lápis) Alterar canal de comunicação
+(ícone de atualizar) Solicitar nova análise da IA
+(ícone de fechar) Rejeitar recomendação
+(ícone de pessoa) Registrar intervenção manual
+Botão principal:
+laranja #FF7A00
+Botões secundários:
+contorno azul petróleo #0D3B4C
+Adicionar mensagem:
+"O monitor mantém o controle da decisão. Nenhuma ação será executada automaticamente."
+HISTÓRICO DA ANÁLISE:
+Criar pequena linha do tempo:
+1.IA identificou risco
+↓
+2. Tentativa de contato realizada
+↓
+3. Problema encontrado
+↓
+4. Aguardando decisão do monitor
+Visual:
+timeline horizontal minimalista.
+APLICAR MICROSOFT HUMAN-AI INTERACTION GUIDELINES:
+G9 – Support efficient correction
+Representar: Correção rápida de informações incorretas.
+G10 – Scope services when in doubt
+Representar: IA informa quando não possui dados suficientes.
+G11 – Make clear why the system did what it did
+Representar: Explicação transparente do alerta.
+G17 – Provide global controls
+Representar: Usuário pode corrigir, ajustar, rejeitar ou intervir.
+ESTILO VISUAL:
+Seguir Design System MonitorIA:
+- SaaS educacional premium;
+- acadêmico;
+- profissional;
+- limpo.
+Usar:
+Azul petróleo #0D3B4C
+Laranja #FF7A00
+Fundo branco predominante.
+Não criar aparência futurista exagerada.
+Transmitir
+segurança,
+confiança,
+recuperação de erro,
+controle humano,
+colaboração humano + IA.
+ESPECIFICAÇÕES ADICIONAIS DE IHC – CENÁRIO MÁXIMO
+As especificações abaixo complementam o texto acima. Em caso de conflito, prevalecem as especificações abaixo.
+M32 – MOLDURA IDÊNTICA AO FRAME MASTER:
+Reproduzir a moldura exatamente como no Frame Master e na tela Dashboard: mesma logo (com "IA" em laranja #FF7A00 e o mesmo símbolo), mesmo menu de seis itens na mesma ordem (Dashboard, Alunos, Comunicação, Inteligência Artificial, Relatórios, Ajuda), item Alunos ativo em laranja, mesmo cabeçalho com a etiqueta "Dados fictícios – protótipo de demonstração", mesma foto, nome "Maria Monitor", função "Monitoria EaD", opção "Sair" e link "Privacidade e dados (LGPD)". Não trocar avatar, cores da logo nem rótulos do menu.
+M23 – LISTA DE ALUNOS COM BUSCA E FILTROS:
+Dividir o slot em duas colunas.
+Coluna esquerda estreita: "Lista de alunos", com campo de busca ("Buscar por nome ou curso"), filtros "Prioridade" e "Situação no AVA" e uma lista compacta de alunos com nome, curso, etiqueta de prioridade e situação. Exemplos: João Pereira (selecionado, destacado), Maria Oliveira, Ana Souza, Carlos Lima.
+Coluna direita larga: o perfil de João Pereira com todo o conteúdo descrito acima.
+No topo do perfil, trilha de navegação: "Alunos > João Pereira".
+M24 – MODELO DE DADOS COMUM A TODAS AS TELAS:
+João Pereira – Técnico em Logística – Aguardando primeiro acesso – Prioridade ALTA – Confiança da IA: 42% (mesmos valores do Dashboard).
+Maria Oliveira na lista: Assistente Administrativo – Aguardando primeiro acesso ao AVA – Prioridade ALTA – Contato planejado pela monitoria.
+M25 – REFERENTE DA CONFIANÇA:
+Escrever: "Confiança da IA na escolha do canal de contato para João Pereira: 42%", com ícone de informação: "Baixa porque o e-mail não foi ativado e o telefone não foi confirmado."
+M31 – MINIMIZAÇÃO DE DADOS (LGPD):
+Mostrar e-mail e telefone sempre mascarados, por exemplo "jo***@aluno.exemplo.edu.br" e "(85) 9****-4321", com o link "Mostrar dados de contato" (ícone de cadeado), que indica acesso registrado. Não exibir dados sensíveis (saúde, renda, endereço completo).
+M28 – RETORNO ESPECÍFICO DE CADA BOTÃO DE DECISÃO:
+Cada botão da "Decisão da Monitoria" tem ícone, rótulo e efeito próprios. Representar o momento logo após Maria Monitor clicar em "Atualizar dados cadastrais": um formulário curto aberto no card, com os campos "Telefone" e "E-mail pessoal" e os botões "Salvar dados" e "Cancelar".
+Mostrar aberta a "Explicação completa da IA": fatores analisados com peso relativo (alto, médio, baixo), confiança e limitações ("A IA não verifica se o número de telefone pertence ao aluno").
+M26 – ESTADO VISÍVEL APÓS A DECISÃO:
+Na linha do tempo, acrescentar a etapa "5. Dados cadastrais em atualização por Maria Monitor – hoje, 10:58", com o selo "Registrado por Maria Monitor".
+M27 – DESFAZER E CONFIRMAR:
+Após qualquer decisão, mostrar o link "Desfazer" junto da mensagem de estado. "Rejeitar recomendação" pede o motivo; "Registrar intervenção manual" pede uma descrição curta antes de salvar.
+M39 – CONTEXTO TEMPORAL:
+Ao lado de cada data, mostrar também o tempo relativo (por exemplo, "18/06/2026 – há 2 dias"). Mostrar "Melhor horário de contato: não informado" e a sugestão "Confirmar o melhor horário ao atualizar o cadastro".
+M29 – DISTINÇÃO ENTRE IA E MONITORIA:
+Alerta, explicação e recomendação levam o selo "Gerado pela IA"; dados corrigidos e intervenções levam "Registrado por Maria Monitor".
+M35 – DIRETRIZES HAX REPRESENTADAS NESTA TELA (Amershi et al., 2019):
+G1 – Deixar claro o que o sistema pode fazer: "A IA sinaliza inconsistências; a correção é feita pela monitoria."
+G2 – Deixar claro quão bem o sistema faz o que faz: confiança de 42% com referente e motivo.
+G9 – Facilitar a correção: formulário de atualização no próprio card.
+G10 – Delimitar o serviço em caso de dúvida: a IA não recomenda envio automático com dados incertos.
+G11 – Deixar claro por que o sistema fez o que fez: explicação completa visível.
+G16 – Comunicar as consequências das ações do usuário: nova etapa na linha do tempo.
+G17 – Oferecer controles globais: atualizar, alterar canal, nova análise, rejeitar, intervenção manual e desfazer.
+M34 – HEURÍSTICAS DE NIELSEN APLICADAS NESTA TELA:
+- Ajudar os usuários a reconhecer, diagnosticar e recuperar-se de erros: alerta com causa e próximo passo.
+- Prevenção de erros: nenhum envio automático com dados não confirmados.
+- Reconhecimento em vez de memorização: lista de alunos sempre visível ao lado do perfil.
+- Flexibilidade e eficiência de uso: busca e filtros.
+- Consistência e padrões: mesma moldura e mesmos dados das outras telas.
+- Visibilidade do status do sistema: etapa atual destacada na linha do tempo.
+REGRAS GERAIS DO CENÁRIO MÁXIMO (valem para esta tela e para todas as telas seguintes):
+- Nunca usar emojis em nenhum lugar da interface. Usar apenas ícones lineares minimalistas (contorno fino, mesma espessura e mesmo estilo em todas as telas), sempre acompanhados de rótulo de texto (M37).
+- Todo texto da interface deve ser texto legível em português do Brasil, com tamanho confortável de leitura e alto contraste com o fundo: texto escuro sobre fundo claro ou texto branco sobre azul petróleo #0D3B4C. Não usar texto cinza-claro sobre branco nem texto branco sobre laranja claro (M33).
+- Botões e itens clicáveis devem ter área de clique ampla (altura mínima aproximada de 44 px), rótulo específico com verbo de ação e foco visível. A prioridade e os estados nunca devem ser indicados só por cor: usar sempre cor + texto + ícone (M33).
+- Só desenhar com aparência de botão, link ou campo aquilo que for uma ação real; textos informativos não devem parecer clicáveis (M40).
+- Distinguir sempre o conteúdo gerado pela IA (selo "Gerado pela IA", ícone de IA) do conteúdo registrado pela monitoria (selo "Registrado por Maria Monitor", ícone de pessoa) (M29).
+- Microtextos em linguagem simples, cordial e respeitosa, sem jargão técnico e sem termos que estigmatizem o aluno; mensagens de erro devem dizer a causa e o próximo passo; a IA fala de forma cautelosa ("a IA recomenda", "a IA não tem dados suficientes"), nunca de forma imperativa ou alarmista (M36).
+- Reduzir a densidade visual: no máximo uma ação principal (laranja) por área, espaço em branco generoso entre os blocos e destaque visual apenas para o que é essencial à tarefa da tela (M38).
+Resultado esperado:
+Parecer que Maria Monitor saiu do Dashboard, clicou em Alunos e abriu este perfil dentro do mesmo sistema MonitorIA.

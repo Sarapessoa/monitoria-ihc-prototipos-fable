@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MonitorIA – Dashboard</title>
+<style>
+  :root{
+    --petroleo:#0D3B4C;
+    --petroleo-2:#124A5F;
+    --laranja:#FF7A00;
+    --branco:#FFFFFF;
+    --cinza:#F5F7FA;
+    --linha:#D5DDE2;
+    --texto:#0D3B4C;
+    --texto-2:#2F4F5C;
+    --side:288px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Segoe UI",Inter,"Helvetica Neue",Arial,sans-serif;
+    color:var(--texto);background:var(--cinza);
+    font-size:15px;line-height:1.45;overflow:hidden;
+  }
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit}
+  svg.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+  :focus-visible{outline:3px solid var(--laranja);outline-offset:2px;border-radius:10px}
+  .sidebar :focus-visible{outline-color:#FFFFFF}
+
+  #app{display:grid;grid-template-columns:var(--side) 1fr;height:100vh;min-height:600px;transition:grid-template-columns .2s ease}
+  body.compacto #app{--side:112px}
+
+  /* ---------- Menu lateral ---------- */
+  .sidebar{background:var(--petroleo);color:#fff;display:flex;flex-direction:column;padding:24px 18px 0;overflow:hidden}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:25px;letter-spacing:-.3px;line-height:1}
+  .logo svg{width:38px;height:38px;flex:none}
+  .logo .ia{color:var(--laranja)}
+  .sidebar .logo{padding:2px 6px}
+  .desc{font-size:12.5px;line-height:1.5;color:#fff;opacity:.9;padding:12px 6px 0}
+  .sep{height:1px;background:rgba(255,255,255,.18);margin:20px 6px 16px}
+  nav ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+  .item{
+    display:flex;align-items:center;gap:14px;width:100%;min-height:50px;padding:0 16px;
+    border-radius:12px;color:#fff;text-decoration:none;font-size:15.5px;font-weight:500;text-align:left;
+    transition:background .15s;
+  }
+  .item:hover{background:rgba(255,255,255,.12)}
+  .item.ativo{background:var(--laranja);font-weight:700}
+  .item.ativo:hover{background:var(--laranja)}
+  .side-foot{margin-top:auto}
+  .lgpd{
+    display:flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;width:100%;
+    color:#fff;font-size:14px;text-decoration:underline;text-underline-offset:3px;border-radius:10px;text-align:left;
+  }
+  .lgpd:hover{background:rgba(255,255,255,.12)}
+  .lgpd svg.ic{width:19px;height:19px}
+  .lgpd .curto{display:none}
+  .tech{display:block;width:calc(100% + 36px);margin:6px -18px 0;height:84px}
+
+  body.compacto .sidebar{padding:24px 8px 0}
+  body.compacto .sidebar .logo{justify-content:center;padding:2px 0}
+  body.compacto .sidebar .logo .nome,
+  body.compacto .desc{display:none}
+  body.compacto .sep{margin:18px 6px 12px}
+  body.compacto .item{flex-direction:column;justify-content:center;gap:4px;padding:8px 4px;min-height:62px;font-size:12px;text-align:center;line-height:1.2}
+  body.compacto .lgpd{flex-direction:column;justify-content:center;gap:4px;padding:8px 4px;font-size:12px;min-height:56px}
+  body.compacto .lgpd .longo{display:none}
+  body.compacto .lgpd .curto{display:inline}
+  body.compacto .tech{width:calc(100% + 16px);margin:6px -8px 0}
+
+  /* ---------- Cabeçalho ---------- */
+  .col{display:grid;grid-template-rows:76px 1fr;min-width:0;min-height:0}
+  header{
+    background:#fff;border-bottom:1px solid var(--linha);display:flex;align-items:center;
+    padding:0 24px 0 20px;gap:18px;position:relative;z-index:5;
+  }
+  .btn-menu{display:flex;align-items:center;gap:8px;min-height:48px;padding:0 8px 0 0;border-radius:24px;font-size:13.5px;font-weight:600}
+  .btn-menu .circ{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--petroleo);display:grid;place-items:center;transition:background .15s}
+  .btn-menu:hover .circ{background:var(--cinza)}
+  header .logo{font-size:23px;color:var(--petroleo)}
+  header .logo svg{width:34px;height:34px}
+  .espaco{flex:1}
+  .etiqueta{
+    display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--petroleo);
+    background:var(--cinza);border:1px solid var(--linha);border-radius:6px;padding:7px 12px;white-space:nowrap;
+  }
+  .etiqueta svg.ic{width:17px;height:17px}
+  .acoes{display:flex;align-items:center;gap:2px;position:relative}
+  .acao{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    min-width:96px;min-height:56px;padding:4px 8px;border-radius:12px;font-size:13px;font-weight:500;color:var(--petroleo);
+  }
+  .acao:hover,.acao[aria-expanded="true"]{background:var(--cinza)}
+  .divisor{width:1px;height:40px;background:var(--linha)}
+  .sessao{display:flex;align-items:center;gap:6px;position:relative}
+  .perfil{display:flex;align-items:center;gap:10px;min-height:56px;padding:4px 8px;border-radius:12px;text-align:left}
+  .perfil:hover,.perfil[aria-expanded="true"]{background:var(--cinza)}
+  .foto{width:46px;height:46px;border-radius:50%;flex:none;border:2px solid var(--petroleo);overflow:hidden;display:block}
+  .perfil .nome{display:block;font-weight:700;font-size:15px;line-height:1.2;white-space:nowrap}
+  .perfil .funcao{display:block;font-size:13px;color:var(--texto-2);white-space:nowrap}
+  .perfil svg.ic{width:18px;height:18px;transition:transform .15s}
+  .perfil[aria-expanded="true"] svg.ic{transform:rotate(180deg)}
+  .sair{
+    display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:10px;
+    border:1.5px solid var(--petroleo);font-weight:600;font-size:14.5px;color:var(--petroleo);background:#fff;
+  }
+  .sair:hover{background:var(--cinza)}
+  .sair svg.ic{width:19px;height:19px}
+
+  /* Painéis suspensos */
+  .painel{
+    position:absolute;top:calc(100% + 12px);right:0;width:320px;background:#fff;border:1px solid var(--linha);
+    border-radius:16px;box-shadow:0 14px 36px rgba(13,59,76,.18);padding:18px;z-index:20;
+  }
+  .painel[hidden]{display:none}
+  .painel h2{font-size:16px;margin-bottom:8px}
+  .painel p{font-size:14.5px;color:var(--texto)}
+  .linha-op{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--linha)}
+  .linha-op:first-of-type{border-top:0}
+  .linha-op span.rot{font-size:14.5px;font-weight:500}
+  .chave{
+    display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:22px;
+    border:1.5px solid var(--petroleo);font-size:13.5px;font-weight:600;min-width:118px;justify-content:center;background:#fff;
+  }
+  .chave .bola{width:14px;height:14px;border-radius:50%;border:2px solid var(--petroleo);background:#fff}
+  .chave[aria-checked="true"]{background:var(--petroleo);color:#fff}
+  .chave[aria-checked="true"] .bola{background:#fff;border-color:#fff}
+  .painel .sair{width:100%;justify-content:center;margin-top:14px}
+
+  /* ---------- Área central ---------- */
+  main{padding:24px;min-height:0;min-width:0;background:var(--cinza)}
+  .palco{
+    position:relative;height:100%;background:#fff;border-radius:28px;overflow:hidden;
+    box-shadow:0 1px 2px rgba(13,59,76,.05),0 10px 30px rgba(13,59,76,.07);
+  }
+  .palco > svg.decor{position:absolute;inset:0;width:100%;height:100%;transition:opacity .2s}
+  body.sem-decor .palco > svg.decor,body.sem-decor .tech{opacity:0}
+
+  /* ---------- Aviso ---------- */
+  .aviso{
+    position:fixed;left:50%;bottom:44px;transform:translateX(-50%);z-index:60;max-width:680px;
+    display:flex;align-items:center;gap:12px;background:var(--petroleo);color:#fff;
+    padding:10px 10px 10px 18px;border-radius:14px;box-shadow:0 12px 32px rgba(13,59,76,.3);font-size:15px;
+  }
+  .aviso[hidden]{display:none}
+  .aviso button{min-height:44px;padding:0 14px;border-radius:10px;border:1.5px solid #fff;color:#fff;font-weight:600;font-size:14px;white-space:nowrap}
+  .aviso button:hover{background:rgba(255,255,255,.14)}
+  .aviso :focus-visible{outline-color:#fff}
+
+  /* ---------- Diálogos ---------- */
+  dialog{
+    border:0;border-radius:20px;padding:28px;width:520px;max-width:90vw;margin:auto;color:var(--texto);
+    box-shadow:0 24px 60px rgba(13,59,76,.35);
+  }
+  dialog::backdrop{background:rgba(13,59,76,.45)}
+  dialog h2{font-size:20px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+  dialog p{font-size:15px;margin-bottom:10px}
+  dialog ul{margin:0 0 10px 20px;font-size:15px}
+  dialog li{margin-bottom:6px}
+  .botoes{display:flex;justify-content:flex-end;gap:12px;margin-top:20px}
+  .bt{min-height:46px;padding:0 20px;border-radius:12px;font-weight:600;font-size:15px;border:1.5px solid var(--petroleo);background:#fff;color:var(--petroleo);display:inline-flex;align-items:center;gap:8px}
+  .bt:hover{background:var(--cinza)}
+  .bt.forte{background:var(--petroleo);color:#fff}
+  .bt.forte:hover{background:var(--petroleo-2)}
+
+  /* ---------- Sessão encerrada ---------- */
+  .fora{position:fixed;inset:0;z-index:80;background:var(--petroleo);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center}
+  .fora[hidden]{display:none}
+  .fora .logo{font-size:34px}
+  .fora .logo svg{width:52px;height:52px}
+  .fora p{font-size:18px}
+  .fora .bt{border-color:#fff;margin-top:8px}
+  .fora :focus-visible{outline-color:#fff}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* =====================================================
+     MÓDULO DASHBOARD (somente o slot de conteúdo)
+     ===================================================== */
+  .conteudo{position:relative;height:100%;overflow-y:auto;padding:20px 28px 24px}
+  .conteudo [hidden]{display:none!important}
+  .topo{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:14px}
+  .topo h1{font-size:25px;line-height:1.2;letter-spacing:-.2px}
+  .topo p{font-size:15px;color:var(--texto-2);margin-top:2px}
+  .topo .dir{text-align:right;max-width:540px}
+  .topo .dir p{font-size:14px;margin-top:6px}
+  .selo{
+    display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;line-height:1.3;
+    padding:4px 10px;border-radius:6px;background:var(--cinza);border:1px solid var(--linha);color:var(--petroleo);white-space:nowrap;
+  }
+  .selo svg.ic{width:16px;height:16px}
+  .selo.ia{background:#FFF4E8;border-color:#F0B67C}
+
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}
+  .kpi{
+    position:relative;background:#fff;border:1px solid var(--linha);border-radius:16px;padding:14px 14px 12px 18px;
+    box-shadow:0 4px 14px rgba(13,59,76,.06);overflow:hidden;
+  }
+  .kpi::before{content:"";position:absolute;left:0;top:16px;width:4px;height:38px;background:var(--laranja);border-radius:0 4px 4px 0}
+  .kpi .cab{display:flex;gap:12px;align-items:center}
+  .kpi .ico{width:42px;height:42px;border-radius:12px;background:var(--cinza);display:grid;place-items:center;color:var(--petroleo);flex:none}
+  .kpi .rot{font-size:13.500px;font-weight:600;line-height:1.25}
+  .kpi .val{font-size:26px;font-weight:700;line-height:1.15}
+  .kpi .def{display:flex;gap:6px;font-size:13px;color:var(--texto-2);margin-top:8px;line-height:1.35}
+  .kpi .def svg.ic{width:16px;height:16px;margin-top:1px}
+
+  .apoio-cab{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:10px}
+  .apoio-cab h2{font-size:19px}
+  .apoio-cab p{font-size:14px;color:var(--texto-2)}
+  .cols{display:grid;grid-template-columns:350px 1fr 440px;gap:16px;align-items:start}
+  .bloco{background:#fff;border:1px solid var(--linha);border-radius:16px;padding:14px 16px;box-shadow:0 4px 14px rgba(13,59,76,.05)}
+  .bloco.decisao{border:2px solid var(--petroleo)}
+  .bloco-cab{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .bloco h3{font-size:16px;line-height:1.3}
+
+  /* Lista de estudantes */
+  .est{border:1.500px solid var(--linha);border-radius:14px;padding:4px 12px 2px;margin-top:10px;background:#fff;cursor:pointer}
+  .est.sel{border:2px solid var(--petroleo);background:var(--cinza)}
+  .est-topo{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .est-nome{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:700;font-size:16px;cursor:pointer}
+  .est-nome input{width:20px;height:20px;accent-color:var(--petroleo);cursor:pointer}
+  .prio{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;padding:3px 8px;border-radius:6px;background:#FFF4E8;border:1px solid var(--laranja);white-space:nowrap}
+  .prio svg.ic{width:16px;height:16px}
+  .est p{font-size:14px;line-height:1.5}
+  .est p.tempo{display:flex;align-items:center;gap:6px}
+  .est p.tempo svg.ic{width:16px;height:16px}
+  .est .conf{display:flex;align-items:center;gap:10px}
+  .barra{flex:1;height:8px;border-radius:5px;background:#fff;border:1px solid #7C929C;overflow:hidden}
+  .barra span{display:block;height:100%;background:var(--petroleo)}
+  .tag-estado{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;font-weight:600;padding:3px 8px;border-radius:6px;background:#fff;border:1px solid var(--petroleo)}
+  .tag-estado svg.ic{width:16px;height:16px}
+  .est-acoes{display:flex;gap:18px;align-items:center}
+  .lk{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:14px;font-weight:600;color:var(--petroleo);text-decoration:underline;text-underline-offset:3px;padding:0 2px}
+  .lk svg.ic{width:17px;height:17px}
+  .lk:hover{text-decoration-thickness:2px}
+
+  /* Coluna IA */
+  .rec{margin-top:10px;border-left:4px solid var(--laranja);background:#FFF9F2;border-radius:0 12px 12px 0;padding:10px 14px}
+  .rec .rt{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;font-weight:700;margin-bottom:2px}
+  .rec .xai{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600}
+  .rec .xai svg.ic{width:16px;height:16px}
+  .rec p{font-size:15px}
+  .confianca{margin-top:12px}
+  .confianca .l1{font-size:14.500px;font-weight:600}
+  .confianca .barra{height:10px;margin:6px 0 4px;flex:none}
+  .confianca .q{font-size:13.500px;color:var(--texto-2)}
+  .porque{margin-top:12px;border:1px solid var(--linha);border-radius:12px;padding:10px 14px;background:var(--cinza)}
+  .porque h4{font-size:14.500px;margin-bottom:4px}
+  .porque ul{list-style:none}
+  .porque li{display:flex;align-items:center;gap:8px;font-size:14.500px;line-height:1.75}
+  .porque li svg.ic{width:18px;height:18px}
+  .porque .nota{font-size:13px;color:var(--texto-2);margin-top:4px}
+  .analise{margin-top:10px;font-size:14px;display:flex;gap:8px;align-items:flex-start}
+  .analise svg.ic{width:18px;height:18px;margin-top:2px}
+
+  /* Coluna decisão */
+  .dec-aluno{font-size:14px;margin:6px 0 10px}
+  .bd{
+    display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:4px 10px;width:100%;
+    border-radius:12px;border:1.500px solid var(--petroleo);background:#fff;color:var(--petroleo);
+    font-weight:600;font-size:14.500px;line-height:1.2;text-align:left;
+  }
+  .bd svg.ic{width:19px;height:19px}
+  .bd:hover{background:var(--cinza)}
+  .bd.principal{background:var(--laranja);border-color:var(--laranja);color:#06222C;font-weight:700;font-size:15.500px}
+  .bd.principal:hover{background:#F07000}
+  .bd:disabled,.bd.principal:disabled{background:#EEF1F4;color:var(--texto-2);border:1.500px dashed #7C929C;cursor:not-allowed}
+  .grade{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  .form{margin-top:10px;border:1px solid var(--linha);border-radius:12px;padding:12px;background:var(--cinza)}
+  .form label{display:block;font-size:14px;font-weight:600;margin-bottom:4px}
+  .form input[type=text],.form select{
+    width:100%;min-height:44px;border:1.500px solid var(--petroleo);border-radius:10px;padding:0 12px;font:inherit;color:var(--texto);background:#fff;
+  }
+  .form .duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .form .erro{font-size:14px;font-weight:600;margin-top:6px;display:flex;gap:6px;align-items:flex-start}
+  .form .erro svg.ic{width:17px;height:17px;margin-top:2px}
+  .form .botoes{margin-top:10px;gap:8px}
+  .form .bt{min-height:44px;font-size:14.500px;padding:0 14px}
+  .lembrete{font-size:14px;margin-top:10px;display:flex;gap:8px;align-items:flex-start}
+  .lembrete svg.ic{width:18px;height:18px;margin-top:2px}
+  .faixa{margin-top:10px;border:1.500px solid var(--petroleo);border-left-width:6px;border-radius:12px;background:var(--cinza);padding:8px 12px;display:flex;gap:10px;align-items:flex-start}
+  .faixa > svg.ic{width:20px;height:20px;margin-top:3px}
+  .faixa p{font-size:14.500px;font-weight:600;line-height:1.4}
+  .faixa .dica{font-weight:400;font-size:13.500px;color:var(--texto-2)}
+  .faixa .lk{min-height:44px;white-space:nowrap}
+  .feedback{margin-top:12px;padding-top:10px;border-top:1px solid var(--linha)}
+  .feedback .ft{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .feedback h4{font-size:14.500px}
+  .feedback .fb{display:flex;gap:8px}
+  .feedback .bd{width:auto;min-height:44px;padding:0 12px;font-size:14px}
+  .feedback .bd[aria-pressed="true"]{background:var(--petroleo);color:#fff}
+  .feedback p{font-size:13.500px;color:var(--texto-2);margin-top:6px}
+
+  /* Painel lateral de explicação */
+  dialog.gaveta{margin:0 0 0 auto;width:600px;max-width:95vw;height:100vh;max-height:100vh;border-radius:24px 0 0 24px;padding:26px 28px;overflow-y:auto}
+  dialog.gaveta h2{font-size:20px;margin:10px 0 8px}
+  dialog.gaveta h3{font-size:16px;margin:16px 0 6px}
+  dialog.gaveta table{width:100%;border-collapse:collapse;font-size:14.500px}
+  dialog.gaveta th,dialog.gaveta td{text-align:left;padding:8px 8px 8px 0;border-bottom:1px solid var(--linha);vertical-align:top}
+  dialog.gaveta th{font-size:13.500px}
+  .peso{display:inline-flex;align-items:center;gap:6px;font-weight:600;white-space:nowrap}
+  .peso svg{width:18px;height:16px}
+  dialog.gaveta .barra{height:10px;margin:6px 0}
+  .bt.principal{background:var(--laranja);border-color:var(--laranja);color:#06222C;font-weight:700}
+  .bt.principal:hover{background:#F07000}
+</style>
+</head>
+<body>
+
+<!-- Símbolos reutilizados -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="marca" viewBox="0 0 40 40">
+      <path d="M8 31V11L20 23L32 11V31" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M8 11L20 6L32 11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>
+      <circle cx="8" cy="11" r="3.4" fill="currentColor"/>
+      <circle cx="32" cy="11" r="3.4" fill="currentColor"/>
+      <circle cx="8" cy="31" r="2.4" fill="currentColor"/>
+      <circle cx="32" cy="31" r="2.4" fill="currentColor"/>
+      <circle cx="20" cy="6" r="2" fill="currentColor"/>
+      <circle cx="20" cy="23" r="4.6" fill="#FF7A00"/>
+      <circle cx="20" cy="23" r="1.6" fill="#FFFFFF"/>
+    </symbol>
+    <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="8" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"/><rect x="3.5" y="14.5" width="7" height="6" rx="1.5"/></symbol>
+    <symbol id="i-alunos" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M17.5 14.4c2.4.7 4 2.7 4 5.6"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-8l-5 3.5v-3.5H4a1 1 0 0 1-1-1v-10a1 1 0 0 1 1-1z"/><path d="M8 10h8M8 13.5h5"/></symbol>
+    <symbol id="i-ia" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M9.5 3v3.5M14.5 3v3.5M9.5 17.5V21M14.5 17.5V21M3 9.5h3.5M3 14.5h3.5M17.5 9.5H21M17.5 14.5H21"/></symbol>
+    <symbol id="i-rel" viewBox="0 0 24 24"><path d="M6 3h8.5L19 7.5V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/><path d="M9 17v-3M12 17v-5.5M15 17v-2"/></symbol>
+    <symbol id="i-ajuda" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.4 9.3a2.7 2.7 0 1 1 3.9 2.4c-.8.5-1.3 1-1.3 2"/><path d="M12 17.2v.1"/></symbol>
+    <symbol id="i-cadeado" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/><path d="M12 14.5v2.5"/></symbol>
+    <symbol id="i-sino" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></symbol>
+    <symbol id="i-carta" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6.5L20.5 7"/></symbol>
+    <symbol id="i-ajustes" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 12h3M11 12h9M4 17h11M19 17h1"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17" r="2"/></symbol>
+    <symbol id="i-sair" viewBox="0 0 24 24"><path d="M10 4H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="M15 8l4 4-4 4M19 12H9.5"/></symbol>
+    <symbol id="i-seta" viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M5 7.5h14M5 12h14M5 16.5h14"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.1"/></symbol>
+    <!-- ícones do módulo -->
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M7.800 12.300l2.900 2.900 5.500-6"/></symbol>
+    <symbol id="i-alerta" viewBox="0 0 24 24"><path d="M12 4L21 19.500H3z"/><path d="M12 10v4.500M12 17v.1"/></symbol>
+    <symbol id="i-graf" viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M7.500 15.500l4-4.500 3 2.500 4.500-6"/></symbol>
+    <symbol id="i-lapis" viewBox="0 0 24 24"><path d="M4 20h4L19.500 8.500l-4-4L4 16z"/><path d="M13.500 6.500l4 4"/></symbol>
+    <symbol id="i-atualizar" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.500-4M4.500 3.500V7H8"/><path d="M4 13a8 8 0 0 0 14.500 4M19.500 20.500V17H16"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.800 8.800l6.400 6.400M15.200 8.800l-6.400 6.400"/></symbol>
+    <symbol id="i-direita" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-pessoa" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.800"/><path d="M4.500 20.500c0-4 3.300-6.500 7.500-6.500s7.500 2.500 7.500 6.500"/></symbol>
+    <symbol id="i-relogio" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.300l3.500 2"/></symbol>
+    <symbol id="i-lamp" viewBox="0 0 24 24"><path d="M9.500 18h5M10.500 21h3"/><path d="M12 3a6 6 0 0 0-3.500 10.900c.6.5 1 1.300 1 2.100h5c0-.8.4-1.600 1-2.100A6 6 0 0 0 12 3z"/></symbol>
+    <symbol id="i-joia" viewBox="0 0 24 24"><path d="M7 10v12"/><path d="M15 5.880 14 10h5.830a2 2 0 0 1 1.920 2.560l-2.330 8A2 2 0 0 1 17.500 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.760a2 2 0 0 0 1.790-1.110L12 2a3.130 3.130 0 0 1 3 3.880z"/></symbol>
+    <symbol id="i-joia-b" viewBox="0 0 24 24"><path d="M17 14V2"/><path d="M9 18.120 10 14H4.170a2 2 0 0 1-1.920-2.560l2.330-8A2 2 0 0 1 6.500 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.760a2 2 0 0 0-1.790 1.110L12 22a3.130 3.130 0 0 1-3-3.880z"/></symbol>
+  </defs>
+</svg>
+
+<div id="app">
+  <!-- MENU LATERAL -->
+  <aside class="sidebar" aria-label="Menu do sistema">
+    <div class="logo" role="img" aria-label="MonitorIA">
+      <svg aria-hidden="true"><use href="#marca"/></svg>
+      <span class="nome" aria-hidden="true">Monitor<span class="ia">IA</span></span>
+    </div>
+    <p class="desc">Sistema Inteligente de Apoio à Jornada Digital do Estudante em Ambientes Virtuais de Aprendizagem</p>
+    <div class="sep" aria-hidden="true"></div>
+
+    <nav aria-label="Módulos">
+      <ul>
+        <li><a class="item ativo" href="dashboard.html" aria-current="page"><svg class="ic" aria-hidden="true"><use href="#i-dash"/></svg><span>Dashboard</span></a></li>
+        <li><a class="item" href="alunos.html"><svg class="ic" aria-hidden="true"><use href="#i-alunos"/></svg><span>Alunos</span></a></li>
+        <li><button class="item" type="button" data-fora="Comunicação"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg><span>Comunicação</span></button></li>
+        <li><button class="item" type="button" data-fora="Inteligência Artificial"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg><span>Inteligência Artificial</span></button></li>
+        <li><a class="item" href="relatorios.html"><svg class="ic" aria-hidden="true"><use href="#i-rel"/></svg><span>Relatórios</span></a></li>
+        <li><button class="item" type="button" data-fora="Ajuda"><svg class="ic" aria-hidden="true"><use href="#i-ajuda"/></svg><span>Ajuda</span></button></li>
+      </ul>
+    </nav>
+
+    <div class="side-foot">
+      <button class="lgpd" type="button" id="btnLgpd" aria-haspopup="dialog">
+        <svg class="ic" aria-hidden="true"><use href="#i-cadeado"/></svg>
+        <span class="longo">Privacidade e dados (LGPD)</span><span class="curto">Privacidade (LGPD)</span>
+      </button>
+      <svg class="tech" viewBox="0 0 288 84" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <g fill="none" stroke="#FFFFFF" stroke-width="1" opacity=".28">
+          <path d="M-4 70L38 46L84 62L128 30L176 54L222 28L292 58"/>
+          <path d="M38 46L60 84M128 30L112 84M176 54L196 84M222 28L250 84M84 62L128 84"/>
+        </g>
+        <g fill="#FFFFFF" opacity=".5">
+          <circle cx="38" cy="46" r="3"/><circle cx="84" cy="62" r="2.4"/><circle cx="176" cy="54" r="2.4"/><circle cx="222" cy="28" r="3"/>
+        </g>
+        <circle cx="128" cy="30" r="3.4" fill="#FF7A00" opacity=".9"/>
+      </svg>
+    </div>
+  </aside>
+
+  <div class="col">
+    <!-- CABEÇALHO -->
+    <header>
+      <button class="btn-menu" type="button" id="btnMenu" aria-pressed="false" title="Recolher menu lateral">
+        <span class="circ"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></span>
+        <span id="btnMenuTxt">Recolher menu</span>
+      </button>
+      <div class="logo" role="img" aria-label="MonitorIA">
+        <svg aria-hidden="true"><use href="#marca"/></svg>
+        <span aria-hidden="true">Monitor<span class="ia">IA</span></span>
+      </div>
+
+      <div class="espaco"></div>
+
+      <div class="etiqueta">
+        <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>
+        Dados fictícios – protótipo de demonstração
+      </div>
+
+      <div class="acoes">
+        <button class="acao" type="button" data-painel="pNotif" aria-expanded="false" aria-controls="pNotif">
+          <svg class="ic" aria-hidden="true"><use href="#i-sino"/></svg>Notificações
+        </button>
+        <button class="acao" type="button" data-painel="pMsg" aria-expanded="false" aria-controls="pMsg">
+          <svg class="ic" aria-hidden="true"><use href="#i-carta"/></svg>Mensagens
+        </button>
+        <button class="acao" type="button" data-painel="pConf" aria-expanded="false" aria-controls="pConf">
+          <svg class="ic" aria-hidden="true"><use href="#i-ajustes"/></svg>Configurações
+        </button>
+
+        <div class="painel" id="pNotif" hidden>
+          <h2>Notificações</h2>
+          <p>Você não tem notificações novas no momento.</p>
+        </div>
+        <div class="painel" id="pMsg" hidden>
+          <h2>Mensagens</h2>
+          <p>Você não tem mensagens novas no momento.</p>
+        </div>
+        <div class="painel" id="pConf" hidden>
+          <h2>Configurações da tela</h2>
+          <div class="linha-op">
+            <span class="rot" id="rotCompacto">Menu lateral compacto</span>
+            <button class="chave" type="button" role="switch" aria-checked="false" aria-labelledby="rotCompacto" id="chCompacto"><span class="bola"></span><span class="est">Desativado</span></button>
+          </div>
+          <div class="linha-op">
+            <span class="rot" id="rotDecor">Detalhes decorativos de fundo</span>
+            <button class="chave" type="button" role="switch" aria-checked="true" aria-labelledby="rotDecor" id="chDecor"><span class="bola"></span><span class="est">Ativado</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="divisor" aria-hidden="true"></div>
+
+      <div class="sessao">
+        <button class="perfil" type="button" data-painel="pSessao" aria-expanded="false" aria-controls="pSessao" aria-label="Maria Monitor, Monitoria EaD. Abrir menu da sessão">
+          <svg class="foto" viewBox="0 0 48 48" aria-hidden="true">
+            <defs>
+              <linearGradient id="fBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DCE9EE"/><stop offset="1" stop-color="#B9D0D9"/></linearGradient>
+              <linearGradient id="fPele" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EDBE9C"/><stop offset="1" stop-color="#DBA07C"/></linearGradient>
+              <linearGradient id="fCab" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4A2E22"/><stop offset="1" stop-color="#2A1711"/></linearGradient>
+            </defs>
+            <rect width="48" height="48" fill="url(#fBg)"/>
+            <path d="M10 40C7 26 9 8 24 7s17 19 14 33z" fill="url(#fCab)"/>
+            <path d="M4 50c1-9 7-13 14-14h12c7 1 13 5 14 14z" fill="#0D3B4C"/>
+            <path d="M19 36l5 7 5-7-1-2h-8z" fill="#FFFFFF"/>
+            <path d="M20 29h8v6c0 2-2 4-4 4s-4-2-4-4z" fill="#D39A76"/>
+            <ellipse cx="24" cy="21.5" rx="8.2" ry="10" fill="url(#fPele)"/>
+            <path d="M15.2 21c-.6-8 3-12.500 9-12.500 6.500 0 9.400 4.500 8.600 12.500-1.500-4-3.500-6.500-6.500-7.500-3.500 2.500-8 3-11.100 7.500z" fill="url(#fCab)"/>
+            <path d="M19 19.300c1-.8 2.500-.8 3.400 0M25.600 19.300c1-.8 2.500-.8 3.400 0" stroke="#3A2218" stroke-width=".8" fill="none" stroke-linecap="round"/>
+            <ellipse cx="20.700" cy="21.600" rx="1" ry="1.100" fill="#2A1711"/><ellipse cx="27.300" cy="21.600" rx="1" ry="1.100" fill="#2A1711"/>
+            <path d="M24 22.500v3.200l-1 .5" stroke="#C48563" stroke-width=".7" fill="none" stroke-linecap="round"/>
+            <path d="M21 27.600c1.800 1.500 4.200 1.500 6 0" stroke="#A8493F" stroke-width="1.100" fill="none" stroke-linecap="round"/>
+            <path d="M19 36l-3 2 5 6 3-1zM29 36l3 2-5 6-3-1z" fill="#124A5F"/>
+          </svg>
+          <span>
+            <span class="nome">Maria Monitor</span>
+            <span class="funcao">Monitoria EaD</span>
+          </span>
+          <svg class="ic" aria-hidden="true"><use href="#i-seta"/></svg>
+        </button>
+        <button class="sair" type="button" data-sair><svg class="ic" aria-hidden="true"><use href="#i-sair"/></svg>Sair</button>
+
+        <div class="painel" id="pSessao" hidden>
+          <h2>Sessão</h2>
+          <p>Você está conectada como <strong>Maria Monitor</strong>, Monitoria EaD.</p>
+          <button class="sair" type="button" data-sair><svg class="ic" aria-hidden="true"><use href="#i-sair"/></svg>Sair da conta</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ÁREA CENTRAL DINÂMICA: MÓDULO DASHBOARD -->
+    <main aria-label="Dashboard">
+      <div class="palco" id="conteudo">
+        <svg class="decor" viewBox="0 0 1336 817" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <pattern id="pts" width="34" height="34" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.200" fill="#0D3B4C" opacity=".07"/></pattern>
+            <radialGradient id="fade" cx=".5" cy=".5" r=".62"><stop offset=".45" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+          </defs>
+          <rect width="1336" height="817" fill="url(#pts)"/>
+          <rect width="1336" height="817" fill="url(#fade)"/>
+          <g fill="none" stroke="#0D3B4C" stroke-width="1.200" opacity=".09">
+            <path d="M1040 -10L1120 84L1228 58L1290 150L1346 128"/>
+            <path d="M1120 84L1150 190L1290 150M1228 58L1250 -10"/>
+            <path d="M-10 660L70 706L128 650L214 742L300 720L352 827"/>
+            <path d="M70 706L96 827M214 742L190 827M128 650L60 590L-10 600"/>
+          </g>
+        </svg>
+
+        <div class="conteudo">
+          <!-- Saudação -->
+          <div class="topo">
+            <div>
+              <h1>Olá, Maria Monitor!</h1>
+              <p>A IA encontrou situações que precisam da sua atenção hoje.</p>
+            </div>
+            <div class="dir">
+              <span class="selo ia"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg>Monitoramento inteligente ativo</span>
+              <p>A IA prioriza alunos e recomenda contatos; quem decide é a monitoria.</p>
+            </div>
+          </div>
+
+          <!-- Indicadores -->
+          <section class="kpis" aria-label="Indicadores das turmas">
+            <div class="kpi">
+              <div class="cab"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-alunos"/></svg></span>
+                <div><div class="rot">Total de alunos acompanhados</div><div class="val">1.030</div></div></div>
+              <p class="def"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>Alunos matriculados nas turmas do período atual.</span></p>
+            </div>
+            <div class="kpi">
+              <div class="cab"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span>
+                <div><div class="rot">Primeiro acesso realizado</div><div class="val">726</div></div></div>
+              <p class="def"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>Alunos que já entraram no AVA: 726 de 1.030 – período atual.</span></p>
+            </div>
+            <div class="kpi">
+              <div class="cab"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-alerta"/></svg></span>
+                <div><div class="rot">Aguardando primeiro acesso ao AVA</div><div class="val">304</div></div></div>
+              <p class="def"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>Alunos ainda sem acesso ao AVA: 304 de 1.030 – período atual.</span></p>
+            </div>
+            <div class="kpi">
+              <div class="cab"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-graf"/></svg></span>
+                <div><div class="rot">Taxa de ativação das turmas</div><div class="val">70%</div></div></div>
+              <p class="def"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>Alunos com primeiro acesso / total acompanhado (726 de 1.030) – turmas do período atual.</span></p>
+            </div>
+            <div class="kpi">
+              <div class="cab"><span class="ico"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg></span>
+                <div><div class="rot">Prioridades identificadas pela IA</div><div class="val">45 casos</div></div></div>
+              <p class="def"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span>Casos que a IA sugere ver primeiro, entre os 304 que aguardam acesso – triagem de hoje.</span></p>
+            </div>
+          </section>
+
+          <!-- Painel de apoio à decisão -->
+          <section aria-labelledby="tApoio">
+            <div class="apoio-cab">
+              <h2 id="tApoio">Painel Inteligente de Apoio à Decisão</h2>
+              <p>Triagem de hoje: mostrando os 2 primeiros dos 45 casos priorizados.</p>
+            </div>
+
+            <div class="cols">
+              <!-- Lista -->
+              <div class="bloco">
+                <div class="bloco-cab">
+                  <h3 id="tLista">Estudantes priorizados pela IA</h3>
+                  <span class="selo ia"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg>Gerado pela IA</span>
+                </div>
+                <div role="radiogroup" aria-labelledby="tLista">
+                  <div class="est sel" data-id="maria">
+                    <div class="est-topo">
+                      <label class="est-nome"><input type="radio" name="aluno" value="maria" checked>Maria Oliveira</label>
+                      <span class="prio"><svg class="ic" aria-hidden="true"><use href="#i-alerta"/></svg>Prioridade ALTA</span>
+                    </div>
+                    <p>Curso: Assistente Administrativo</p>
+                    <p>Status: Aguardando primeiro acesso ao AVA</p>
+                    <p class="tempo"><svg class="ic" aria-hidden="true"><use href="#i-relogio"/></svg>Aguarda o primeiro acesso há 9 dias</p>
+                    <p>Melhor horário de contato: noite, 19h–21h</p>
+                    <p class="conf"><span>Confiança da IA: 87%</span><span class="barra" aria-hidden="true"><span style="width:87%"></span></span></p>
+                    <span class="tag-estado" data-tag hidden></span>
+                    <div class="est-acoes">
+                      <a class="lk" href="alunos.html#maria-oliveira" aria-label="Abrir perfil de Maria Oliveira">Abrir perfil<svg class="ic" aria-hidden="true"><use href="#i-direita"/></svg></a>
+                      <button class="lk" type="button" data-dispensar aria-label="Dispensar por hoje a recomendação para Maria Oliveira">Dispensar por hoje</button>
+                    </div>
+                  </div>
+
+                  <div class="est" data-id="joao">
+                    <div class="est-topo">
+                      <label class="est-nome"><input type="radio" name="aluno" value="joao">João Pereira</label>
+                      <span class="prio"><svg class="ic" aria-hidden="true"><use href="#i-alerta"/></svg>Prioridade ALTA</span>
+                    </div>
+                    <p>Curso: Técnico em Logística</p>
+                    <p>Status: Aguardando primeiro acesso</p>
+                    <p class="tempo"><svg class="ic" aria-hidden="true"><use href="#i-relogio"/></svg>Aguarda o primeiro acesso há 12 dias</p>
+                    <p>Melhor horário de contato: tarde, 14h–16h</p>
+                    <p class="conf"><span>Confiança da IA: 42%</span><span class="barra" aria-hidden="true"><span style="width:42%"></span></span></p>
+                    <span class="tag-estado" data-tag hidden></span>
+                    <div class="est-acoes">
+                      <a class="lk" href="alunos.html#joao-pereira" aria-label="Abrir perfil de João Pereira">Abrir perfil<svg class="ic" aria-hidden="true"><use href="#i-direita"/></svg></a>
+                      <button class="lk" type="button" data-dispensar aria-label="Dispensar por hoje a recomendação para João Pereira">Dispensar por hoje</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Análise da IA -->
+              <div class="bloco" aria-live="polite">
+                <div class="bloco-cab">
+                  <h3>Análise gerada por Inteligência Artificial</h3>
+                  <span class="selo ia"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg>Gerado pela IA</span>
+                </div>
+
+                <div class="rec">
+                  <div class="rt"><span id="recTit">Recomendação para Maria Oliveira</span>
+                    <span class="xai"><svg class="ic" aria-hidden="true"><use href="#i-lamp"/></svg>IA explicável</span></div>
+                  <p id="recTxt"></p>
+                </div>
+
+                <div class="confianca">
+                  <div class="l1" id="confTxt"></div>
+                  <div class="barra" aria-hidden="true"><span id="confBarra"></span></div>
+                  <div class="q" id="confQual"></div>
+                </div>
+
+                <div class="porque">
+                  <h4>Por que a IA classificou este aluno como prioridade?</h4>
+                  <ul id="fatores"></ul>
+                  <p class="nota">Aparecem aqui apenas os fatores que influenciaram esta recomendação.</p>
+                </div>
+
+                <p class="analise" id="analise" hidden><svg class="ic" aria-hidden="true"><use href="#i-atualizar"/></svg><span id="analiseTxt"></span></p>
+              </div>
+
+              <!-- Decisão -->
+              <div class="bloco decisao">
+                <div class="bloco-cab">
+                  <h3>Decisão da Monitoria</h3>
+                  <span class="selo"><svg class="ic" aria-hidden="true"><use href="#i-pessoa"/></svg>Registrado por Maria Monitor</span>
+                </div>
+                <p class="dec-aluno" id="decAluno"></p>
+
+                <button class="bd principal" type="button" id="bAceitar"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Aceitar recomendação</button>
+                <div class="grade">
+                  <button class="bd" type="button" id="bAjustar" aria-expanded="false" aria-controls="fAjuste"><svg class="ic" aria-hidden="true"><use href="#i-lapis"/></svg>Ajustar estratégia</button>
+                  <button class="bd" type="button" id="bRejeitar" aria-expanded="false" aria-controls="fRejeicao"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Rejeitar recomendação</button>
+                  <button class="bd" type="button" id="bAnalise"><svg class="ic" aria-hidden="true"><use href="#i-atualizar"/></svg><span id="bAnaliseTxt">Solicitar nova análise</span></button>
+                  <button class="bd" type="button" id="bExplica" aria-haspopup="dialog"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>Ver explicação completa</button>
+                </div>
+
+                <form class="form" id="fAjuste" hidden novalidate>
+                  <div class="duo">
+                    <div><label for="selCanal">Canal de contato</label>
+                      <select id="selCanal"><option>WhatsApp</option><option>E-mail</option><option>SMS</option><option>Ligação telefônica</option></select></div>
+                    <div><label for="selPeriodo">Período do contato</label>
+                      <select id="selPeriodo"><option value="manhã">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option></select></div>
+                  </div>
+                  <div class="botoes">
+                    <button class="bt" type="button" id="cancAjuste">Cancelar ajuste</button>
+                    <button class="bt forte" type="submit">Salvar ajuste</button>
+                  </div>
+                </form>
+
+                <form class="form" id="fRejeicao" hidden novalidate>
+                  <label for="motivo">Motivo da rejeição</label>
+                  <input type="text" id="motivo" maxlength="120" autocomplete="off" aria-describedby="erroMotivo">
+                  <p class="erro" id="erroMotivo" role="alert" hidden><svg class="ic" aria-hidden="true"><use href="#i-alerta"/></svg><span>O motivo está em branco. Escreva um motivo curto para registrar a rejeição.</span></p>
+                  <div class="botoes">
+                    <button class="bt" type="button" id="cancRejeicao">Cancelar rejeição</button>
+                    <button class="bt forte" type="submit">Confirmar rejeição</button>
+                  </div>
+                </form>
+
+                <p class="lembrete"><svg class="ic" aria-hidden="true"><use href="#i-pessoa"/></svg><span>A decisão final pertence ao monitor. A IA apenas recomenda ações de apoio.</span></p>
+
+                <div class="faixa" id="faixa" role="status" hidden>
+                  <svg class="ic" aria-hidden="true"><use id="faixaIco" href="#i-check"/></svg>
+                  <div style="flex:1">
+                    <p id="faixaTxt"></p>
+                    <p class="dica" id="faixaDica">Para decidir de outra forma, use Desfazer.</p>
+                  </div>
+                  <button class="lk" type="button" id="bDesfazer">Desfazer</button>
+                </div>
+
+                <div class="feedback">
+                  <div class="ft">
+                    <h4 id="tFb">Essa recomendação foi útil?</h4>
+                    <div class="fb" role="group" aria-labelledby="tFb">
+                      <button class="bd" type="button" id="fbSim" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-joia"/></svg>Sim</button>
+                      <button class="bd" type="button" id="fbNao" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-joia-b"/></svg>Precisa melhorar</button>
+                    </div>
+                  </div>
+                  <p id="fbMsg" role="status">Sua avaliação ajuda a IA a aprender com a monitoria e a melhorar as próximas recomendações.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Aviso -->
+<div class="aviso" id="aviso" role="status" aria-live="polite" hidden>
+  <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>
+  <span id="avisoTxt"></span>
+  <button type="button" id="avisoFechar">Fechar aviso</button>
+</div>
+
+<!-- Diálogo LGPD -->
+<dialog id="dlgLgpd" aria-labelledby="tLgpd">
+  <h2 id="tLgpd"><svg class="ic" aria-hidden="true"><use href="#i-cadeado"/></svg>Privacidade e dados (LGPD)</h2>
+  <p>O MonitorIA mostra apenas os dados pessoais necessários para cada tarefa da monitoria.</p>
+  <ul>
+    <li>E-mail e telefone de alunos aparecem sempre mascarados.</li>
+    <li>A IA não usa dados sensíveis para priorizar alunos.</li>
+    <li>As sugestões da IA são apoio: a decisão é sempre da monitoria.</li>
+    <li>Todos os dados deste protótipo são fictícios.</li>
+  </ul>
+  <div class="botoes">
+    <button class="bt forte" type="button" data-fechar>Fechar</button>
+  </div>
+</dialog>
+
+<!-- Diálogo Sair -->
+<dialog id="dlgSair" aria-labelledby="tSair">
+  <h2 id="tSair"><svg class="ic" aria-hidden="true"><use href="#i-sair"/></svg>Sair do MonitorIA?</h2>
+  <p>Sua sessão como Maria Monitor será encerrada. Você pode entrar novamente quando quiser.</p>
+  <div class="botoes">
+    <button class="bt" type="button" data-fechar>Continuar no sistema</button>
+    <button class="bt forte" type="button" id="confSair"><svg class="ic" aria-hidden="true"><use href="#i-sair"/></svg>Sair da conta</button>
+  </div>
+</dialog>
+
+<!-- Diálogo de confirmação de envio -->
+<dialog id="dlgConf" aria-labelledby="confTit">
+  <h2 id="confTit"></h2>
+  <p id="confSub"></p>
+  <div class="botoes">
+    <button class="bt" type="button" data-fechar>Cancelar</button>
+    <button class="bt principal" type="button" id="confOk">Confirmar envio</button>
+  </div>
+</dialog>
+
+<!-- Painel lateral: explicação completa -->
+<dialog id="dlgExp" class="gaveta" aria-labelledby="expTit">
+  <span class="selo ia"><svg class="ic" aria-hidden="true"><use href="#i-ia"/></svg>Gerado pela IA</span>
+  <h2 id="expTit"></h2>
+  <p id="expRec"></p>
+  <h3>Confiança</h3>
+  <p id="expConf" style="margin-bottom:0"></p>
+  <div class="barra" aria-hidden="true"><span id="expBarra"></span></div>
+  <p id="expQual"></p>
+  <h3>Fatores e peso relativo de cada um</h3>
+  <table>
+    <thead><tr><th scope="col">Fator</th><th scope="col">O que a IA observou</th><th scope="col">Peso relativo</th></tr></thead>
+    <tbody id="expFat"></tbody>
+  </table>
+  <h3>Limitações dos dados</h3>
+  <ul id="expLim"></ul>
+  <div class="botoes">
+    <button class="bt forte" type="button" data-fechar>Fechar explicação</button>
+  </div>
+</dialog>
+
+<!-- Sessão encerrada -->
+<div class="fora" id="fora" hidden role="region" aria-label="Sessão encerrada">
+  <div class="logo" role="img" aria-label="MonitorIA">
+    <svg aria-hidden="true"><use href="#marca"/></svg>
+    <span aria-hidden="true">Monitor<span class="ia">IA</span></span>
+  </div>
+  <p>Você saiu do MonitorIA. Sua sessão foi encerrada com segurança.</p>
+  <button class="bt" type="button" id="btnEntrar">Entrar novamente como Maria Monitor</button>
+</div>
+
+<script>
+(function(){
+  var $ = function(s,r){return (r||document).querySelector(s)};
+  var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var body = document.body, app = $('#app');
+
+  /* Aviso */
+  var aviso = $('#aviso'), avisoTxt = $('#avisoTxt'), tAviso;
+  function avisar(msg){
+    avisoTxt.textContent = msg; aviso.hidden = false;
+    clearTimeout(tAviso); tAviso = setTimeout(function(){aviso.hidden = true}, 7000);
+  }
+  $('#avisoFechar').addEventListener('click', function(){aviso.hidden = true; clearTimeout(tAviso)});
+
+  /* Módulos fora do protótipo */
+  $$('[data-fora]').forEach(function(b){
+    b.addEventListener('click', function(){
+      avisar('O módulo ' + b.dataset.fora + ' não faz parte deste protótipo de demonstração. Você continua na tela atual.');
+    });
+  });
+
+  /* Menu compacto */
+  var btnMenu = $('#btnMenu'), chCompacto = $('#chCompacto'), chDecor = $('#chDecor');
+  function setChave(ch, on){
+    ch.setAttribute('aria-checked', on ? 'true' : 'false');
+    $('.est', ch).textContent = on ? 'Ativado' : 'Desativado';
+  }
+  function setCompacto(on){
+    body.classList.toggle('compacto', on);
+    btnMenu.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btnMenu.title = on ? 'Expandir menu lateral' : 'Recolher menu lateral';
+    $('#btnMenuTxt').textContent = on ? 'Expandir menu' : 'Recolher menu';
+    setChave(chCompacto, on);
+  }
+  btnMenu.addEventListener('click', function(){setCompacto(!body.classList.contains('compacto'))});
+  chCompacto.addEventListener('click', function(){setCompacto(!body.classList.contains('compacto'))});
+  chDecor.addEventListener('click', function(){
+    var on = body.classList.toggle('sem-decor');
+    setChave(chDecor, !on);
+  });
+
+  /* Painéis suspensos */
+  var gatilhos = $$('[data-painel]');
+  function fecharPaineis(exceto){
+    gatilhos.forEach(function(g){
+      if(g === exceto) return;
+      g.setAttribute('aria-expanded','false');
+      document.getElementById(g.dataset.painel).hidden = true;
+    });
+  }
+  gatilhos.forEach(function(g){
+    g.addEventListener('click', function(e){
+      e.stopPropagation();
+      var p = document.getElementById(g.dataset.painel);
+      var abrir = p.hidden;
+      fecharPaineis(g);
+      p.hidden = !abrir;
+      g.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+    });
+  });
+  $$('.painel').forEach(function(p){p.addEventListener('click', function(e){e.stopPropagation()})});
+  document.addEventListener('click', function(){fecharPaineis()});
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      var aberto = gatilhos.filter(function(g){return g.getAttribute('aria-expanded') === 'true'})[0];
+      if(aberto){fecharPaineis(); aberto.focus()}
+    }
+  });
+
+  /* Diálogos */
+  var dlgLgpd = $('#dlgLgpd'), dlgSair = $('#dlgSair');
+  $('#btnLgpd').addEventListener('click', function(){fecharPaineis(); dlgLgpd.showModal()});
+  $$('[data-sair]').forEach(function(b){
+    b.addEventListener('click', function(){fecharPaineis(); dlgSair.showModal()});
+  });
+  $$('[data-fechar]').forEach(function(b){
+    b.addEventListener('click', function(){b.closest('dialog').close()});
+  });
+  [dlgLgpd, dlgSair].forEach(function(d){
+    d.addEventListener('click', function(e){ if(e.target === d) d.close() });
+  });
+
+  /* Sessão */
+  var fora = $('#fora');
+  $('#confSair').addEventListener('click', function(){
+    dlgSair.close(); aviso.hidden = true;
+    app.inert = true; fora.hidden = false; $('#btnEntrar').focus();
+  });
+  $('#btnEntrar').addEventListener('click', function(){
+    fora.hidden = true; app.inert = false;
+    avisar('Sessão iniciada novamente. Boas-vindas, Maria Monitor.');
+    btnMenu.focus();
+  });
+})();
+</script>
+
+<script>
+/* ===== Módulo Dashboard ===== */
+(function(){
+  var $ = function(s,r){return (r||document).querySelector(s)};
+  var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+  var alunos = {
+    maria:{
+      nome:'Maria Oliveira', curso:'Assistente Administrativo', conf:87, periodo:'noite', horario:'noite, 19h–21h',
+      rec:'A IA recomenda contato via WhatsApp, pois apresentou maior efetividade em situações semelhantes.',
+      qual:'Confiança alta: há registros suficientes de casos semelhantes.',
+      fatores:[
+        ['Tempo sem acessar o AVA','9 dias desde a matrícula, sem primeiro acesso','alto'],
+        ['Histórico de tentativas de contato','1 tentativa por e-mail, sem resposta','médio'],
+        ['Último canal utilizado','E-mail','médio'],
+        ['Respostas anteriores','Respondeu por WhatsApp durante a matrícula','alto'],
+        ['Dados cadastrais disponíveis','Telefone e e-mail informados no cadastro','baixo']
+      ],
+      limites:[],
+      estado:{tipo:'aceita', hora:'10:42', canal:'WhatsApp'}, nota:null, fb:null, analise:null
+    },
+    joao:{
+      nome:'João Pereira', curso:'Técnico em Logística', conf:42, periodo:'tarde', horario:'tarde, 14h–16h',
+      rec:'A IA não tem dados suficientes para indicar um canal com segurança. Como ponto de partida, a IA recomenda contato via WhatsApp no horário informado no cadastro. Vale conferir os dados do aluno antes de decidir.',
+      qual:'Confiança baixa: a IA tem poucos registros de contato com este aluno.',
+      fatores:[
+        ['Tempo sem acessar o AVA','12 dias desde a matrícula, sem primeiro acesso','alto'],
+        ['Histórico de tentativas de contato','Nenhuma tentativa registrada','baixo'],
+        ['Último canal utilizado','Sem registro de canal','baixo'],
+        ['Respostas anteriores','Sem respostas registradas','baixo'],
+        ['Dados cadastrais disponíveis','Apenas telefone informado no cadastro','médio']
+      ],
+      limites:['Há poucos registros de contato com João Pereira; por isso a confiança é baixa.'],
+      estado:null, nota:null, fb:null, analise:null
+    }
+  };
+  var sel = 'maria', pendente = null;
+
+  function agora(){var d=new Date(), p=function(n){return (n<10?'0':'')+n}; return p(d.getHours())+':'+p(d.getMinutes())}
+  function ehMensagem(canal){return canal !== 'Ligação telefônica'}
+  function contato(canal){return ehMensagem(canal) ? 'Contato via ' + canal : 'Contato por ligação telefônica'}
+
+  var tags = {
+    aceita:'Contato planejado pela monitoria',
+    ajustada:'Contato planejado pela monitoria',
+    rejeitada:'Recomendação rejeitada pela monitoria',
+    dispensada:'Dispensada por hoje pela monitoria'
+  };
+
+  var bAceitar=$('#bAceitar'), bAjustar=$('#bAjustar'), bRejeitar=$('#bRejeitar'), bAnalise=$('#bAnalise'), bExplica=$('#bExplica');
+  var fAjuste=$('#fAjuste'), fRejeicao=$('#fRejeicao'), faixa=$('#faixa'), bDesfazer=$('#bDesfazer');
+  var dlgConf=$('#dlgConf'), dlgExp=$('#dlgExp');
+
+  function fecharForms(){
+    fAjuste.hidden = true; fRejeicao.hidden = true;
+    bAjustar.setAttribute('aria-expanded','false'); bRejeitar.setAttribute('aria-expanded','false');
+    $('#erroMotivo').hidden = true; $('#motivo').removeAttribute('aria-invalid');
+  }
+
+  function render(){
+    var a = alunos[sel], st = a.estado;
+
+    /* lista */
+    $$('.est').forEach(function(c){
+      var id = c.dataset.id, e = alunos[id].estado, tag = $('[data-tag]', c);
+      c.classList.toggle('sel', id === sel);
+      $('input', c).checked = (id === sel);
+      if(e){
+        tag.hidden = false;
+        tag.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-pessoa"/></svg>';
+        tag.appendChild(document.createTextNode(tags[e.tipo]));
+      } else { tag.hidden = true; tag.textContent = ''; }
+      $('[data-dispensar]', c).hidden = !!e;
+    });
+
+    /* análise da IA */
+    $('#recTit').textContent = 'Recomendação para ' + a.nome;
+    $('#recTxt').textContent = a.rec;
+    $('#confTxt').textContent = 'Confiança da IA nesta recomendação para ' + a.nome + ': ' + a.conf + '%';
+    $('#confBarra').style.width = a.conf + '%';
+    $('#confQual').textContent = a.qual;
+    $('#fatores').innerHTML = a.fatores.map(function(f){
+      return '<li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>' + f[0] + '</li>';
+    }).join('');
+    var an = $('#analise');
+    if(a.analise){ an.hidden = false; $('#analiseTxt').textContent = a.analise.txt; } else { an.hidden = true; }
+    var carregando = !!(a.analise && a.analise.carregando);
+    bAnalise.disabled = carregando;
+    $('#bAnaliseTxt').textContent = carregando ? 'Analisando…' : 'Solicitar nova análise';
+
+    /* decisão */
+    $('#decAluno').textContent = 'Estudante selecionado: ' + a.nome + ' – ' + a.curso + '. Melhor horário de contato: ' + a.horario + '.';
+    bAceitar.disabled = bAjustar.disabled = bRejeitar.disabled = !!st;
+    if(st) fecharForms();
+
+    var txt = '', ico = '#i-check';
+    if(st){
+      if(st.tipo === 'aceita') txt = 'Recomendação aceita por Maria Monitor às ' + st.hora + '. ' + contato(st.canal) + ' registrado no histórico do aluno.';
+      if(st.tipo === 'ajustada') txt = 'Estratégia ajustada por Maria Monitor às ' + st.hora + '. ' + contato(st.canal) + ', no período da ' + st.periodo + ', registrado no histórico do aluno.';
+      if(st.tipo === 'rejeitada'){ txt = 'Recomendação rejeitada por Maria Monitor às ' + st.hora + '. Motivo: “' + st.motivo + '”. Nenhuma mensagem foi enviada ao aluno.'; ico = '#i-x'; }
+      if(st.tipo === 'dispensada'){ txt = 'Recomendação dispensada por hoje por Maria Monitor às ' + st.hora + '. Ela volta à triagem de amanhã.'; ico = '#i-relogio'; }
+    } else if(a.nota){ txt = a.nota; ico = '#i-info'; }
+    faixa.hidden = !txt;
+    $('#faixaTxt').textContent = txt;
+    $('#faixaIco').setAttribute('href', ico);
+    bDesfazer.hidden = !st;
+    $('#faixaDica').hidden = !st;
+
+    /* retorno para a IA */
+    $('#fbSim').setAttribute('aria-pressed', a.fb === 'sim' ? 'true' : 'false');
+    $('#fbNao').setAttribute('aria-pressed', a.fb === 'nao' ? 'true' : 'false');
+    $('#fbMsg').textContent =
+      a.fb === 'sim' ? 'Avaliação registrada por Maria Monitor: “Sim, foi útil”. Obrigada! A IA usa esse retorno para aprender com a monitoria.' :
+      a.fb === 'nao' ? 'Avaliação registrada por Maria Monitor: “Precisa melhorar”. Obrigada! A IA vai considerar esse retorno nas próximas análises.' :
+      'Sua avaliação ajuda a IA a aprender com a monitoria e a melhorar as próximas recomendações.';
+  }
+
+  /* seleção de estudante */
+  function selecionar(id){ if(id === sel) return; sel = id; fecharForms(); render(); }
+  $$('.est').forEach(function(c){
+    c.addEventListener('click', function(e){
+      if(e.target.closest('a,button')) return;
+      selecionar(c.dataset.id);
+    });
+    $('input', c).addEventListener('change', function(){ selecionar(c.dataset.id) });
+    $('[data-dispensar]', c).addEventListener('click', function(){
+      sel = c.dataset.id; fecharForms();
+      alunos[sel].estado = {tipo:'dispensada', hora:agora()}; alunos[sel].nota = null;
+      render(); bDesfazer.focus();
+    });
+  });
+
+  /* confirmação antes de envio */
+  function pedirConfirmacao(acao){
+    var a = alunos[sel]; pendente = acao;
+    var per = acao.periodo || a.periodo;
+    if(ehMensagem(acao.canal)){
+      $('#confTit').textContent = 'Confirmar envio de mensagem via ' + acao.canal + ' para ' + a.nome + '?';
+      $('#confSub').textContent = 'O contato será planejado para o período da ' + per + ' e registrado no histórico do aluno. Você poderá desfazer essa decisão nesta tela.';
+      $('#confOk').textContent = 'Confirmar envio';
+    } else {
+      $('#confTit').textContent = 'Confirmar registro de ligação telefônica para ' + a.nome + '?';
+      $('#confSub').textContent = 'Nenhuma mensagem será enviada. A ligação será planejada para o período da ' + per + ' e registrada no histórico do aluno.';
+      $('#confOk').textContent = 'Confirmar registro';
+    }
+    dlgConf.showModal();
+  }
+  $('#confOk').addEventListener('click', function(){
+    if(!pendente) return;
+    var a = alunos[sel];
+    a.estado = {tipo:pendente.tipo, hora:agora(), canal:pendente.canal, periodo:pendente.periodo || a.periodo};
+    a.nota = null; pendente = null;
+    dlgConf.close(); render(); bDesfazer.focus();
+  });
+  dlgConf.addEventListener('close', function(){ pendente = null });
+
+  bAceitar.addEventListener('click', function(){ fecharForms(); pedirConfirmacao({tipo:'aceita', canal:'WhatsApp'}) });
+
+  /* ajustar estratégia */
+  bAjustar.addEventListener('click', function(){
+    var abrir = fAjuste.hidden; fecharForms();
+    if(abrir){
+      fAjuste.hidden = false; bAjustar.setAttribute('aria-expanded','true');
+      $('#selCanal').value = 'WhatsApp'; $('#selPeriodo').value = alunos[sel].periodo; $('#selCanal').focus();
+    }
+  });
+  $('#cancAjuste').addEventListener('click', function(){ fecharForms(); bAjustar.focus() });
+  fAjuste.addEventListener('submit', function(e){
+    e.preventDefault();
+    pedirConfirmacao({tipo:'ajustada', canal:$('#selCanal').value, periodo:$('#selPeriodo').value});
+  });
+
+  /* rejeitar */
+  bRejeitar.addEventListener('click', function(){
+    var abrir = fRejeicao.hidden; fecharForms();
+    if(abrir){
+      fRejeicao.hidden = false; bRejeitar.setAttribute('aria-expanded','true');
+      $('#motivo').value = ''; $('#motivo').focus();
+    }
+  });
+  $('#cancRejeicao').addEventListener('click', function(){ fecharForms(); bRejeitar.focus() });
+  $('#motivo').addEventListener('input', function(){ $('#erroMotivo').hidden = true; this.removeAttribute('aria-invalid') });
+  fRejeicao.addEventListener('submit', function(e){
+    e.preventDefault();
+    var m = $('#motivo').value.trim();
+    if(!m){ $('#erroMotivo').hidden = false; $('#motivo').setAttribute('aria-invalid','true'); $('#motivo').focus(); return; }
+    var a = alunos[sel];
+    a.estado = {tipo:'rejeitada', hora:agora(), motivo:m}; a.nota = null;
+    render(); bDesfazer.focus();
+  });
+
+  /* desfazer */
+  bDesfazer.addEventListener('click', function(){
+    var a = alunos[sel];
+    a.estado = null;
+    a.nota = 'Decisão desfeita por Maria Monitor às ' + agora() + '. A recomendação voltou a aguardar a sua decisão.';
+    render(); bAceitar.focus();
+  });
+
+  /* nova análise */
+  bAnalise.addEventListener('click', function(){
+    var id = sel, a = alunos[id];
+    a.analise = {carregando:true, txt:'A IA está analisando novamente os dados de ' + a.nome + '. Isso leva alguns segundos.'};
+    render();
+    setTimeout(function(){
+      a.analise = {txt:'Nova análise concluída às ' + agora() + '. A IA não encontrou dados novos desde a última análise e manteve a recomendação, com confiança de ' + a.conf + '%.'};
+      render();
+    }, 1600);
+  });
+
+  /* explicação completa */
+  function iconePeso(p){
+    var n = p === 'alto' ? 3 : p === 'médio' ? 2 : 1, s = '<svg viewBox="0 0 18 16" aria-hidden="true">';
+    for(var i=0;i<3;i++){
+      var h = 6 + i*4;
+      s += '<rect x="'+(1+i*6)+'" y="'+(15-h)+'" width="4" height="'+h+'" rx="1" fill="'+(i<n?'#0D3B4C':'#FFFFFF')+'" stroke="#0D3B4C" stroke-width="1"/>';
+    }
+    return s + '</svg>';
+  }
+  bExplica.addEventListener('click', function(){
+    var a = alunos[sel];
+    $('#expTit').textContent = 'Explicação completa – ' + a.nome;
+    $('#expRec').textContent = a.rec;
+    $('#expConf').textContent = 'Confiança da IA nesta recomendação para ' + a.nome + ': ' + a.conf + '%';
+    $('#expBarra').style.width = a.conf + '%';
+    $('#expQual').textContent = a.qual + ' A confiança é uma estimativa e pode estar errada.';
+    $('#expFat').innerHTML = a.fatores.map(function(f){
+      return '<tr><th scope="row">'+f[0]+'</th><td>'+f[1]+'</td><td><span class="peso">'+iconePeso(f[2])+'Peso '+f[2]+'</span></td></tr>';
+    }).join('');
+    var lim = [
+      'A IA não conhece o motivo pessoal da ausência do aluno.',
+      'A IA usa apenas os dados de acesso e de contato registrados no MonitorIA.',
+      'A IA não usa dados sensíveis para priorizar alunos.'
+    ].concat(a.limites);
+    $('#expLim').innerHTML = lim.map(function(l){return '<li>'+l+'</li>'}).join('');
+    dlgExp.showModal();
+  });
+
+  [dlgConf, dlgExp].forEach(function(d){
+    d.addEventListener('click', function(e){ if(e.target === d) d.close() });
+  });
+
+  /* retorno humano para a IA */
+  function fb(v){ var a = alunos[sel]; a.fb = (a.fb === v) ? null : v; render(); }
+  $('#fbSim').addEventListener('click', function(){ fb('sim') });
+  $('#fbNao').addEventListener('click', function(){ fb('nao') });
+
+  render();
+})();
+</script>
+</body>
+</html>

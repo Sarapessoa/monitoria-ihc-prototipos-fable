@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MonitorIA – Relatórios</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:#f3f5f9;color:#1c2536;
+    display:flex;min-width:1200px;min-height:600px;overflow:hidden;
+  }
+
+  /* Menu lateral */
+  .sidebar{
+    width:272px;flex:none;height:100vh;
+    background:#12233f;color:#c9d3e6;
+    display:flex;flex-direction:column;
+  }
+  .brand{
+    height:76px;display:flex;align-items:center;gap:12px;
+    padding:0 24px;border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .brand-name{font-size:22px;font-weight:600;color:#fff;letter-spacing:.2px}
+  .brand-name b{color:#4fd1c5;font-weight:700}
+  nav{padding:20px 14px;flex:1}
+  nav ul{list-style:none;display:flex;flex-direction:column;gap:4px}
+  .item{
+    width:100%;display:flex;align-items:center;gap:14px;
+    height:48px;padding:0 14px;border-radius:8px;
+    font:inherit;font-size:15.5px;color:#c9d3e6;text-decoration:none;
+    background:none;border:0;cursor:pointer;text-align:left;
+    transition:background .15s,color .15s;
+  }
+  .item svg{width:21px;height:21px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .item:hover{background:rgba(255,255,255,.08);color:#fff}
+  .item:focus-visible{outline:2px solid #4fd1c5;outline-offset:2px}
+  .item:active{background:rgba(255,255,255,.14)}
+  .item[aria-current="page"]{background:#1f8f86;color:#fff;font-weight:600}
+
+  .notice{
+    margin:0 14px 18px;padding:12px 14px;border-radius:8px;
+    background:rgba(79,209,197,.12);border:1px solid rgba(79,209,197,.35);
+    color:#d8f5f1;font-size:13.5px;line-height:1.4;
+    opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s;
+    pointer-events:none;
+  }
+  .notice.show{opacity:1;transform:none}
+
+  /* Coluna principal */
+  .main{flex:1;display:flex;flex-direction:column;min-width:0;height:100vh}
+  .topbar{
+    height:76px;flex:none;background:#fff;border-bottom:1px solid #e1e6ef;
+    display:flex;align-items:center;justify-content:flex-end;padding:0 32px;
+  }
+  .user{display:flex;align-items:center;gap:12px}
+  .avatar{
+    width:42px;height:42px;border-radius:50%;
+    background:#1f8f86;color:#fff;font-weight:600;font-size:15px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .user-name{font-size:15px;font-weight:600;color:#1c2536;line-height:1.25}
+  .user-role{font-size:13px;color:#5f6b80;line-height:1.25}
+
+  .content{flex:1;min-height:0;overflow:auto;padding:22px 32px 24px;display:flex;flex-direction:column;gap:16px}
+
+  /* Relatórios */
+  .page-head h1{font-size:23px;font-weight:600}
+  .page-head p{font-size:14px;color:#5f6b80;margin-top:3px}
+
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;flex:none}
+  .kpi{background:#fff;border:1px solid #e1e6ef;border-radius:10px;padding:14px 18px}
+  .kpi-value{font-size:30px;font-weight:700;line-height:1.1}
+  .kpi-value.good{color:#17736c}
+  .kpi-label{font-size:13.5px;color:#1c2536;margin-top:5px;line-height:1.3}
+  .kpi-sub{font-size:12.5px;color:#5f6b80;margin-top:2px}
+
+  .cols{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:16px}
+  .right{display:flex;flex-direction:column;gap:16px;min-height:0}
+  .panel{background:#fff;border:1px solid #e1e6ef;border-radius:10px;display:flex;flex-direction:column;min-height:0}
+  .panel.grow{flex:1}
+  .panel.ai{border-color:#c9bdf5}
+  .panel-head{padding:12px 18px;border-bottom:1px solid #e1e6ef;display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none}
+  .panel-head h2{font-size:16px;font-weight:600}
+  .src{font-size:12.5px;color:#5f6b80;white-space:nowrap}
+  .panel-body{flex:1;min-height:0;overflow:auto}
+
+  .ai-tag{
+    display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
+    color:#5b3fc4;background:#efeaff;border:1px solid #d6cbfa;border-radius:20px;padding:3px 10px;white-space:nowrap;
+  }
+  .ai-tag svg{width:13px;height:13px;fill:#5b3fc4}
+
+  /* Gráfico de evolução */
+  .chart-wrap{flex:1;min-height:0;display:flex;flex-direction:column;padding:12px 18px 10px}
+  .readout{font-size:14px;color:#41506a;flex:none;min-height:22px}
+  .readout b{color:#1c2536;font-size:16px}
+  .chart{flex:1;min-height:0}
+  .chart svg{width:100%;height:100%;display:block}
+  .chart text{font-family:inherit;font-size:13px;fill:#5f6b80}
+  .pt{fill:#fff;stroke:#1f8f86;stroke-width:2.5;cursor:pointer;outline:none}
+  .pt.sel{fill:#1f8f86}
+  .pt:focus-visible{stroke:#12233f;stroke-width:3.5}
+  .hit{fill:transparent;cursor:pointer}
+
+  /* Canais */
+  .canais{padding:8px 18px 12px}
+  .canal{display:grid;grid-template-columns:120px 1fr 48px;gap:12px;align-items:center;padding:8px 0}
+  .canal+.canal{border-top:1px solid #eef1f6}
+  .canal-nome{font-size:14.5px;font-weight:600}
+  .canal-det{font-size:12.5px;color:#5f6b80;margin-top:4px}
+  .track{height:12px;border-radius:6px;background:#e6eaf1;overflow:hidden}
+  .track i{display:block;height:100%;border-radius:6px;background:#1f8f86}
+  .canal-pct{font-size:17px;font-weight:700;text-align:right}
+  .legenda{font-size:12.5px;color:#5f6b80;padding-top:6px}
+
+  /* Leitura da IA */
+  .ai-note{font-size:13px;line-height:1.4;color:#3d2a8c;background:#f7f5ff;padding:9px 18px;border-bottom:1px solid #e3dcfb;flex:none}
+  .ins{padding:10px 18px}
+  .ins+.ins{border-top:1px solid #eef1f6}
+  .ins p{font-size:14px;line-height:1.4}
+  .ins.off p{color:#8a93a5;text-decoration:line-through}
+  .ins-foot{display:flex;align-items:center;gap:8px;margin-top:7px;min-height:30px}
+  .st{font-size:13px;font-weight:600}
+  .st.ok{color:#17736c}.st.no{color:#b42318}
+  .btn{
+    font:inherit;font-size:13.5px;font-weight:600;height:30px;padding:0 12px;border-radius:6px;cursor:pointer;
+    border:1px solid #c5cddb;background:#fff;color:#1c2536;
+  }
+  .btn:hover{background:#f3f5f9}
+  .btn:focus-visible{outline:2px solid #1f8f86;outline-offset:2px}
+  .btn.primary{background:#1f8f86;border-color:#1f8f86;color:#fff}
+  .btn.primary:hover{background:#17736c}
+  .btn.link{border:0;background:none;color:#17736c;padding:0 4px;text-decoration:underline}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+      <rect width="36" height="36" rx="9" fill="#1f8f86"/>
+      <path d="M8 25V12l6 8 4-6 4 6 6-8v13" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="28" cy="9" r="2.4" fill="#b9f3ec"/>
+    </svg>
+    <span class="brand-name">Monitor<b>IA</b></span>
+  </div>
+
+  <nav aria-label="Módulos do sistema">
+    <ul>
+      <li><a class="item" href="dashboard.html">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="10" rx="1.5"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="15" width="8" height="6" rx="1.5"/></svg>
+        Dashboard</a></li>
+      <li><a class="item" href="alunos.html">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.5c2.2.8 3.5 2.7 3.5 5.5"/></svg>
+        Alunos</a></li>
+      <li><button type="button" class="item" data-modulo="Comunicação">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-8l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M8 10h8M8 13h5"/></svg>
+        Comunicação</button></li>
+      <li><button type="button" class="item" data-modulo="Inteligência Artificial">
+        <svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>
+        Inteligência Artificial</button></li>
+      <li><a class="item" href="relatorios.html" aria-current="page">
+        <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9.5 17v-3M12.5 17v-6M15.5 17v-4"/></svg>
+        Relatórios</a></li>
+      <li><button type="button" class="item" data-modulo="Ajuda">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1 1-1.1 1.8"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg>
+        Ajuda</button></li>
+    </ul>
+  </nav>
+
+  <div class="notice" id="notice" role="status" aria-live="polite"></div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div class="user">
+      <div class="avatar" aria-hidden="true">MM</div>
+      <div>
+        <div class="user-name">Maria Monitor</div>
+        <div class="user-role">Monitoria EaD</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="content" id="conteudo" aria-label="Relatórios">
+    <div class="page-head">
+      <h1>Relatórios</h1>
+      <p>Resultados das intervenções nas últimas 8 semanas. Indicadores e gráficos vêm dos registros do sistema; a leitura da IA aparece identificada e depende da sua validação.</p>
+    </div>
+
+    <section class="kpis" aria-label="Indicadores">
+      <div class="kpi"><div class="kpi-value">1.030</div><div class="kpi-label">Alunos acompanhados</div></div>
+      <div class="kpi"><div class="kpi-value good">+24%</div><div class="kpi-label">Evolução do primeiro acesso ao AVA</div><div class="kpi-sub">de 585 para 726 em 4 semanas</div></div>
+      <div class="kpi"><div class="kpi-value">70%</div><div class="kpi-label">Ativação</div><div class="kpi-sub">726 de 1.030 alunos</div></div>
+      <div class="kpi"><div class="kpi-value">186</div><div class="kpi-label">Casos solucionados pela monitoria</div></div>
+      <div class="kpi"><div class="kpi-value good">-38%</div><div class="kpi-label">Alunos prioritários</div><div class="kpi-sub">de 73 para 45 casos</div></div>
+    </section>
+
+    <div class="cols">
+      <section class="panel" aria-label="Evolução dos acessos ao AVA">
+        <div class="panel-head">
+          <h2>Evolução dos acessos ao AVA</h2>
+          <span class="src">Alunos com primeiro acesso realizado · dados do sistema</span>
+        </div>
+        <div class="chart-wrap">
+          <div class="readout" id="readout" aria-live="polite"></div>
+          <div class="chart" id="chart"></div>
+        </div>
+      </section>
+
+      <div class="right">
+        <section class="panel" aria-label="Efetividade dos canais">
+          <div class="panel-head">
+            <h2>Efetividade dos canais</h2>
+            <span class="src">Dados do sistema</span>
+          </div>
+          <div class="canais">
+            <div class="canal">
+              <div><div class="canal-nome">WhatsApp</div></div>
+              <div><div class="track"><i style="width:62%"></i></div><div class="canal-det">88 primeiros acessos em 142 contatos</div></div>
+              <div class="canal-pct">62%</div>
+            </div>
+            <div class="canal">
+              <div><div class="canal-nome">Contato manual</div></div>
+              <div><div class="track"><i style="width:48%"></i></div><div class="canal-det">33 primeiros acessos em 69 contatos</div></div>
+              <div class="canal-pct">48%</div>
+            </div>
+            <div class="canal">
+              <div><div class="canal-nome">E-mail</div></div>
+              <div><div class="track"><i style="width:21%"></i></div><div class="canal-det">65 primeiros acessos em 310 contatos</div></div>
+              <div class="canal-pct">21%</div>
+            </div>
+            <div class="legenda">Percentual de contatos seguidos de primeiro acesso ao AVA.</div>
+          </div>
+        </section>
+
+        <section class="panel ai grow" aria-label="Leitura gerada pela IA">
+          <div class="panel-head">
+            <h2>Leitura dos resultados</h2>
+            <span class="ai-tag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Gerada pela IA</span>
+          </div>
+          <div class="ai-note">Os textos abaixo foram escritos pela IA a partir dos dados desta tela. Só passam a valer como conclusão depois de validados por você.</div>
+          <div class="panel-body" id="insights"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  /* Aviso dos módulos fora do protótipo */
+  var notice = document.getElementById('notice'), timer;
+  document.querySelectorAll('button[data-modulo]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      notice.textContent = 'O módulo ' + btn.dataset.modulo + ' não está disponível neste protótipo.';
+      notice.classList.add('show');
+      clearTimeout(timer);
+      timer = setTimeout(function () { notice.classList.remove('show'); }, 3500);
+    });
+  });
+
+  /* Gráfico de evolução (valores de exemplo, acumulados por semana) */
+  var serie = [412, 468, 521, 585, 628, 667, 701, 726];
+  var W = 780, H = 440, L = 52, R = 24, T = 18, B = 40, MAX = 800;
+  var NS = 'http://www.w3.org/2000/svg';
+  function s(tag, attrs, txt) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (txt != null) e.textContent = txt;
+    return e;
+  }
+  function X(i) { return L + i * (W - L - R) / (serie.length - 1); }
+  function Y(v) { return T + (1 - v / MAX) * (H - T - B); }
+
+  var svg = s('svg', {viewBox: '0 0 ' + W + ' ' + H, role: 'group', 'aria-label': 'Alunos com primeiro acesso realizado, por semana'});
+  [0, 200, 400, 600, 800].forEach(function (v) {
+    svg.appendChild(s('line', {x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: v ? '#e6eaf1' : '#c5cddb', 'stroke-width': 1}));
+    svg.appendChild(s('text', {x: L - 10, y: Y(v) + 4, 'text-anchor': 'end'}, v));
+  });
+  var linha = serie.map(function (v, i) { return (i ? 'L' : 'M') + X(i) + ' ' + Y(v); }).join(' ');
+  svg.appendChild(s('path', {d: linha + ' L' + X(serie.length - 1) + ' ' + Y(0) + ' L' + X(0) + ' ' + Y(0) + ' Z', fill: '#1f8f86', opacity: .1}));
+  svg.appendChild(s('path', {d: linha, fill: 'none', stroke: '#1f8f86', 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round'}));
+  var guia = s('line', {y1: T, y2: Y(0), stroke: '#1f8f86', 'stroke-width': 1, 'stroke-dasharray': '4 4'});
+  svg.appendChild(guia);
+
+  var pontos = [], readout = document.getElementById('readout');
+  function selecionar(i) {
+    pontos.forEach(function (p, j) { p.setAttribute('class', 'pt' + (j === i ? ' sel' : '')); p.setAttribute('r', j === i ? 7 : 5); });
+    guia.setAttribute('x1', X(i)); guia.setAttribute('x2', X(i));
+    readout.innerHTML = '';
+    var b = document.createElement('b'); b.textContent = 'Semana ' + (i + 1) + ': ' + serie[i] + ' alunos';
+    readout.appendChild(b);
+    readout.appendChild(document.createTextNode(' com primeiro acesso' + (i ? ' · +' + (serie[i] - serie[i - 1]) + ' na semana' : '')));
+  }
+  var passo = (W - L - R) / (serie.length - 1);
+  serie.forEach(function (v, i) {
+    svg.appendChild(s('text', {x: X(i), y: H - 12, 'text-anchor': 'middle'}, 'Sem ' + (i + 1)));
+    var hit = s('rect', {'class': 'hit', x: X(i) - passo / 2, y: T, width: passo, height: H - T - B});
+    hit.addEventListener('mouseenter', function () { selecionar(i); });
+    hit.addEventListener('click', function () { selecionar(i); });
+    svg.appendChild(hit);
+  });
+  serie.forEach(function (v, i) {
+    var c = s('circle', {cx: X(i), cy: Y(v), r: 5, 'class': 'pt', tabindex: 0, role: 'button', 'aria-label': 'Semana ' + (i + 1) + ': ' + v + ' alunos com primeiro acesso'});
+    c.addEventListener('mouseenter', function () { selecionar(i); });
+    c.addEventListener('click', function () { selecionar(i); });
+    c.addEventListener('focus', function () { selecionar(i); });
+    pontos.push(c); svg.appendChild(c);
+  });
+  document.getElementById('chart').appendChild(svg);
+  selecionar(serie.length - 1);
+
+  /* Leitura gerada pela IA, validada pela monitoria */
+  var insights = [
+    {t: 'O WhatsApp teve a maior taxa de primeiro acesso após o contato (62%), quase o triplo do e-mail (21%).', st: null},
+    {t: 'O e-mail concentra o maior volume de contatos (310), mas tem a menor efetividade entre os três canais.', st: null},
+    {t: 'O ritmo de novos acessos diminuiu: de +64 na semana 4 para +25 na semana 8.', st: null}
+  ];
+  var box = document.getElementById('insights');
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function btn(txt, cls, fn) { var b = el('button', 'btn' + (cls ? ' ' + cls : ''), txt); b.type = 'button'; b.addEventListener('click', fn); return b; }
+  function renderInsights() {
+    box.innerHTML = '';
+    insights.forEach(function (x) {
+      var d = el('div', 'ins' + (x.st === 'no' ? ' off' : ''));
+      d.appendChild(el('p', null, x.t));
+      var f = el('div', 'ins-foot');
+      if (!x.st) {
+        f.appendChild(btn('Validar', 'primary', function () { x.st = 'ok'; renderInsights(); }));
+        f.appendChild(btn('Descartar', '', function () { x.st = 'no'; renderInsights(); }));
+      } else {
+        f.appendChild(el('span', 'st ' + x.st, x.st === 'ok' ? 'Validada por Maria Monitor' : 'Descartada por Maria Monitor'));
+        f.appendChild(btn('Desfazer', 'link', function () { x.st = null; renderInsights(); }));
+      }
+      d.appendChild(f);
+      box.appendChild(d);
+    });
+  }
+  renderInsights();
+})();
+</script>
+</body>
+</html>

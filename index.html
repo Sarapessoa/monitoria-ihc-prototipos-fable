@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MonitorIA - protótipos navegáveis</title>
+<style>
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #f5f7fa; color: #1b2a33; }
+  main { max-width: 960px; margin: 0 auto; padding: 40px 16px; }
+  h1 { margin: 0 0 8px; font-size: 28px; }
+  p { line-height: 1.55; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 24px 0; }
+  a.card { display: block; background: #fff; border: 1px solid #d9e1e7; border-radius: 12px; padding: 16px; color: inherit; text-decoration: none; }
+  a.card:hover { border-color: #0d3b4c; }
+  a.card img { width: 100%; border-radius: 8px; border: 1px solid #e3e8ec; }
+  a.card h2 { font-size: 18px; margin: 12px 0 4px; }
+  a.card span { font-size: 14px; color: #4a5b66; }
+  footer { font-size: 14px; color: #4a5b66; }
+</style>
+</head>
+<body>
+<main>
+  <h1>MonitorIA - protótipos navegáveis</h1>
+  <p>NP2 - Engenharia de Prompts para Geração de Interfaces (PPGIA - Unifor - Aplicações em IHC, 2026.2). Três cenários de prompt gerados com Claude Fable 5.2 em 19/11/2026, cada um com Frame Master, Dashboard, Alunos e Relatórios. Use o menu lateral para navegar entre as telas. Todos os dados são fictícios.</p>
+  <div class="cards">
+    <a class="card" href="intermediario/dashboard.html"><img src="intermediario/dashboard.png" alt="Dashboard do cenário Intermediário"><h2>Intermediário</h2><span>Prompt Baseline literal (22 modelos)</span></a>
+    <a class="card" href="maximo/dashboard.html"><img src="maximo/dashboard.png" alt="Dashboard do cenário Máximo"><h2>Máximo</h2><span>Baseline e 19 especificações acrescentadas (41)</span></a>
+    <a class="card" href="minimo/dashboard.html"><img src="minimo/dashboard.png" alt="Dashboard do cenário Mínimo"><h2>Mínimo</h2><span>Só os 7 modelos essenciais</span></a>
+  </div>
+  <footer>Prompts, instrução de sistema, script e registro da geração: pasta <a href="https://github.com/Sarapessoa/monitoria-ihc-prototipos-fable/tree/main/registro">registro</a>. As telas são publicadas como geradas, sem retoques.</footer>
+</main>
+</body>
+</html>

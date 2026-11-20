@@ -1,0 +1,204 @@
+PROMPT SLOT DASHBOARD
+(TELA 01 - UMA INTERAÇÃO SUCEDIDA)
+USAR O FRAME MASTER FIXO DO MONITORIA.
+IMPORTANTE:
+Modificar SOMENTE a área central branca (slot de conteúdo).
+Manter completamente iguais:
+- logo MonitorIA;
+- símbolo da marca;
+- barra lateral esquerda;
+- menu de navegação;
+- cabeçalho superior;
+- foto da usuária;
+- usuário logado: Maria Monitor;
+- função: Monitoria EaD;
+- cores institucionais;
+- tipografia;
+- botões;
+- estilo dos ícones;
+- espaçamentos.
+Não redesenhar o sistema.
+Apenas preencher o módulo selecionado.
+MÓDULO ATIVO:
+DASHBOARD
+OBJETIVO DO MÓDULO:
+Representar uma interação bem-sucedida entre Maria Monitor e a Inteligência Artificial.
+Mostrar como a IA:
+- identifica estudantes prioritários;
+- explica recomendações;
+- apoia decisões;
+- mantém controle humano.
+A IA nunca substitui a decisão da monitoria.
+Mostrar o momento:
+HAX Toolkit:
+" When Right"
+ÁREA SUPERIOR DO SLOT:
+Adicionar saudação:
+"Olá, Maria Monitor!"
+Texto secundário: "A IA encontrou situações que precisam da sua atenção hoje."
+Adicionar selo discreto: Monitoramento inteligente ativo
+CARDS DE INDICADORES:
+Criar 5 cards horizontais modernos:
+1. Total de alunos acompanhados
+Ícone:
+grupo de pessoas
+Valor exemplo:
+1.030
+2. Primeiro acesso realizado
+Ícone:
+check / confirmação
+Valor exemplo:
+726
+3. Aguardando primeiro acesso ao AVA
+Ícone:
+alerta
+Valor exemplo:
+304
+4. Taxa de ativação das turmas
+Ícone:
+gráfico
+Valor exemplo:
+70%
+5. Prioridades identificadas pela IA
+Ícone:
+inteligência artificial
+Valor exemplo:
+45 casos
+Características dos cards:
+- fundo branco;
+- bordas arredondadas;
+- sombra leve;
+- ícones em azul petróleo;
+- pequenos detalhes em laranja.
+ÁREA PRINCIPAL:
+Criar painel:
+"Painel Inteligente de Apoio à Decisão"
+Layout dividido:
+Lado esquerdo:
+Lista de estudantes priorizados pela IA.
+Exemplo:
+Maria Oliveira
+Curso:
+Assistente Administrativo
+Status:
+Aguardando primeiro acesso ao AVA
+Prioridade:
+ALTA
+Adicionar selo:
+"Análise gerada por Inteligência Artificial"
+Mostrar:
+Confiança da IA:
+87%
+Usar barra de progresso simples.
+EXPLICAÇÃO DA IA:
+Criar card:
+"Por que a IA classificou este aluno como prioridade?"
+Mostrar fatores:
+(ícone de confirmação) Tempo sem acessar o AVA
+(ícone de confirmação) Histórico de tentativas de contato
+(ícone de confirmação) Último canal utilizado
+(ícone de confirmação) Respostas anteriores
+(ícone de confirmação) Dados cadastrais disponíveis
+Mostrar recomendação:
+"A IA recomenda contato via WhatsApp, pois apresentou maior efetividade em situações semelhantes."
+Adicionar pequeno ícone de IA explicável.
+CONTROLE DO MONITOR:
+Criar área:
+"Decisão da Monitoria"
+Botões:
+(ícone de confirmação) Aceitar recomendação
+(ícone de lápis) Ajustar estratégia
+(ícone de atualizar) Solicitar nova análise
+(ícone de informação) Ver explicação completa
+Botão principal:
+laranja #FF7A00
+Botões secundários:
+contorno azul petróleo.
+Adicionar mensagem:
+"A decisão final pertence ao monitor. A IA apenas recomenda ações de apoio."
+FEEDBACK HUMANO PARA IA:
+Criar pequeno componente: "Essa recomendação foi útil?"
+Botões:
+(ícone de polegar para cima) Sim
+(ícone de polegar para baixo) Precisa melhorar
+Mostrar ideia de aprendizado contínuo.
+APLICAR PRINCÍPIOS HUMAN-AI INTERACTION (HAX):
+G1:Mostrar claramente o que a IA faz.
+G2:Mostrar confiança da recomendação.
+G3:Apresentar IA no momento certo da necessidade.
+G4:Mostrar somente informações relevantes.
+G11:Explicar por que a IA recomendou.
+G17:
+Permitir controle humano:
+aceitar,
+ajustar,
+rejeitar.
+ESTILO VISUAL DO CONTEÚDO:
+Seguir o mesmo Design System MonitorIA:
+- SaaS educacional premium;
+- limpo;
+- acadêmico;
+- profissional;
+- confiável.
+Não criar aparência futurista exagerada.
+Transmitir:
+confiança,
+clareza,
+transparência,
+colaboração humano + IA.
+ESPECIFICAÇÕES ADICIONAIS DE IHC – CENÁRIO MÁXIMO
+As especificações abaixo complementam o texto acima. Em caso de conflito, prevalecem as especificações abaixo.
+M32 – MOLDURA IDÊNTICA AO FRAME MASTER:
+Reproduzir a moldura exatamente como no Frame Master: mesma logo (com "IA" em laranja), mesmo menu de seis itens na mesma ordem, item Dashboard ativo em laranja #FF7A00, mesmo cabeçalho com a etiqueta "Dados fictícios – protótipo de demonstração", mesmo perfil de Maria Monitor com a opção "Sair" e o link "Privacidade e dados (LGPD)" no rodapé do menu. Não renomear, remover ou acrescentar itens de menu.
+M24 – MODELO DE DADOS COMUM A TODAS AS TELAS:
+Usar exatamente estes valores, que se repetem nas telas Alunos e Relatórios:
+- Total de alunos acompanhados: 1.030; primeiro acesso realizado: 726; aguardando primeiro acesso ao AVA: 304; taxa de ativação das turmas: 70%; prioridades identificadas pela IA: 45 casos.
+- Maria Oliveira – Assistente Administrativo – Aguardando primeiro acesso ao AVA – Prioridade ALTA – Confiança da IA: 87%.
+- João Pereira – Técnico em Logística – Aguardando primeiro acesso – Prioridade ALTA – Confiança da IA: 42%.
+Na lista de estudantes priorizados, mostrar Maria Oliveira selecionada no topo e João Pereira logo abaixo, com os mesmos dados.
+M25 – REFERENTE, BASE E PERÍODO DA CONFIANÇA E DAS MÉTRICAS:
+Escrever o referente da confiança: "Confiança da IA nesta recomendação para Maria Oliveira: 87%".
+Em cada card de indicador, adicionar um ícone de informação com uma linha curta de definição, base e período. Exemplo: "Taxa de ativação: alunos com primeiro acesso / total acompanhado (726 de 1.030) – turmas do período atual".
+M27 – REJEITAR, CONFIRMAR E DESFAZER:
+Na área "Decisão da Monitoria", acrescentar o botão secundário "Rejeitar recomendação" (ícone de fechar), que pede o motivo em um campo curto ("Motivo da rejeição").
+Antes de qualquer envio de mensagem ao aluno, a interface pede confirmação: "Confirmar envio de mensagem via WhatsApp para Maria Oliveira?" com os botões "Confirmar envio" e "Cancelar".
+M26 – ESTADO VISÍVEL APÓS A DECISÃO:
+Mostrar, abaixo dos botões de decisão, uma faixa de confirmação que permanece na tela (não é aviso temporário):
+"Recomendação aceita por Maria Monitor às 10:42. Contato via WhatsApp registrado no histórico do aluno." com o link "Desfazer".
+O status de Maria Oliveira na lista passa a exibir a etiqueta "Contato planejado pela monitoria".
+M28 – EXPLICAÇÃO COMPLETA REAL:
+"Ver explicação completa" deve corresponder a um painel lateral ou área expandida com os fatores da recomendação, o peso relativo de cada fator (alto, médio, baixo), a confiança e as limitações dos dados ("A IA não conhece o motivo pessoal da ausência do aluno").
+M23 – LIGAÇÃO COM O MÓDULO ALUNOS:
+Cada estudante da lista priorizada tem o link "Abrir perfil" (ícone de seta), que leva ao perfil do aluno no módulo Alunos.
+M39 – CONTEXTO TEMPORAL:
+Junto de cada estudante, mostrar há quanto tempo aguarda o primeiro acesso ("há 9 dias") e o melhor horário de contato informado no cadastro ("Melhor horário de contato: noite, 19h–21h").
+M29 – DISTINÇÃO ENTRE IA E MONITORIA:
+A recomendação e a explicação levam o selo "Gerado pela IA"; a decisão e o histórico levam "Registrado por Maria Monitor".
+M35 – DIRETRIZES HAX REPRESENTADAS NESTA TELA (Amershi et al., 2019):
+G1 – Deixar claro o que o sistema pode fazer: texto curto "A IA prioriza alunos e recomenda contatos; quem decide é a monitoria."
+G2 – Deixar claro quão bem o sistema faz o que faz: confiança com referente explícito (M25).
+G3 – Agir no momento certo, de acordo com o contexto: recomendações exibidas na triagem do dia.
+G4 – Mostrar informação contextualmente relevante: apenas os fatores que influenciaram a recomendação.
+G7 – Facilitar a invocação: botão "Solicitar nova análise" sempre visível.
+G8 – Facilitar a dispensa: link "Dispensar por hoje" em cada recomendação.
+G9 – Facilitar a correção: "Ajustar estratégia" e "Desfazer".
+G11 – Deixar claro por que o sistema fez o que fez: card de fatores.
+G16 – Comunicar as consequências das ações do usuário: faixa de estado após a decisão (M26).
+G17 – Oferecer controles globais: aceitar, ajustar, rejeitar, solicitar nova análise.
+M34 – HEURÍSTICAS DE NIELSEN APLICADAS NESTA TELA:
+- Visibilidade do status do sistema: estado da decisão, autor e hora visíveis.
+- Controle e liberdade do usuário: rejeitar e desfazer.
+- Prevenção de erros: confirmação antes do envio.
+- Correspondência entre o sistema e o mundo real: métricas com definição em linguagem da monitoria.
+- Reconhecimento em vez de memorização: dados do aluno visíveis junto da decisão.
+- Estética e design minimalista: hierarquia clara, com o estudante selecionado e a decisão em destaque.
+REGRAS GERAIS DO CENÁRIO MÁXIMO (valem para esta tela e para todas as telas seguintes):
+- Nunca usar emojis em nenhum lugar da interface. Usar apenas ícones lineares minimalistas (contorno fino, mesma espessura e mesmo estilo em todas as telas), sempre acompanhados de rótulo de texto (M37).
+- Todo texto da interface deve ser texto legível em português do Brasil, com tamanho confortável de leitura e alto contraste com o fundo: texto escuro sobre fundo claro ou texto branco sobre azul petróleo #0D3B4C. Não usar texto cinza-claro sobre branco nem texto branco sobre laranja claro (M33).
+- Botões e itens clicáveis devem ter área de clique ampla (altura mínima aproximada de 44 px), rótulo específico com verbo de ação e foco visível. A prioridade e os estados nunca devem ser indicados só por cor: usar sempre cor + texto + ícone (M33).
+- Só desenhar com aparência de botão, link ou campo aquilo que for uma ação real; textos informativos não devem parecer clicáveis (M40).
+- Distinguir sempre o conteúdo gerado pela IA (selo "Gerado pela IA", ícone de IA) do conteúdo registrado pela monitoria (selo "Registrado por Maria Monitor", ícone de pessoa) (M29).
+- Microtextos em linguagem simples, cordial e respeitosa, sem jargão técnico e sem termos que estigmatizem o aluno; mensagens de erro devem dizer a causa e o próximo passo; a IA fala de forma cautelosa ("a IA recomenda", "a IA não tem dados suficientes"), nunca de forma imperativa ou alarmista (M36).
+- Reduzir a densidade visual: no máximo uma ação principal (laranja) por área, espaço em branco generoso entre os blocos e destaque visual apenas para o que é essencial à tarefa da tela (M38).
+Resultado esperado:
+parecer que Maria Monitor clicou no menu Dashboard e apenas o conteúdo central carregou.

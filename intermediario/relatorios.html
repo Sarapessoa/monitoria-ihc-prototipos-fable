@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>MonitorIA – Relatórios Inteligentes</title>
+<meta name="viewport" content="width=1672, initial-scale=1">
+<style>
+:root{
+  --petrol:#0D3B4C; --petrol-2:#0A2F3D; --orange:#FF7A00; --white:#FFFFFF; --gray:#F5F7FA;
+  --line:#E6EBF0; --text:#0D3B4C; --muted:#6B8290;
+  --side-w:288px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:"Inter","Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;background:var(--gray);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;border:0;background:none;cursor:pointer;color:inherit}
+a{text-decoration:none;color:inherit}
+.app{display:flex;width:100vw;height:100vh;min-width:1100px;min-height:640px}
+
+/* ---------- Sidebar ---------- */
+.sidebar{width:var(--side-w);flex:0 0 var(--side-w);background:linear-gradient(180deg,var(--petrol) 0%,var(--petrol-2) 100%);color:#fff;display:flex;flex-direction:column;padding:28px 20px 0;position:relative;overflow:hidden;transition:width .28s ease,flex-basis .28s ease,padding .28s ease}
+.brand{display:flex;align-items:center;gap:12px;padding:0 6px;white-space:nowrap}
+.brand svg{flex:0 0 44px}
+.wordmark{font-size:26px;font-weight:700;letter-spacing:-.5px;line-height:1}
+.wordmark b{color:var(--orange);font-weight:800}
+.tagline{font-size:11.5px;line-height:1.55;color:rgba(255,255,255,.66);margin:16px 6px 0;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,.12)}
+.nav{margin-top:22px;display:flex;flex-direction:column;gap:8px;position:relative;z-index:2}
+.nav-item{display:flex;align-items:center;gap:14px;width:100%;height:50px;padding:0 16px;border-radius:14px;color:#fff;font-size:15px;font-weight:500;text-align:left;white-space:nowrap;transition:background .18s ease,transform .18s ease}
+.nav-item svg{flex:0 0 22px}
+.nav-item:hover{background:rgba(255,255,255,.09)}
+.nav-item:focus-visible,.icon-btn:focus-visible,.menu-btn:focus-visible,.profile:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+.nav-item.active{background:var(--orange);box-shadow:0 8px 20px -8px rgba(255,122,0,.75);font-weight:600}
+.side-deco{position:absolute;left:0;right:0;bottom:0;height:210px;pointer-events:none;z-index:1}
+.side-deco svg{width:288px;height:210px;display:block}
+
+.app.collapsed{--side-w:88px}
+.app.collapsed .sidebar{padding-left:16px;padding-right:16px}
+.app.collapsed .brand{justify-content:center;padding:0}
+.app.collapsed .brand .wordmark,.app.collapsed .nav-item span{display:none}
+.app.collapsed .tagline{height:0;overflow:hidden;margin-top:22px;padding:0}
+.app.collapsed .nav-item{justify-content:center;padding:0}
+
+/* ---------- Header ---------- */
+.right{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{height:80px;flex:0 0 80px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 32px 0 24px;box-shadow:0 1px 0 var(--line),0 6px 18px -14px rgba(13,59,76,.35);position:relative;z-index:20}
+.top-left{display:flex;align-items:center;gap:18px}
+.menu-btn{width:44px;height:44px;border-radius:50%;background:var(--gray);display:grid;place-items:center;color:var(--petrol);transition:background .18s,transform .18s}
+.menu-btn:hover{background:#E9EEF3}
+.menu-btn:active{transform:scale(.94)}
+.top-left .brand{padding:0;gap:10px}
+.top-left .wordmark{font-size:22px;color:var(--petrol)}
+.top-right{display:flex;align-items:center;gap:10px}
+.pop-wrap{position:relative}
+.icon-btn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--petrol);position:relative;transition:background .18s}
+.icon-btn:hover,.icon-btn[aria-expanded="true"]{background:var(--gray)}
+.badge{position:absolute;top:8px;right:8px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--orange);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;border:2px solid #fff;box-sizing:content-box}
+.badge[hidden]{display:none}
+.divider{width:1px;height:36px;background:var(--line);margin:0 10px}
+.profile{display:flex;align-items:center;gap:12px;padding:6px 10px 6px 6px;border-radius:28px;transition:background .18s;text-align:left}
+.profile:hover,.profile[aria-expanded="true"]{background:var(--gray)}
+.avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;flex:0 0 46px;box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(255,122,0,.55)}
+.avatar svg{display:block}
+.p-name{font-size:14.5px;font-weight:700;color:var(--petrol);line-height:1.2}
+.p-role{font-size:12px;color:var(--muted);margin-top:2px}
+.chev{color:var(--muted);transition:transform .2s}
+.profile[aria-expanded="true"] .chev{transform:rotate(180deg)}
+
+/* ---------- Popovers ---------- */
+.pop{position:absolute;top:56px;right:0;width:320px;background:#fff;border-radius:18px;box-shadow:0 20px 50px -12px rgba(13,59,76,.28),0 0 0 1px var(--line);padding:8px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .16s,transform .16s;z-index:30}
+.pop.open{opacity:1;transform:none;pointer-events:auto}
+.pop-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 8px;font-size:14px;font-weight:700}
+.pop-head button{font-size:12px;font-weight:600;color:var(--orange)}
+.pop-head button:hover{text-decoration:underline}
+.pop-row{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:12px;width:100%;text-align:left;font-size:13px;line-height:1.4;color:var(--petrol)}
+.pop-row:hover{background:var(--gray)}
+.pop-row small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px}
+.dot{flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:var(--orange);margin-top:5px}
+.pop-row.read .dot{background:#D5DDE3}
+.ini{flex:0 0 34px;height:34px;border-radius:50%;background:#E3EEF2;color:var(--petrol);font-size:12px;font-weight:700;display:grid;place-items:center}
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:12px;font-size:13.5px;border-radius:12px}
+.switch{width:42px;height:24px;border-radius:12px;background:#D5DDE3;position:relative;transition:background .18s;flex:0 0 42px}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .18s}
+.switch[aria-checked="true"]{background:var(--orange)}
+.switch[aria-checked="true"]::after{transform:translateX(18px)}
+.pop.small{width:220px}
+.pop.small .pop-row{align-items:center;font-size:13.5px;font-weight:500}
+.pop hr{border:0;border-top:1px solid var(--line);margin:6px 8px}
+
+/* ---------- Main ---------- */
+.main{flex:1;padding:28px 32px 32px;min-height:0;display:flex}
+.canvas{flex:1;background:#fff;border-radius:32px;box-shadow:0 18px 48px -24px rgba(13,59,76,.28),0 2px 6px rgba(13,59,76,.04);position:relative;overflow:hidden}
+.canvas .deco{position:absolute;inset:0;transition:opacity .3s;background-image:radial-gradient(rgba(13,59,76,.07) 1.2px,transparent 1.4px);background-size:28px 28px;-webkit-mask-image:radial-gradient(ellipse at center,transparent 30%,#000 100%);mask-image:radial-gradient(ellipse at center,transparent 30%,#000 100%)}
+.canvas svg.net{position:absolute;inset:0;width:100%;height:100%;transition:opacity .3s}
+.canvas.plain .deco,.canvas.plain svg.net{opacity:0}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--petrol);color:#fff;font-size:13px;padding:11px 18px;border-radius:12px;box-shadow:0 12px 30px -10px rgba(13,59,76,.6);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ================= SLOT: RELATÓRIOS ================= */
+.content{position:absolute;inset:0;z-index:1;padding:18px 26px 20px;display:flex;flex-direction:column;gap:11px;overflow:auto}
+.content [hidden]{display:none!important}
+.hello{display:flex;align-items:center;justify-content:space-between;flex:0 0 auto}
+.hello h1{font-size:23px;font-weight:700;letter-spacing:-.4px;line-height:1.2}
+.hello p{font-size:13.5px;color:var(--muted);margin-top:2px}
+.seal{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 14px;border-radius:16px;background:#EEF4F6;font-size:12px;font-weight:600;color:var(--petrol)}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 0 rgba(255,122,0,.5);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(255,122,0,0)}100%{box-shadow:0 0 0 0 rgba(255,122,0,0)}}
+
+.tabs-row{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--line);flex:0 0 auto}
+.tabs{display:flex;gap:4px}
+.tab{height:36px;padding:0 14px;font-size:13px;font-weight:500;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;border-radius:8px 8px 0 0;transition:.15s}
+.tab:hover{color:var(--petrol);background:var(--gray)}
+.tab[aria-selected="true"]{color:var(--petrol);font-weight:700;border-bottom-color:var(--orange)}
+.tab:focus-visible,.btn:focus-visible,.lk:focus-visible,.ev:focus-visible,.ins-b:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+.period{font-size:12px;color:var(--muted);padding-bottom:9px}
+.period b{color:var(--petrol);font-weight:600}
+
+.notice{flex:0 0 auto;display:flex;align-items:center;gap:10px;background:#EEF4F6;border-radius:11px;padding:7px 8px 7px 12px;font-size:12.5px}
+.notice svg{flex:0 0 17px;color:var(--petrol)}
+.notice span{flex:1}
+.lk{font-size:12px;font-weight:600;color:var(--petrol);text-decoration:underline;padding:3px 6px;border-radius:6px}
+.lk:hover{color:#C25400}
+.xbtn{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:var(--muted)}
+.xbtn:hover{background:#fff;color:var(--petrol)}
+
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;flex:0 0 auto}
+.kpi{background:#fff;border-radius:16px;border:1px solid var(--line);box-shadow:0 6px 18px -12px rgba(13,59,76,.25);padding:11px 13px;display:flex;align-items:center;gap:11px;position:relative;overflow:hidden;min-height:78px}
+.kpi::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:3px;border-radius:0 3px 3px 0;background:var(--orange)}
+.kpi-ic{flex:0 0 40px;height:40px;border-radius:12px;background:#EEF4F6;color:var(--petrol);display:grid;place-items:center}
+.kpi-v{font-size:22px;font-weight:700;letter-spacing:-.5px;line-height:1.1}
+.kpi-l{font-size:11.5px;color:var(--muted);line-height:1.3;margin-top:3px}
+
+.row{display:flex;gap:12px;min-height:0}
+.rowA{flex:1 1 200px}
+.rowB{flex:1.4 1 280px}
+.card{flex:1 1 0;min-width:0;background:#fff;border-radius:16px;border:1px solid var(--line);box-shadow:0 6px 18px -12px rgba(13,59,76,.25);padding:13px 16px;display:flex;flex-direction:column;min-height:0}
+.card h3{font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:8px}
+.card .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.card.flash{animation:flash 1.2s ease}
+@keyframes flash{0%,60%{box-shadow:0 0 0 3px rgba(255,122,0,.45)}100%{box-shadow:0 6px 18px -12px rgba(13,59,76,.25)}}
+
+/* gráfico de linha */
+.legend{display:flex;gap:16px;font-size:11.5px;color:var(--muted);margin-top:5px}
+.legend i{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.chart{flex:1;min-height:0;margin-top:6px}
+.chart svg{width:100%;height:100%;display:block}
+.chart text{font-size:10.5px;fill:#6B8290;font-family:inherit}
+.chart circle{cursor:pointer}
+.readout{font-size:11.5px;color:var(--muted);margin-left:auto;font-weight:500}
+.readout b{color:var(--petrol)}
+
+/* barras */
+.upd{margin-left:auto;font-size:10.5px;font-weight:700;background:#FFF0E0;color:#A84C00;border-radius:8px;padding:3px 8px}
+.bars{flex:1;display:flex;flex-direction:column;justify-content:space-around;margin-top:8px;max-height:230px}
+.brow{display:grid;grid-template-columns:104px 1fr 42px 96px;gap:10px;align-items:center;font-size:12.5px}
+.brow b{font-weight:600}
+.btrack{height:14px;border-radius:7px;background:var(--gray);overflow:hidden}
+.btrack i{display:block;height:100%;border-radius:7px;background:var(--petrol);transition:width .6s ease}
+.brow.best .btrack i{background:var(--orange)}
+.brow em{font-style:normal;font-weight:700;font-size:13.5px;text-align:right}
+.brow small{font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* aprendizado */
+.aiic{flex:0 0 26px;height:26px;border-radius:8px;background:#FFF0E0;color:#C25400;display:grid;place-items:center}
+.learn-grid{display:grid;grid-template-columns:1fr 238px;gap:14px;margin-top:8px;flex:1;min-height:0}
+.ins{list-style:none;display:flex;flex-direction:column;gap:5px}
+.ins li,.ins-b{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;line-height:1.4;text-align:left;width:100%;padding:4px 6px;border-radius:9px}
+.ins-b{border:1.5px solid var(--line)}
+.ins-b:hover{border-color:var(--petrol)}
+.ck{flex:0 0 18px;height:18px;border-radius:50%;background:var(--petrol);color:#fff;display:grid;place-items:center;margin-top:1px}
+.off .ck{background:#fff;border:1.5px solid #9DB4BE;color:transparent}
+.off>span{color:var(--muted);text-decoration:line-through}
+.ins li.off small{display:block;text-decoration:none;font-size:11px;color:#A84C00;font-weight:600}
+.fbbox{background:var(--gray);border-radius:13px;padding:11px 12px;display:flex;flex-direction:column;gap:7px;align-self:start}
+.fbbox p{font-size:12.5px;font-weight:600;line-height:1.35}
+.fbbox small{font-size:11.5px;color:var(--muted);line-height:1.4}
+.btn{height:34px;border-radius:11px;font-size:12.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:7px;width:100%;transition:.15s;border:1.5px solid var(--petrol);color:var(--petrol);background:#fff}
+.btn:hover{background:#EEF4F6}
+.btn:active{transform:scale(.985)}
+.btn.primary{background:var(--orange);border-color:var(--orange);color:#fff;box-shadow:0 8px 18px -8px rgba(255,122,0,.7)}
+.btn.primary:hover{background:#EB7000;border-color:#EB7000}
+.transp{display:flex;gap:9px;align-items:center;margin-top:8px;font-size:11.5px;line-height:1.4;color:var(--petrol);border:1px dashed rgba(13,59,76,.35);border-radius:11px;padding:7px 11px}
+.transp svg{flex:0 0 17px;color:var(--orange)}
+
+/* tabela */
+.tbl-wrap{flex:1;min-height:0;overflow:auto;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:600;padding:7px 8px;background:var(--gray);position:sticky;top:0}
+th:first-child{border-radius:9px 0 0 9px}th:last-child{border-radius:0 9px 9px 0}
+td{padding:8px;border-bottom:1px solid #F0F3F6;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td:first-child{white-space:nowrap;color:var(--muted)}
+td.rec{font-weight:600}
+.evc{display:flex;align-items:center;gap:6px}
+.pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px;white-space:nowrap;margin-right:auto}
+.pill.ok{background:#E3EEF2;color:var(--petrol)}
+.pill.bad{background:#FFE9D3;color:#A84C00}
+.ev{width:26px;height:26px;border-radius:8px;border:1.5px solid var(--line);display:grid;place-items:center;color:var(--muted);transition:.15s}
+.ev:hover{border-color:var(--petrol);color:var(--petrol)}
+.ev[aria-pressed="true"]{background:var(--petrol);border-color:var(--petrol);color:#fff}
+.tfoot{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--muted);padding-top:6px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Logo MonitorIA: pessoas (nós com arco), dados (conexões) e IA (núcleo laranja) -->
+    <symbol id="logo-mark" viewBox="0 0 44 44">
+      <rect x="1" y="1" width="42" height="42" rx="13" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".28"/>
+      <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none">
+        <path d="M22 22 L12 13"/><path d="M22 22 L32 13"/><path d="M22 22 L22 33.5"/>
+        <path d="M7.5 20 a5 5 0 0 1 9 0" opacity=".85"/>
+        <path d="M27.5 20 a5 5 0 0 1 9 0" opacity=".85"/>
+      </g>
+      <circle cx="12" cy="12" r="3" fill="currentColor"/>
+      <circle cx="32" cy="12" r="3" fill="currentColor"/>
+      <circle cx="22" cy="34" r="2.6" fill="currentColor"/>
+      <circle cx="22" cy="22" r="6.2" fill="#FF7A00"/>
+      <path d="M22 18.4 l1 2.6 2.6 1 -2.6 1 -1 2.6 -1 -2.6 -2.6 -1 2.6 -1z" fill="#fff"/>
+    </symbol>
+    <symbol id="i-ai" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="6.5" width="11" height="11" rx="2.5"/><path d="M12 9.5l.9 1.6 1.6.9-1.6.9-.9 1.6-.9-1.6-1.6-.9 1.6-.9z"/><path d="M9.5 3v3.5M14.5 3v3.5M9.5 17.5V21M14.5 17.5V21M3 9.500h3.500M3 14.500h3.500M17.500 9.500H21M17.500 14.500H21"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12.500l4 4 8-9"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.500M12 7.600v.2"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M7.500 10.500l3.500-7c1.500 0 2.500 1 2.500 2.500V9.500h4.700c1.200 0 2 1.100 1.700 2.200l-1.700 6.500c-.2.800-.9 1.300-1.700 1.300H7.500z"/><path d="M7.500 10.500H4v9h3.500"/></symbol>
+  </defs>
+</svg>
+
+<div class="app" id="app">
+  <!-- MENU LATERAL -->
+  <aside class="sidebar" id="sidebar" aria-label="Menu principal">
+    <div class="brand" aria-label="MonitorIA">
+      <svg width="44" height="44" style="color:#fff"><use href="#logo-mark"/></svg>
+      <div class="wordmark">Monitor<b>IA</b></div>
+    </div>
+    <p class="tagline">Sistema Inteligente de Apoio à Jornada Digital do Estudante em Ambientes Virtuais de Aprendizagem</p>
+
+    <nav class="nav">
+      <a class="nav-item" href="dashboard.html" title="Dashboard">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="9" rx="2"/><rect x="13.5" y="3.5" width="7" height="5" rx="2"/><rect x="13.5" y="11.5" width="7" height="9" rx="2"/><rect x="3.5" y="15.5" width="7" height="5" rx="2"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a class="nav-item" href="alunos.html" title="Alunos">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.4c2.1.8 3.5 2.8 3.5 5.6"/></svg>
+        <span>Alunos</span>
+      </a>
+      <button class="nav-item" type="button" data-off="Comunicação" title="Comunicação">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-7l-4.5 3.5V17.500H4A1.500 1.500 0 0 1 2.500 16V7A1.500 1.500 0 0 1 4 5.500z"/><path d="M7.500 10h9M7.500 13.500h5.500"/></svg>
+        <span>Comunicação</span>
+      </button>
+      <button class="nav-item" type="button" data-off="Inteligência Artificial" title="Inteligência Artificial">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.500" y="6.500" width="11" height="11" rx="2.500"/><path d="M12 9.500l.9 1.600 1.600.9-1.600.9-.9 1.600-.9-1.600-1.600-.9 1.600-.9z"/><path d="M9.500 3v3.500M14.500 3v3.500M9.500 17.500V21M14.500 17.500V21M3 9.500h3.500M3 14.500h3.500M17.500 9.500H21M17.500 14.500H21"/></svg>
+        <span>Inteligência Artificial</span>
+      </button>
+      <a class="nav-item active" href="relatorios.html" title="Relatórios" aria-current="page">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.500 3h8l4.500 4.500V19.500A1.500 1.500 0 0 1 17.500 21h-11A1.500 1.500 0 0 1 5 19.500v-15A1.500 1.500 0 0 1 6.500 3z"/><path d="M14 3v5h5"/><path d="M9 17v-3M12 17v-5.500M15 17v-2"/></svg>
+        <span>Relatórios</span>
+      </a>
+      <button class="nav-item" type="button" data-off="Ajuda" title="Ajuda">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.600 2.600 0 1 1 3.700 2.300c-.8.4-1.200 1-1.200 1.900"/><path d="M12 16.800v.2"/></svg>
+        <span>Ajuda</span>
+      </button>
+    </nav>
+
+    <div class="side-deco" aria-hidden="true">
+      <svg viewBox="0 0 288 210" fill="none">
+        <g stroke="#fff" stroke-width="1" opacity=".16">
+          <path d="M-10 190 L48 150 L96 176 L150 120 L208 158 L262 104 L300 130"/>
+          <path d="M48 150 L70 96 L150 120 L176 60 L262 104"/>
+          <path d="M96 176 L130 215M208 158 L230 215M70 96 L20 70M176 60 L230 30"/>
+        </g>
+        <g fill="#fff" opacity=".35">
+          <circle cx="48" cy="150" r="3"/><circle cx="96" cy="176" r="2.500"/><circle cx="208" cy="158" r="3"/><circle cx="262" cy="104" r="2.500"/><circle cx="70" cy="96" r="2.500"/><circle cx="176" cy="60" r="2"/><circle cx="20" cy="70" r="1.800"/><circle cx="230" cy="30" r="1.800"/>
+        </g>
+        <circle cx="150" cy="120" r="4" fill="#FF7A00" opacity=".9"/>
+        <circle cx="150" cy="120" r="9" stroke="#FF7A00" opacity=".35"/>
+      </svg>
+    </div>
+  </aside>
+
+  <div class="right">
+    <!-- CABEÇALHO -->
+    <header class="topbar">
+      <div class="top-left">
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="Recolher ou expandir menu" aria-expanded="true" aria-controls="sidebar">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round"><path d="M4.500 7h15M4.500 12h15M4.500 17h15"/></svg>
+        </button>
+        <div class="brand" aria-label="MonitorIA">
+          <svg width="38" height="38" style="color:#0D3B4C;flex:0 0 38px"><use href="#logo-mark"/></svg>
+          <div class="wordmark">Monitor<b>IA</b></div>
+        </div>
+      </div>
+
+      <div class="top-right">
+        <div class="pop-wrap">
+          <button class="icon-btn" type="button" data-pop="popNotif" aria-label="Notificações" aria-expanded="false">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16.500V11a6 6 0 0 1 12 0v5.500l1.500 2h-15z"/><path d="M10 21a2.200 2.200 0 0 0 4 0"/></svg>
+            <span class="badge" id="notifBadge">3</span>
+          </button>
+          <div class="pop" id="popNotif" role="dialog" aria-label="Notificações">
+            <div class="pop-head">Notificações <button type="button" id="markRead">Marcar como lidas</button></div>
+            <button class="pop-row" type="button"><i class="dot"></i><span>Novos alertas de engajamento disponíveis<small>há 12 min</small></span></button>
+            <button class="pop-row" type="button"><i class="dot"></i><span>Sincronização com o AVA concluída<small>há 1 h</small></span></button>
+            <button class="pop-row" type="button"><i class="dot"></i><span>Relatório semanal pronto para consulta<small>ontem</small></span></button>
+          </div>
+        </div>
+
+        <div class="pop-wrap">
+          <button class="icon-btn" type="button" data-pop="popMsg" aria-label="Mensagens" aria-expanded="false">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.500" width="18" height="13" rx="2.500"/><path d="M3.800 7.500l8.200 6 8.200-6"/></svg>
+            <span class="badge" id="msgBadge">2</span>
+          </button>
+          <div class="pop" id="popMsg" role="dialog" aria-label="Mensagens">
+            <div class="pop-head">Mensagens</div>
+            <button class="pop-row" type="button"><i class="ini">CT</i><span>Coordenação de Tutoria<small>Reunião de alinhamento confirmada.</small></span></button>
+            <button class="pop-row" type="button"><i class="ini">ST</i><span>Suporte Técnico<small>Seu chamado foi atualizado.</small></span></button>
+          </div>
+        </div>
+
+        <div class="pop-wrap">
+          <button class="icon-btn" type="button" data-pop="popSet" aria-label="Configurações" aria-expanded="false">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.800l1.600 2.500 2.900-.6.900 2.800 2.800.9-.600 2.900 2.500 1.600-2.500 1.600.600 2.900-2.800.9-.900 2.800-2.900-.600-1.600 2.500-1.600-2.500-2.900.600-.900-2.800-2.800-.900.600-2.900L1.900 12.900l2.500-1.600-.600-2.900 2.800-.900.900-2.800 2.900.600z" transform="translate(1.200 1.200) scale(.9)"/></svg>
+          </button>
+          <div class="pop" id="popSet" role="dialog" aria-label="Configurações">
+            <div class="pop-head">Configurações</div>
+            <div class="set-row"><span id="lblCompact">Menu lateral compacto</span><button class="switch" id="swCompact" type="button" role="switch" aria-checked="false" aria-labelledby="lblCompact"></button></div>
+            <div class="set-row"><span id="lblDeco">Detalhes visuais de fundo</span><button class="switch" id="swDeco" type="button" role="switch" aria-checked="true" aria-labelledby="lblDeco"></button></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="pop-wrap">
+          <button class="profile" type="button" data-pop="popUser" aria-label="Perfil de Maria Monitor" aria-expanded="false">
+            <span class="avatar">
+              <svg width="46" height="46" viewBox="0 0 46 46">
+                <defs>
+                  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DCE8EC"/><stop offset="1" stop-color="#B9CDD5"/></linearGradient>
+                  <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3C9A8"/><stop offset="1" stop-color="#E2AC88"/></linearGradient>
+                  <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5A3625"/><stop offset="1" stop-color="#2E1A12"/></linearGradient>
+                </defs>
+                <rect width="46" height="46" fill="url(#bg)"/>
+                <path d="M10.500 30c-2.500-9-1-21 12.500-21s15 12 12.500 21c-1 3.500-3 6-5 7H15.500c-2-1-4-3.500-5-7z" fill="url(#hair)"/>
+                <path d="M5 46c1-8 7-11 13-12h10c6 1 12 4 13 12z" fill="#0D3B4C"/>
+                <path d="M18 34l5 6 5-6-2.500-1h-5z" fill="#fff"/>
+                <rect x="19.800" y="27" width="6.400" height="8" rx="3" fill="#D9A07C"/>
+                <ellipse cx="23" cy="21" rx="7.600" ry="9" fill="url(#skin)"/>
+                <path d="M14.800 20c1-6 5-8.500 9.500-8.500 4 0 7 2.500 7.200 8-3-.5-6.500-2.500-8.500-5.500-1.500 3-4.500 5-8.200 6z" fill="url(#hair)"/>
+                <ellipse cx="20" cy="21.500" rx=".9" ry="1.100" fill="#3A2318"/><ellipse cx="26" cy="21.500" rx=".9" ry="1.100" fill="#3A2318"/>
+                <path d="M18.600 19.600q1.400-.9 2.800 0M24.600 19.600q1.400-.9 2.800 0" stroke="#4A2D1F" stroke-width=".7" fill="none" stroke-linecap="round"/>
+                <path d="M20.300 25.600q2.700 2 5.400 0" stroke="#B5564A" stroke-width="1.100" fill="none" stroke-linecap="round"/>
+                <ellipse cx="18.300" cy="24" rx="1.500" ry=".9" fill="#E89A86" opacity=".45"/><ellipse cx="27.700" cy="24" rx="1.500" ry=".9" fill="#E89A86" opacity=".45"/>
+              </svg>
+            </span>
+            <span>
+              <span class="p-name" style="display:block">Maria Monitor</span>
+              <span class="p-role" style="display:block">Monitoria EaD</span>
+            </span>
+            <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M6.500 9.500l5.500 5.500 5.500-5.500"/></svg>
+          </button>
+          <div class="pop small" id="popUser" role="menu" aria-label="Menu do usuário">
+            <button class="pop-row" type="button" role="menuitem" data-msg="Perfil de Maria Monitor — Monitoria EaD">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round"><circle cx="12" cy="8.500" r="3.500"/><path d="M5 20c0-3.600 3.100-6 7-6s7 2.400 7 6"/></svg>Meu perfil</button>
+            <hr>
+            <button class="pop-row" type="button" role="menuitem" data-msg="Sair não está disponível neste protótipo">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.500h3.500A1.500 1.500 0 0 1 19 6v12a1.500 1.500 0 0 1-1.500 1.500H14"/><path d="M10.500 8.500L14 12l-3.500 3.500M14 12H4.500"/></svg>Sair</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ÁREA CENTRAL DINÂMICA: módulo Relatórios (cenário HAX "Over Time") -->
+    <main class="main">
+      <section class="canvas" id="canvas" aria-label="Relatórios Inteligentes">
+        <div class="deco" aria-hidden="true"></div>
+        <svg class="net" viewBox="0 0 1320 800" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true">
+          <g stroke="#0D3B4C" stroke-width="1" opacity=".07">
+            <path d="M1320 90 L1210 130 L1130 70 L1040 150 L1150 230 L1210 130"/>
+            <path d="M1150 230 L1250 300 L1320 260M1040 150 L960 90 L900 0M1130 70 L1160 0"/>
+            <path d="M0 700 L90 650 L170 720 L260 640 L150 570 L90 650"/>
+            <path d="M260 640 L360 700 L420 800M170 720 L190 800M150 570 L60 520 L0 540"/>
+            <path d="M1320 720 L1240 680 L1180 740 L1100 800"/>
+          </g>
+          <g fill="#0D3B4C" opacity=".12">
+            <circle cx="1210" cy="130" r="4"/><circle cx="1130" cy="70" r="3"/><circle cx="1150" cy="230" r="3"/><circle cx="960" cy="90" r="2.500"/><circle cx="1250" cy="300" r="2.500"/>
+            <circle cx="90" cy="650" r="4"/><circle cx="170" cy="720" r="3"/><circle cx="150" cy="570" r="3"/><circle cx="360" cy="700" r="2.500"/><circle cx="60" cy="520" r="2.500"/>
+            <circle cx="1240" cy="680" r="3"/><circle cx="1180" cy="740" r="2.500"/>
+          </g>
+          <g fill="#FF7A00" opacity=".28">
+            <circle cx="1040" cy="150" r="4"/><circle cx="260" cy="640" r="4"/>
+          </g>
+          <g stroke="#FF7A00" opacity=".12"><circle cx="1040" cy="150" r="11"/><circle cx="260" cy="640" r="11"/></g>
+        </svg>
+
+        <div class="content">
+          <div class="hello">
+            <div>
+              <h1>Relatórios Inteligentes</h1>
+              <p>Transforme dados de acompanhamento em decisões mais inteligentes.</p>
+            </div>
+            <span class="seal"><i class="pulse"></i>Aprendizado da IA em acompanhamento</span>
+          </div>
+
+          <div class="tabs-row">
+            <div class="tabs" role="tablist" aria-label="Seções de relatórios">
+              <button class="tab" role="tab" type="button" data-tab="geral" aria-selected="true">Visão Geral</button>
+              <button class="tab" role="tab" type="button" data-tab="eng" aria-selected="false">Engajamento dos Alunos</button>
+              <button class="tab" role="tab" type="button" data-tab="canais" aria-selected="false">Efetividade da Comunicação</button>
+              <button class="tab" role="tab" type="button" data-tab="ia" aria-selected="false">Aprendizado da IA</button>
+              <button class="tab" role="tab" type="button" data-tab="hist" aria-selected="false">Histórico de Recomendações</button>
+            </div>
+            <div class="period">Período: <b>11/06 a 18/06/2026</b></div>
+          </div>
+
+          <div class="notice" id="notice" data-in="geral canais" role="status">
+            <svg width="17" height="17"><use href="#i-info"/></svg>
+            <span>A IA atualizou a efetividade dos canais com base nas últimas interações registradas.</span>
+            <button class="lk" type="button" id="seeChange">Ver o que mudou</button>
+            <button class="xbtn" type="button" id="noticeX" aria-label="Dispensar aviso"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          </div>
+
+          <div class="kpis" data-in="geral eng">
+            <div class="kpi">
+              <div class="kpi-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6"/><path d="M16 4.800a3.500 3.500 0 0 1 0 6.400"/><path d="M18 14.400c2.100.8 3.500 2.800 3.500 5.600"/></svg></div>
+              <div><div class="kpi-v">1.030</div><div class="kpi-l">Total de alunos acompanhados</div></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M3.500 17l5.500-6 4 3.500 7.500-8.500"/><path d="M15.500 6h5v5"/></svg></div>
+              <div><div class="kpi-v">+24%</div><div class="kpi-l">Evolução do primeiro acesso ao AVA</div></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.500A9 9 0 0 1 20.500 9H15z"/></svg></div>
+              <div><div class="kpi-v">70%</div><div class="kpi-l">Percentual de ativação</div></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.500l3 3 5.500-6.500"/></svg></div>
+              <div><div class="kpi-v">186</div><div class="kpi-l">Casos solucionados pela monitoria</div></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M3.500 7l5.500 6 4-3.500 7.500 8.500"/><path d="M15.500 18h5v-5"/></svg></div>
+              <div><div class="kpi-v">-38%</div><div class="kpi-l">Redução de alunos prioritários</div></div>
+            </div>
+          </div>
+
+          <div class="row rowA">
+            <div class="card" data-in="geral eng">
+              <h3>Evolução dos acessos ao AVA <span class="readout" id="readout">Passe o cursor sobre um ponto</span></h3>
+              <div class="legend">
+                <span><i style="background:#9DB4BE"></i>Antes da intervenção</span>
+                <span><i style="background:#0D3B4C"></i>Após recomendação da IA</span>
+                <span><i style="background:#FF7A00"></i>Após validação da monitoria</span>
+              </div>
+              <div class="chart">
+                <svg viewBox="0 0 600 130" role="img" aria-label="Alunos com primeiro acesso ao AVA: de 586 em 11/06 para 726 em 18/06/2026" id="lineSvg">
+                  <g stroke="#E6EBF0" stroke-width="1">
+                    <path d="M40 84.100H585M40 57.600H585M40 31.200H585"/>
+                  </g>
+                  <g stroke="#9DB4BE" stroke-width="1" stroke-dasharray="3 4"><path d="M194 8V104M426 8V104"/></g>
+                  <text x="32" y="87.500" text-anchor="end">600</text><text x="32" y="61" text-anchor="end">650</text><text x="32" y="34.600" text-anchor="end">700</text>
+                  <path d="M40 91.500L117 88.400L194 83.600L271 69.300L349 55L426 42.800L503 29.100L580 17.400V104H40z" fill="#0D3B4C" opacity=".05"/>
+                  <g fill="none" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M40 91.500L117 88.400L194 83.600" stroke="#9DB4BE"/>
+                    <path d="M194 83.600L271 69.300L349 55L426 42.800" stroke="#0D3B4C"/>
+                    <path d="M426 42.800L503 29.100L580 17.400" stroke="#FF7A00"/>
+                  </g>
+                  <g id="pts" stroke="#fff" stroke-width="2"></g>
+                  <g id="xl"></g>
+                </svg>
+              </div>
+            </div>
+
+            <div class="card" id="cardCh" data-in="geral canais">
+              <h3>Efetividade dos canais <span class="upd">Atualizado pela IA</span></h3>
+              <div class="sub">Taxa de retorno dos alunos por canal de contato</div>
+              <div class="bars">
+                <div class="brow best"><b>WhatsApp</b><div class="btrack"><i style="width:68%"></i></div><em>68%</em><small>▲ 6 p.p. vs. anterior</small></div>
+                <div class="brow"><b>Contato manual</b><div class="btrack"><i style="width:54%"></i></div><em>54%</em><small>▲ 1 p.p. vs. anterior</small></div>
+                <div class="brow"><b>E-mail</b><div class="btrack"><i style="width:31%"></i></div><em>31%</em><small>▼ 4 p.p. vs. anterior</small></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row rowB">
+            <div class="card" data-in="geral ia">
+              <h3><span class="aiic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><rect x="3.500" y="3.500" width="10" height="10" rx="2.500"/><path d="M8.500 6.300l.7 1.500 1.500.7-1.500.7-.7 1.500-.7-1.500-1.500-.7 1.500-.7z"/><path d="M13 20.500v-4M17 20.500v-7M21 20.500V9.500M3.500 20.500h18"/></svg></span>Aprendizado da Inteligência Artificial</h3>
+              <div class="learn-grid">
+                <div>
+                  <div class="sub" style="margin:0 0 6px">A IA identificou padrões a partir dos resultados anteriores.</div>
+                  <ul class="ins" id="ins"></ul>
+                </div>
+                <div class="fbbox" id="fbbox" aria-live="polite"></div>
+              </div>
+              <div class="transp"><svg width="17" height="17"><use href="#i-info"/></svg><span>As recomendações são atualizadas com base nos resultados, mas continuam sendo validadas pelo monitor.</span></div>
+            </div>
+
+            <div class="card" data-in="geral hist">
+              <h3>Histórico de Recomendações da IA</h3>
+              <div class="tbl-wrap">
+                <table>
+                  <thead><tr><th>Data</th><th>Recomendação realizada</th><th>Resultado obtido</th><th>Avaliação do monitor</th></tr></thead>
+                  <tbody id="tbody"></tbody>
+                </table>
+              </div>
+              <div class="tfoot"><span id="tInfo"></span><button class="lk" type="button" id="tMore">Ver histórico completo</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  var app=document.getElementById('app'), menuBtn=document.getElementById('menuBtn'),
+      swCompact=document.getElementById('swCompact'), swDeco=document.getElementById('swDeco'),
+      canvas=document.getElementById('canvas'), toast=document.getElementById('toast'), tt;
+  function $(id){return document.getElementById(id)}
+  function showToast(m){toast.textContent=m;toast.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('show')},2600)}
+
+  /* ---------- Frame ---------- */
+  function setCollapsed(c){
+    app.classList.toggle('collapsed',c);
+    menuBtn.setAttribute('aria-expanded',String(!c));
+    swCompact.setAttribute('aria-checked',String(c));
+  }
+  menuBtn.addEventListener('click',function(){setCollapsed(!app.classList.contains('collapsed'))});
+  swCompact.addEventListener('click',function(){setCollapsed(!app.classList.contains('collapsed'))});
+  swDeco.addEventListener('click',function(){
+    var on=swDeco.getAttribute('aria-checked')!=='true';
+    swDeco.setAttribute('aria-checked',String(on));
+    canvas.classList.toggle('plain',!on);
+  });
+  var triggers=[].slice.call(document.querySelectorAll('[data-pop]'));
+  function closeAll(except){
+    triggers.forEach(function(t){
+      if(t===except)return;
+      t.setAttribute('aria-expanded','false');
+      $(t.dataset.pop).classList.remove('open');
+    });
+  }
+  triggers.forEach(function(t){
+    t.addEventListener('click',function(e){
+      e.stopPropagation();
+      var p=$(t.dataset.pop), open=!p.classList.contains('open');
+      closeAll(t);
+      p.classList.toggle('open',open);
+      t.setAttribute('aria-expanded',String(open));
+    });
+  });
+  document.querySelectorAll('.pop').forEach(function(p){p.addEventListener('click',function(e){e.stopPropagation()})});
+  document.addEventListener('click',function(){closeAll()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll()});
+  var nb=$('notifBadge');
+  function updateNotif(){
+    var n=document.querySelectorAll('#popNotif .pop-row:not(.read)').length;
+    nb.textContent=n; nb.hidden=n===0;
+  }
+  document.querySelectorAll('#popNotif .pop-row').forEach(function(r){
+    r.addEventListener('click',function(){r.classList.add('read');updateNotif()});
+  });
+  $('markRead').addEventListener('click',function(){
+    document.querySelectorAll('#popNotif .pop-row').forEach(function(r){r.classList.add('read')});updateNotif();
+  });
+  var mb=$('msgBadge');
+  document.querySelectorAll('#popMsg .pop-row').forEach(function(r){
+    r.addEventListener('click',function(){
+      if(!r.dataset.read){r.dataset.read='1';r.style.opacity='.6';
+        var n=document.querySelectorAll('#popMsg .pop-row:not([data-read])').length;mb.textContent=n;mb.hidden=n===0;}
+    });
+  });
+  document.querySelectorAll('#popUser [data-msg]').forEach(function(b){
+    b.addEventListener('click',function(){closeAll();showToast(b.dataset.msg)});
+  });
+  document.querySelectorAll('[data-off]').forEach(function(b){
+    b.addEventListener('click',function(){showToast('Módulo "'+b.dataset.off+'" não faz parte deste protótipo')});
+  });
+
+  /* ---------- Relatórios ---------- */
+  var tab='geral', noticeGone=false;
+
+  /* abas */
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  function setTab(t){
+    tab=t;
+    tabs.forEach(function(b){b.setAttribute('aria-selected',String(b.dataset.tab===t))});
+    document.querySelectorAll('[data-in]').forEach(function(el){
+      el.hidden=el.dataset.in.split(' ').indexOf(t)<0||(el.id==='notice'&&noticeGone);
+    });
+    document.querySelectorAll('.row').forEach(function(r){
+      r.hidden=![].some.call(r.children,function(c){return !c.hidden});
+    });
+    renderTable();
+  }
+  tabs.forEach(function(b){b.addEventListener('click',function(){setTab(b.dataset.tab)})});
+
+  /* aviso de mudança */
+  $('noticeX').addEventListener('click',function(){noticeGone=true;$('notice').hidden=true});
+  $('seeChange').addEventListener('click',function(){
+    if(tab!=='canais')setTab('canais');
+    var c=$('cardCh');c.classList.remove('flash');void c.offsetWidth;c.classList.add('flash');
+  });
+
+  /* gráfico de linha */
+  var P=[['11/06',586,40,91.5,0],['12/06',592,117,88.4,0],['13/06',601,194,83.6,0],['14/06',628,271,69.3,1],
+         ['15/06',655,349,55,1],['16/06',678,426,42.8,1],['17/06',704,503,29.1,2],['18/06',726,580,17.4,2]];
+  var COL=['#9DB4BE','#0D3B4C','#FF7A00'], PH=['antes da intervenção','após recomendação da IA','após validação da monitoria'];
+  var NS='http://www.w3.org/2000/svg', pts=$('pts'), xl=$('xl'), ro=$('readout'), roDef=ro.innerHTML;
+  P.forEach(function(p){
+    var c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',p[2]);c.setAttribute('cy',p[3]);c.setAttribute('r',4.5);c.setAttribute('fill',COL[p[4]]);
+    c.setAttribute('tabindex','0');c.setAttribute('aria-label',p[0]+': '+p[1]+' alunos com primeiro acesso, '+PH[p[4]]);
+    function on(){c.setAttribute('r',6.5);ro.innerHTML='<b>'+p[0]+'</b> · <b>'+p[1]+'</b> alunos com primeiro acesso · '+PH[p[4]]}
+    function off(){c.setAttribute('r',4.5);ro.innerHTML=roDef}
+    c.addEventListener('mouseenter',on);c.addEventListener('mouseleave',off);
+    c.addEventListener('focus',on);c.addEventListener('blur',off);
+    pts.appendChild(c);
+    var t=document.createElementNS(NS,'text');
+    t.setAttribute('x',p[2]);t.setAttribute('y',121);t.setAttribute('text-anchor','middle');t.textContent=p[0];
+    xl.appendChild(t);
+  });
+
+  /* histórico */
+  var H=[
+    ['18/06/2026','Contato via WhatsApp','Aluno realizou primeiro acesso',1],
+    ['17/06/2026','Reenvio por e-mail','Sem retorno',0],
+    ['16/06/2026','Contato manual','Dados cadastrais atualizados',1],
+    ['15/06/2026','Contato via WhatsApp','Aluno respondeu e agendou o acesso',1],
+    ['13/06/2026','Reenvio por e-mail','E-mail não entregue',0],
+    ['12/06/2026','Contato via WhatsApp','Aluno realizou primeiro acesso',1]
+  ];
+  function renderTable(){
+    var all=tab==='hist', rows=all?H:H.slice(0,3);
+    $('tbody').innerHTML=rows.map(function(r,i){
+      return '<tr><td>'+r[0]+'</td><td class="rec">'+r[1]+'</td><td>'+r[2]+'</td><td><div class="evc">'+
+        '<span class="pill '+(r[3]?'ok':'bad')+'">'+(r[3]?'Útil':'Precisa melhorar')+'</span>'+
+        '<button class="ev" type="button" data-i="'+i+'" data-v="1" aria-pressed="'+(r[3]===1)+'" aria-label="Avaliar como útil" title="Útil"><svg width="14" height="14"><use href="#i-up"/></svg></button>'+
+        '<button class="ev" type="button" data-i="'+i+'" data-v="0" aria-pressed="'+(r[3]===0)+'" aria-label="Avaliar como precisa melhorar" title="Precisa melhorar"><svg width="14" height="14" style="transform:rotate(180deg)"><use href="#i-up"/></svg></button>'+
+        '</div></td></tr>';
+    }).join('');
+    $('tInfo').textContent='Mostrando '+rows.length+' de '+H.length+' recomendações';
+    $('tMore').hidden=all;
+  }
+  $('tbody').addEventListener('click',function(e){
+    var b=e.target.closest('.ev'); if(!b)return;
+    var r=H[+b.dataset.i], v=+b.dataset.v; if(r[3]===v)return;
+    r[3]=v;renderTable();
+    showToast('Avaliação atualizada. A IA vai considerá-la nas próximas recomendações.');
+  });
+  $('tMore').addEventListener('click',function(){setTab('hist')});
+
+  /* aprendizado + feedback */
+  var INS=[
+    {t:'WhatsApp apresentou maior taxa de retorno nesta turma',on:true},
+    {t:'Contatos realizados nos primeiros dias aumentaram a ativação',on:true},
+    {t:'Recomendações futuras foram ajustadas pelo histórico',on:true}
+  ];
+  var fb=null, edit=false, draft=[];
+  var CK='<i class="ck"><svg width="11" height="11"><use href="#i-check"/></svg></i>';
+  function renderLearn(){
+    $('ins').innerHTML=INS.map(function(x,i){
+      if(edit)return '<li style="padding:0"><button class="ins-b'+(draft[i]?'':' off')+'" type="button" role="checkbox" aria-checked="'+draft[i]+'" data-i="'+i+'">'+CK+'<span>'+x.t+'</span></button></li>';
+      return '<li class="'+(x.on?'':'off')+'">'+CK+'<span>'+x.t+(x.on?'':'<small>Desconsiderado por você</small>')+'</span></li>';
+    }).join('');
+    var h, off=INS.filter(function(x){return !x.on}).length;
+    if(edit){
+      h='<p>Ajustar interpretação</p><small>Desmarque os padrões que não refletem sua experiência com a turma.</small>'+
+        '<button class="btn primary" type="button" data-a="save">Salvar ajuste</button><button class="btn" type="button" data-a="cancel">Cancelar</button>';
+    }else if(fb==='ok'){
+      h='<p>Aprendizado confirmado por você</p><small>A IA manterá estes padrões nas próximas recomendações. Você continuará validando cada uma delas.</small>'+
+        '<button class="btn" type="button" data-a="undo">Desfazer confirmação</button>';
+    }else if(fb==='adj'){
+      h='<p>Interpretação ajustada por você</p><small>'+(off===1?'1 padrão não será usado':off+' padrões não serão usados')+' nas próximas recomendações da IA.</small>'+
+        '<button class="btn" type="button" data-a="edit">Rever ajuste</button>';
+    }else{
+      h='<p>Esta análise representa corretamente sua experiência?</p>'+
+        '<button class="btn primary" type="button" data-a="ok"><svg width="15" height="15"><use href="#i-up"/></svg>Confirmar aprendizado</button>'+
+        '<button class="btn" type="button" data-a="edit"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4.500L16.500 4l3.500 3.500L8.500 19z"/><path d="M14 6.500l3.500 3.500"/></svg>Ajustar interpretação</button>';
+    }
+    $('fbbox').innerHTML=h;
+  }
+  $('ins').addEventListener('click',function(e){
+    var b=e.target.closest('.ins-b'); if(!b)return;
+    var i=+b.dataset.i; draft[i]=!draft[i]; renderLearn();
+    var n=$('ins').querySelector('[data-i="'+i+'"]'); if(n)n.focus();
+  });
+  $('fbbox').addEventListener('click',function(e){
+    var b=e.target.closest('[data-a]'); if(!b)return;
+    var a=b.dataset.a;
+    if(a==='ok'){fb='ok';showToast('Aprendizado confirmado. Obrigada pelo retorno!')}
+    else if(a==='undo'){fb=null}
+    else if(a==='edit'){edit=true;draft=INS.map(function(x){return x.on})}
+    else if(a==='cancel'){edit=false}
+    else if(a==='save'){
+      INS.forEach(function(x,i){x.on=draft[i]});edit=false;
+      var off=INS.filter(function(x){return !x.on}).length;
+      fb=off?'adj':'ok';
+      showToast(off?'Interpretação ajustada. A IA vai desconsiderar o que você desmarcou.':'Todos os padrões mantidos. Aprendizado confirmado.');
+    }
+    renderLearn();
+  });
+
+  renderLearn();
+  setTab('geral');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MonitorIA – Alunos</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:#f3f5f9;color:#1c2536;
+    display:flex;min-width:1200px;min-height:600px;overflow:hidden;
+  }
+
+  /* Menu lateral */
+  .sidebar{
+    width:272px;flex:none;height:100vh;
+    background:#12233f;color:#c9d3e6;
+    display:flex;flex-direction:column;
+  }
+  .brand{
+    height:76px;display:flex;align-items:center;gap:12px;
+    padding:0 24px;border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .brand-name{font-size:22px;font-weight:600;color:#fff;letter-spacing:.2px}
+  .brand-name b{color:#4fd1c5;font-weight:700}
+  nav{padding:20px 14px;flex:1}
+  nav ul{list-style:none;display:flex;flex-direction:column;gap:4px}
+  .item{
+    width:100%;display:flex;align-items:center;gap:14px;
+    height:48px;padding:0 14px;border-radius:8px;
+    font:inherit;font-size:15.5px;color:#c9d3e6;text-decoration:none;
+    background:none;border:0;cursor:pointer;text-align:left;
+    transition:background .15s,color .15s;
+  }
+  .item svg{width:21px;height:21px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .item:hover{background:rgba(255,255,255,.08);color:#fff}
+  .item:focus-visible{outline:2px solid #4fd1c5;outline-offset:2px}
+  .item:active{background:rgba(255,255,255,.14)}
+  .item[aria-current="page"]{background:#1f8f86;color:#fff;font-weight:600}
+
+  .notice{
+    margin:0 14px 18px;padding:12px 14px;border-radius:8px;
+    background:rgba(79,209,197,.12);border:1px solid rgba(79,209,197,.35);
+    color:#d8f5f1;font-size:13.5px;line-height:1.4;
+    opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s;
+    pointer-events:none;
+  }
+  .notice.show{opacity:1;transform:none}
+
+  /* Coluna principal */
+  .main{flex:1;display:flex;flex-direction:column;min-width:0;height:100vh}
+  .topbar{
+    height:76px;flex:none;background:#fff;border-bottom:1px solid #e1e6ef;
+    display:flex;align-items:center;justify-content:flex-end;padding:0 32px;
+  }
+  .user{display:flex;align-items:center;gap:12px}
+  .avatar{
+    width:42px;height:42px;border-radius:50%;
+    background:#1f8f86;color:#fff;font-weight:600;font-size:15px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .user-name{font-size:15px;font-weight:600;color:#1c2536;line-height:1.25}
+  .user-role{font-size:13px;color:#5f6b80;line-height:1.25}
+
+  .content{flex:1;min-height:0;overflow:auto;padding:20px 32px 24px;display:flex;flex-direction:column;gap:14px}
+
+  /* Perfil do aluno */
+  .crumb{font-size:13.5px;color:#5f6b80;flex:none}
+  .crumb b{color:#1c2536;font-weight:600}
+
+  .card{background:#fff;border:1px solid #e1e6ef;border-radius:10px}
+  .profile{display:flex;align-items:center;gap:18px;padding:16px 22px;flex:none}
+  .p-avatar{width:56px;height:56px;border-radius:50%;background:#dfe7f3;color:#2c4470;font-size:20px;font-weight:600;display:flex;align-items:center;justify-content:center;flex:none}
+  .p-id{flex:1;min-width:0}
+  .p-name{font-size:22px;font-weight:600;display:flex;align-items:center;gap:12px}
+  .p-sub{font-size:14.5px;color:#5f6b80;margin-top:3px}
+  .p-facts{display:flex;gap:36px}
+  .fact .k{font-size:12.5px;color:#5f6b80}
+  .fact .v{font-size:15px;font-weight:600;margin-top:2px}
+  .prio{font-size:11.5px;font-weight:700;letter-spacing:.4px;border-radius:5px;padding:3px 9px}
+  .prio.alta{background:#fde8e8;color:#b42318}
+  .prio.media{background:#fef3d6;color:#92590a}
+  .prio.baixa{background:#e6eaf1;color:#41506a}
+
+  .cols{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:16px}
+  .left{display:flex;flex-direction:column;gap:14px;min-height:0}
+  .panel{display:flex;flex-direction:column;min-height:0}
+  .panel.grow{flex:1}
+  .panel-head{padding:12px 18px;border-bottom:1px solid #e1e6ef;display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none}
+  .panel-head h2{font-size:16px;font-weight:600}
+  .panel-body{flex:1;min-height:0;overflow:auto}
+
+  .sit{list-style:none}
+  .sit li{display:flex;gap:12px;align-items:flex-start;padding:10px 18px;font-size:14px;line-height:1.35}
+  .sit li+li{border-top:1px solid #eef1f6}
+  .dot{width:22px;height:22px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .dot svg{width:13px;height:13px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .dot.bad{background:#d14a3f}.dot.warn{background:#d18a12}.dot.ok{background:#1f8f86}
+  .sit b{display:block;font-size:14.5px;font-weight:600}
+  .sit span{color:#5f6b80}
+
+  .hist{list-style:none;padding:8px 18px}
+  .hist li{display:grid;grid-template-columns:86px 1fr;gap:12px;padding:8px 0;font-size:14px;line-height:1.35}
+  .hist li+li{border-top:1px solid #eef1f6}
+  .hist .d{color:#5f6b80;font-variant-numeric:tabular-nums}
+  .hist small{display:block;font-size:13px;color:#5f6b80}
+
+  .ai-tag{
+    display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
+    color:#5b3fc4;background:#efeaff;border:1px solid #d6cbfa;border-radius:20px;padding:3px 10px;white-space:nowrap;
+  }
+  .ai-tag svg{width:13px;height:13px;fill:#5b3fc4}
+  .ai-tag.off{color:#8f1d14;background:#fdf1f0;border-color:#f0b9b4}
+
+  .ai{padding:14px 18px;display:flex;flex-direction:column;gap:12px}
+  .ai-banner{
+    display:flex;gap:10px;align-items:flex-start;background:#f7f5ff;border:1px solid #d6cbfa;border-radius:8px;
+    padding:10px 14px;font-size:13.5px;line-height:1.4;color:#3d2a8c;
+  }
+  .ai-banner svg{width:18px;height:18px;fill:#5b3fc4;flex:none;margin-top:1px}
+  .find{list-style:none;border:1px solid #e1e6ef;border-radius:8px}
+  .find li{display:grid;grid-template-columns:200px 1fr;gap:14px;padding:9px 14px;font-size:14px;line-height:1.38}
+  .find li+li{border-top:1px solid #eef1f6}
+  .find .k{font-size:13px;font-weight:600;color:#5b3fc4}
+  .find.rej{opacity:.55}
+  .concl{font-size:14px;line-height:1.4;background:#f6f8fb;border-radius:8px;padding:10px 14px}
+  .concl b{font-weight:600}
+  .sec-title{font-size:13px;font-weight:700;color:#5f6b80;text-transform:uppercase;letter-spacing:.5px}
+
+  .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .actions .hint{font-size:13px;color:#5f6b80;margin-left:auto}
+  .btn{
+    font:inherit;font-size:14.5px;font-weight:600;height:40px;padding:0 16px;border-radius:8px;cursor:pointer;
+    border:1px solid #c5cddb;background:#fff;color:#1c2536;
+  }
+  .btn:hover{background:#f3f5f9}
+  .btn:focus-visible{outline:2px solid #1f8f86;outline-offset:2px}
+  .btn.primary{background:#1f8f86;border-color:#1f8f86;color:#fff}
+  .btn.primary:hover{background:#17736c}
+  .btn.danger{color:#b42318;border-color:#f0b9b4}
+  .btn.danger:hover{background:#fdf1f0}
+  .btn.on{background:#eef8f7;border-color:#1f8f86;color:#17736c}
+  .btn.link{border:0;background:none;color:inherit;text-decoration:underline;padding:0 6px;height:auto}
+
+  .form{border:1px solid #e1e6ef;border-radius:8px;padding:12px 14px;display:grid;grid-template-columns:230px 1fr;gap:10px 14px;align-items:start}
+  .form label{font-size:13px;font-weight:600;color:#41506a;display:block;margin-bottom:4px}
+  .form select,.form input[type=text],.form textarea{
+    width:100%;font:inherit;font-size:14px;border:1px solid #c5cddb;border-radius:6px;padding:8px 10px;background:#fff;color:#1c2536;height:38px;
+  }
+  .form textarea{resize:none}
+  .form select:focus,.form input:focus,.form textarea:focus{outline:2px solid #1f8f86;outline-offset:1px}
+  .form .chk{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:400;color:#1c2536;margin:0;height:38px;margin-top:21px}
+  .form .chk input{width:17px;height:17px;accent-color:#1f8f86}
+  .form .full{grid-column:1/-1}
+  .err{color:#b42318;font-size:13px;margin-top:4px}
+
+  .result{border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:12px;font-size:14px;line-height:1.4}
+  .result.ok{background:#e8f6f4;border:1px solid #bfe3df;color:#0f5c56}
+  .result.no{background:#fdf1f0;border:1px solid #f0b9b4;color:#8f1d14}
+  .result div{flex:1}
+  .result b{display:block;font-size:14.5px}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+      <rect width="36" height="36" rx="9" fill="#1f8f86"/>
+      <path d="M8 25V12l6 8 4-6 4 6 6-8v13" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="28" cy="9" r="2.4" fill="#b9f3ec"/>
+    </svg>
+    <span class="brand-name">Monitor<b>IA</b></span>
+  </div>
+
+  <nav aria-label="Módulos do sistema">
+    <ul>
+      <li><a class="item" href="dashboard.html">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="10" rx="1.5"/><rect x="13" y="3" width="8" height="6" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="15" width="8" height="6" rx="1.5"/></svg>
+        Dashboard</a></li>
+      <li><a class="item" href="alunos.html" aria-current="page">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.5c2.2.8 3.5 2.7 3.5 5.5"/></svg>
+        Alunos</a></li>
+      <li><button type="button" class="item" data-modulo="Comunicação">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-8l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M8 10h8M8 13h5"/></svg>
+        Comunicação</button></li>
+      <li><button type="button" class="item" data-modulo="Inteligência Artificial">
+        <svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>
+        Inteligência Artificial</button></li>
+      <li><a class="item" href="relatorios.html">
+        <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9.5 17v-3M12.5 17v-6M15.5 17v-4"/></svg>
+        Relatórios</a></li>
+      <li><button type="button" class="item" data-modulo="Ajuda">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1 1-1.1 1.8"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg>
+        Ajuda</button></li>
+    </ul>
+  </nav>
+
+  <div class="notice" id="notice" role="status" aria-live="polite"></div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <div class="user">
+      <div class="avatar" aria-hidden="true">MM</div>
+      <div>
+        <div class="user-name">Maria Monitor</div>
+        <div class="user-role">Monitoria EaD</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="content" id="conteudo" aria-label="Perfil do aluno">
+    <div class="crumb">Alunos / <b>João Pereira</b></div>
+
+    <section class="card profile" aria-label="Identificação do aluno">
+      <div class="p-avatar" aria-hidden="true">JP</div>
+      <div class="p-id">
+        <h1 class="p-name">João Pereira <span id="prio"></span></h1>
+        <div class="p-sub">Técnico em Logística · Aguardando primeiro acesso</div>
+      </div>
+      <div class="p-facts">
+        <div class="fact"><div class="k">Data de matrícula</div><div class="v">10/06/2026</div></div>
+        <div class="fact"><div class="k">Última tentativa de contato</div><div class="v">18/06/2026 · e-mail institucional</div></div>
+      </div>
+    </section>
+
+    <div class="cols">
+      <div class="left">
+        <section class="card panel" aria-label="Situação de cadastro e contato">
+          <div class="panel-head"><h2>Situação de cadastro e contato</h2></div>
+          <ul class="sit" id="sit"></ul>
+        </section>
+        <section class="card panel grow" aria-label="Histórico de comunicação">
+          <div class="panel-head"><h2>Histórico de comunicação</h2></div>
+          <div class="panel-body"><ul class="hist" id="hist"></ul></div>
+        </section>
+      </div>
+
+      <section class="card panel" aria-label="Análise da IA e decisão da monitoria">
+        <div class="panel-head">
+          <h2>O que a IA identificou e por quê</h2>
+          <span id="aitag"></span>
+        </div>
+        <div class="panel-body">
+          <div class="ai">
+            <div class="ai-banner">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>
+              <span>Análise gerada automaticamente pela IA com base nas quatro fontes abaixo. A IA não executa nenhuma ação: quem decide o que fazer é a monitoria.</span>
+            </div>
+            <ul class="find" id="find">
+              <li><span class="k">Status de acesso ao AVA</span><span>Nenhum acesso registrado desde a matrícula, em 10/06/2026.</span></li>
+              <li><span class="k">Histórico de comunicação</span><span>A última mensagem enviada (18/06/2026, e-mail institucional) não foi entregue.</span></li>
+              <li><span class="k">Tentativas anteriores</span><span>As 2 tentativas usaram o mesmo canal, o e-mail institucional, que não está ativado.</span></li>
+              <li><span class="k">Dados cadastrais</span><span>E-mail institucional não ativado e telefone sem confirmação: nenhum canal de contato validado.</span></li>
+            </ul>
+            <div class="concl" id="concl"><b>Conclusão da IA:</b> prioridade ALTA, porque o aluno provavelmente ainda não recebeu nenhuma orientação de acesso.</div>
+
+            <div class="sec-title">Decisão da monitoria</div>
+            <div id="resultado"></div>
+            <div class="actions" id="acoes"></div>
+            <div id="formulario"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  /* Aviso dos módulos fora do protótipo */
+  var notice = document.getElementById('notice'), timer;
+  document.querySelectorAll('button[data-modulo]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      notice.textContent = 'O módulo ' + btn.dataset.modulo + ' não está disponível neste protótipo.';
+      notice.classList.add('show');
+      clearTimeout(timer);
+      timer = setTimeout(function () { notice.classList.remove('show'); }, 3500);
+    });
+  });
+
+  /* Estado do perfil (valores de exemplo) */
+  var HOJE = '19/11/2026';
+  var st = {
+    prio: 'ALTA', tel: '(11) 98765-4321', telOk: false, rejeitada: false, ultima: null,
+    hist: [
+      {d: '18/06/2026', t: 'Mensagem enviada ao e-mail institucional', s: 'Não entregue'},
+      {d: '12/06/2026', t: 'Boas-vindas enviadas ao e-mail institucional', s: 'Sem confirmação de entrega'},
+      {d: '10/06/2026', t: 'Matrícula realizada', s: 'Técnico em Logística'}
+    ]
+  };
+  var anterior = null, modo = null;
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function btn(txt, cls, fn) { var b = el('button', 'btn' + (cls ? ' ' + cls : ''), txt); b.type = 'button'; b.addEventListener('click', fn); return b; }
+  var ICO = {
+    bad: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    warn: '<svg viewBox="0 0 24 24"><path d="M12 5v9M12 19v.5"/></svg>',
+    ok: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
+  };
+
+  function aplicar(msg, tipo, fn) {
+    anterior = JSON.stringify(st);
+    fn();
+    st.ultima = {msg: msg.t, det: msg.d, tipo: tipo};
+    modo = null;
+    render();
+  }
+
+  function sitItem(tipo, titulo, det) {
+    var li = el('li'), d = el('span', 'dot ' + tipo), tx = el('div');
+    d.innerHTML = ICO[tipo];
+    tx.appendChild(el('b', null, titulo)); tx.appendChild(el('span', null, det));
+    li.appendChild(d); li.appendChild(tx);
+    return li;
+  }
+
+  function render() {
+    var p = $('prio');
+    p.className = 'prio ' + (st.prio === 'ALTA' ? 'alta' : st.prio === 'MÉDIA' ? 'media' : 'baixa');
+    p.textContent = 'PRIORIDADE ' + st.prio;
+
+    var sit = $('sit'); sit.innerHTML = '';
+    sit.appendChild(sitItem('bad', 'E-mail institucional não ativado', 'O aluno ainda não ativou a conta institucional.'));
+    sit.appendChild(sitItem('bad', 'Última mensagem enviada não foi entregue', 'Enviada em 18/06/2026 ao e-mail institucional.'));
+    sit.appendChild(st.telOk
+      ? sitItem('ok', 'Telefone confirmado', st.tel + ' · confirmado pela monitoria em ' + HOJE + '.')
+      : sitItem('warn', 'Telefone necessita confirmação', st.tel + ' · número ainda não validado com o aluno.'));
+
+    var h = $('hist'); h.innerHTML = '';
+    st.hist.forEach(function (x) {
+      var li = el('li'), c = el('div');
+      li.appendChild(el('span', 'd', x.d));
+      c.appendChild(document.createTextNode(x.t)); c.appendChild(el('small', null, x.s));
+      li.appendChild(c); h.appendChild(li);
+    });
+
+    var tag = $('aitag');
+    if (st.rejeitada) { tag.className = 'ai-tag off'; tag.textContent = 'Análise rejeitada pela monitoria'; }
+    else { tag.className = 'ai-tag'; tag.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Gerado pela IA'; }
+    $('find').className = 'find' + (st.rejeitada ? ' rej' : '');
+
+    var r = $('resultado'); r.innerHTML = '';
+    if (st.ultima) {
+      var box = el('div', 'result ' + (st.ultima.tipo === 'no' ? 'no' : 'ok')), tx = el('div');
+      box.setAttribute('role', 'status');
+      tx.appendChild(el('b', null, st.ultima.msg)); tx.appendChild(el('span', null, st.ultima.det));
+      box.appendChild(tx);
+      box.appendChild(btn('Desfazer', 'link', function () { st = JSON.parse(anterior); st.ultima = null; anterior = null; modo = null; render(); }));
+      r.appendChild(box);
+    }
+
+    var a = $('acoes'); a.innerHTML = '';
+    [['corrigir', 'Corrigir dados'], ['ajustar', 'Ajustar análise'], ['rejeitar', 'Rejeitar análise'], ['intervir', 'Intervir manualmente']].forEach(function (x) {
+      var cls = x[0] === 'rejeitar' ? 'danger' : x[0] === 'intervir' ? 'primary' : '';
+      if (modo === x[0] && cls !== 'primary') cls = 'on';
+      var b = btn(x[1], cls, function () { modo = modo === x[0] ? null : x[0]; render(); });
+      b.setAttribute('aria-expanded', modo === x[0]);
+      if (x[0] === 'rejeitar' && st.rejeitada) b.disabled = true, b.style.opacity = .5, b.style.cursor = 'default';
+      a.appendChild(b);
+    });
+    if (!modo) a.appendChild(el('span', 'hint', 'Nenhuma ação é executada sem você.'));
+
+    renderForm();
+  }
+
+  function campo(rotulo, id, node) { var c = el('div'), l = el('label', null, rotulo); l.htmlFor = id; node.id = id; c.appendChild(l); c.appendChild(node); return c; }
+  function rodape(f, txt, cls, fn) {
+    var ac = el('div', 'actions full');
+    ac.appendChild(btn(txt, cls, fn));
+    ac.appendChild(btn('Cancelar', '', function () { modo = null; render(); }));
+    f.appendChild(ac);
+  }
+
+  function renderForm() {
+    var w = $('formulario'); w.innerHTML = '';
+    if (!modo) return;
+    var f = el('div', 'form'), foco;
+
+    if (modo === 'corrigir') {
+      var tel = el('input'); tel.type = 'text'; tel.value = st.tel; tel.maxLength = 20;
+      var c1 = campo('Telefone do aluno', 'f-tel', tel), err = el('div', 'err'); c1.appendChild(err);
+      var lab = el('label', 'chk'), chk = el('input'); chk.type = 'checkbox'; chk.checked = st.telOk;
+      lab.appendChild(chk); lab.appendChild(document.createTextNode('Telefone confirmado com o aluno'));
+      f.appendChild(c1); f.appendChild(lab);
+      rodape(f, 'Salvar correção', 'primary', function () {
+        var v = tel.value.trim();
+        if (v.replace(/\D/g, '').length < 10) { err.textContent = 'Informe um telefone com DDD.'; tel.focus(); return; }
+        aplicar({t: 'Dados corrigidos por Maria Monitor', d: 'Telefone: ' + v + (chk.checked ? ' (confirmado).' : ' (ainda sem confirmação).')}, 'ok', function () {
+          st.tel = v; st.telOk = chk.checked;
+          st.hist.unshift({d: HOJE, t: 'Dados cadastrais corrigidos pela monitoria', s: 'Telefone ' + v + (chk.checked ? ' confirmado' : ' atualizado')});
+        });
+      });
+      foco = tel;
+    }
+
+    if (modo === 'ajustar') {
+      var s = el('select');
+      ['ALTA', 'MÉDIA', 'BAIXA'].forEach(function (x) { var o = el('option', null, x); if (x === st.prio) o.selected = true; s.appendChild(o); });
+      var obs = el('textarea'); obs.maxLength = 160; obs.placeholder = 'Ex.: aluno avisou que inicia na próxima semana';
+      f.appendChild(campo('Prioridade do caso', 'f-prio', s)); f.appendChild(campo('Observação (opcional)', 'f-obs', obs));
+      rodape(f, 'Salvar ajuste', 'primary', function () {
+        var v = s.value, o = obs.value.trim();
+        aplicar({t: 'Análise ajustada por Maria Monitor', d: 'Prioridade definida como ' + v + '.' + (o ? ' Observação: ' + o : '')}, 'ok', function () { st.prio = v; });
+      });
+      foco = s;
+    }
+
+    if (modo === 'rejeitar') {
+      var mot = el('textarea'); mot.maxLength = 160; mot.placeholder = 'Ex.: aluno já está em contato com o polo';
+      var c = campo('Motivo da rejeição (opcional)', 'f-mot', mot); c.className = 'full';
+      f.appendChild(c);
+      rodape(f, 'Confirmar rejeição', 'danger', function () {
+        var m = mot.value.trim();
+        aplicar({t: 'Análise da IA rejeitada por Maria Monitor', d: m ? 'Motivo: ' + m : 'A análise deixa de orientar este caso.'}, 'no', function () { st.rejeitada = true; });
+      });
+      foco = mot;
+    }
+
+    if (modo === 'intervir') {
+      var tp = el('select');
+      ['Ligação telefônica', 'Mensagem por WhatsApp', 'E-mail pessoal do aluno', 'Contato com o polo de apoio'].forEach(function (x) { tp.appendChild(el('option', null, x)); });
+      var nota = el('textarea'); nota.maxLength = 160; nota.placeholder = 'Ex.: confirmar telefone e orientar a ativação do e-mail';
+      f.appendChild(campo('Ação realizada pela monitoria', 'f-tipo', tp)); f.appendChild(campo('Anotação (opcional)', 'f-nota', nota));
+      rodape(f, 'Registrar intervenção', 'primary', function () {
+        var t = tp.value, n = nota.value.trim();
+        aplicar({t: 'Intervenção manual registrada por Maria Monitor', d: t + '.' + (n ? ' Anotação: ' + n : '')}, 'ok', function () {
+          st.hist.unshift({d: HOJE, t: 'Intervenção manual: ' + t, s: n || 'Registrada por Maria Monitor'});
+        });
+      });
+      foco = tp;
+    }
+
+    w.appendChild(f);
+    if (foco) foco.focus();
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
