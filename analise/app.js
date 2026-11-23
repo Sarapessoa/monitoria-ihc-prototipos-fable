@@ -229,7 +229,7 @@
   // ---------------- Telas ----------------
   function rTelas() {
     var gal = galTelas();
-    var h = '<div class="titulo"><div><h1>Telas</h1><p>A mesma tela nos três cenários.</p></div></div><div class="ferr">' + seg("tela", eT.tela, TELAS) + seg("anot", eT.anot, [["1", "Anotada"], ["0", "Original"]]) + '</div><div class="g3">';
+    var h = '<div class="titulo"><div><h1>Telas</h1><p>A mesma tela nos três cenários.</p></div></div><div class="ferr">' + seg("tela", eT.tela, TELAS) + '<label class="chave"><input type="checkbox" id="chAnot"' + (eT.anot === "1" ? " checked" : "") + '> Mostrar anotações</label></div><div class="g3">';
     ABC.forEach(function (c) {
       var k = gal.findIndex(function (it) { return it.c === c && it.tela === eT.tela; }), it = gal[k];
       var ps = probsDe(c).filter(function (p) { return p.telas.indexOf(eT.tela) >= 0; }).sort(function (a, b) { return b.sev - a.sev; });
@@ -241,9 +241,10 @@
     $("#sec-telas").innerHTML = h + "</div>";
   }
   $("#sec-telas").addEventListener("click", function (ev) {
-    var b = ev.target.closest("button[data-tela], button[data-anot]"); if (!b) return;
-    if (b.dataset.tela) eT.tela = b.dataset.tela; if (b.dataset.anot) eT.anot = b.dataset.anot; rTelas();
+    var b = ev.target.closest("button[data-tela]"); if (!b) return;
+    eT.tela = b.dataset.tela; rTelas();
   });
+  $("#sec-telas").addEventListener("change", function (ev) { if (ev.target.id === "chAnot") { eT.anot = ev.target.checked ? "1" : "0"; rTelas(); } });
 
   // ---------------- Prompts ----------------
   var NP = { P0: "Frame Master", P1: "Dashboard", P2: "Alunos", P3: "Relatórios" };
@@ -352,7 +353,7 @@
     if (foco) ePr.abertos[foco] = 1;
     var L = listaProb();
     var h = '<div class="titulo"><div><h1>Problemas</h1><p>Severidade de 0 a 4 (Nielsen, 1994) e a origem de cada problema no prompt.</p></div></div><div class="ferr">' +
-      seg("cen", ePr.c, [["", "Todos"], ["A", "A"], ["B", "B"], ["C", "C"]]) +
+      sel("fC", ePr.c, [["", "Todos os cenários"], ["A", "A · Baseline"], ["B", "B · Intermediário"], ["C", "C · Mínimo"]]) +
       sel("fS", ePr.s, [["", "Toda severidade"], ["3", "3 · maior"], ["2", "2 · menor"], ["1", "1 · cosmético"]]) +
       sel("fT", ePr.t, [["", "Toda tarefa"]].concat(["Priorizar", "Compreender", "Decidir", "Tratar erro", "Acompanhar"].map(function (t) { return [t, t]; }))) +
       sel("fO", ePr.o, [["", "Toda origem"]].concat(Object.keys(ORIG).map(function (k) { return [k, ORIG[k]]; }))) +
@@ -371,7 +372,7 @@
     $("#sec-problemas").innerHTML = h + "</div>";
     if (foco) { var el = document.getElementById("prob-" + foco); if (el) { el.scrollIntoView({ block: "start" }); el.classList.add("destaque"); } }
   }
-  $("#sec-problemas").addEventListener("change", function (ev) { var m = { fS: "s", fT: "t", fO: "o" }[ev.target.id]; if (m) { ePr[m] = ev.target.value; rProb(); } });
+  $("#sec-problemas").addEventListener("change", function (ev) { var m = { fC: "c", fS: "s", fT: "t", fO: "o" }[ev.target.id]; if (m) { ePr[m] = ev.target.value; rProb(); } });
   $("#sec-problemas").addEventListener("click", function (ev) {
     var b = ev.target.closest("button"); if (!b || b.hasAttribute("data-gal")) return;
     if (b.dataset.cen !== undefined) ePr.c = b.dataset.cen;
@@ -412,7 +413,7 @@
     var partes = (location.hash || "#visao").slice(1).split("/"), aba = partes[0], arg = partes[1];
     if (!$("#sec-" + aba)) aba = "visao";
     $$(".secao").forEach(function (s) { s.classList.toggle("ativa", s.id === "sec-" + aba); });
-    $$(".nav a").forEach(function (a) { a.classList.toggle("ativa", a.dataset.aba === aba); if (a.dataset.aba === aba) a.scrollIntoView({ block: "nearest", inline: "nearest" }); });
+    $$(".nav a").forEach(function (a) { a.classList.toggle("ativa", a.dataset.aba === aba); if (a.dataset.aba === aba) { var nv = a.parentNode, ra = a.getBoundingClientRect(), rn = nv.getBoundingClientRect(); if (ra.right > rn.right - 24 || ra.left < rn.left) nv.scrollLeft += ra.left - rn.left - 8; } });
     if (aba === "visao" && !feito.visao) { rVisao(); feito.visao = 1; }
     if (aba === "telas") rTelas();
     if (aba === "prompts") { if (arg && D.prompts[arg]) { eP.p = arg; eP.modo = "AB"; } rPrompts(); }
