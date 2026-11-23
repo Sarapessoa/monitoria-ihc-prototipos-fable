@@ -88,7 +88,7 @@
     mvMostrar(); $(".mv-fechar", mv).focus();
   }
   function mvFechar() { mv.hidden = true; vista.innerHTML = ""; document.body.style.overflow = ""; if (M.volta && M.volta.focus) M.volta.focus(); }
-  function mvIr(k) { M.i = (k + M.itens.length) % M.itens.length; M.modo = "img"; mvMostrar(); }
+  function mvIr(k) { M.i = (k + M.itens.length) % M.itens.length; if (!M.itens[M.i].prot) M.modo = "img"; mvMostrar(); }
   function mvMostrar() {
     var it = M.itens[M.i], varios = M.itens.length > 1;
     $(".mv-pos", mv).textContent = varios ? (M.i + 1) + " de " + M.itens.length : "";
@@ -106,6 +106,7 @@
       mvFrame();
     }
     txt.innerHTML = mvTexto(it); txt.scrollTop = 0;
+    $(".mv-dica", mv).textContent = M.modo === "img" ? "Role ou use + e − para o zoom, arraste para mover, ← → para passar." : "Use o protótipo como uma página. As setas da tela passam para o próximo.";
   }
   function mvAjustar() {
     var W = vista.clientWidth, H = vista.clientHeight, m = 32;
@@ -188,8 +189,18 @@
         (outros.length ? '<dt>Também em</dt><dd><span class="ids">' + outros.map(idl).join("") + "</span></dd>" : "") +
         '</dl><div class="acoes"><button type="button" class="btn" data-mv="ver" data-alvo="#problemas/' + p.id + '">Ver na lista</button></div>';
     }
-    return '<div class="chips">' + selo("marca", "Máximo") + selo("neu", "Fora da comparação") + "</div><h3>" + NT[it.tela] + '</h3><p style="margin:0;color:var(--mudo)">Prompt Baseline com 20 especificações acrescentadas.</p><div class="acoes">' + btnModo + "</div>" +
-      "<h4>Resultado das especificações acrescentadas</h4>" + D.melhorias.map(function (m) { return '<div class="mv-prob"><div class="l1">' + seloRes(m.resultado) + '<span class="id">' + m.id + "</span><b>" + esc(m.espec) + "</b></div></div>"; }).join("");
+    // Máximo: só as especificações citadas nas linhas acrescentadas ao prompt desta tela
+    var pr = { dashboard: "P1", alunos: "P2", relatorios: "P3" }[it.tela], ids = [];
+    D.prompts[pr].MAX.forEach(function (l) { (l.ms || []).forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); }); });
+    var ms = D.melhorias.filter(function (m) { return ids.indexOf(m.id) >= 0; });
+    var tipo = function (r) { return /^Sim/.test(r) ? "Sim" : /^Parcial/.test(r) ? "Parcial" : "N/V"; };
+    var cont = ["Sim", "Parcial", "N/V"].map(function (k) { return [k, ms.filter(function (m) { return tipo(m.resultado) === k; }).length]; }).filter(function (x) { return x[1]; });
+    return '<div class="chips">' + selo("marca", "Máximo") + selo("neu", "Fora da comparação") + "</div><h3>" + NT[it.tela] + '</h3><p style="margin:0;color:var(--mudo)">' + pr + " com especificações de IHC acrescentadas ao Prompt Baseline.</p>" + '<div class="acoes">' + btnModo + "</div>" +
+      "<h4>Especificações citadas neste prompt · " + ms.length + '</h4><div class="mv-resumo">' + cont.map(function (x) { return seloRes(x[0]) + '<span class="conta">' + x[1] + "</span>"; }).join("") + '</div><ul class="mv-lista">' +
+      ms.map(function (m) {
+        var det = m.resultado.replace(/^(Sim|Parcial|N\/V)(:\s*|,\s*)?/, "");
+        return '<li><span class="id">' + m.id + '</span><div><b>' + esc(m.espec) + "</b>" + (det ? "<p>" + esc(det) + "</p>" : "") + "</div>" + seloRes(m.resultado) + "</li>";
+      }).join("") + "</ul>";
   }
   // abrir a partir da página
   document.addEventListener("click", function (e) {

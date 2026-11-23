@@ -12,6 +12,7 @@
   --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-padding-top: 88px; }
 body { margin: 0; background: var(--bg); color: var(--tinta); font: 400 14px/1.55 var(--fonte); -webkit-font-smoothing: antialiased; }
 a { color: var(--marca-2); text-decoration: none; }
@@ -267,3 +268,12 @@ mark.dl-del-w { background: #ffb3ab; color: inherit; border-radius: 3px; padding
   .dl-arqs .qs { display: none; }
   .dl-cab { padding: 12px 14px; }
 }
+
+/* lista compacta do modal (Melhorias) */
+.mv-resumo { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 0 0 10px; }
+.mv-resumo .conta { margin-right: 10px; font-variant-numeric: tabular-nums; }
+.mv-lista { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--linha); }
+.mv-lista li { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--linha); }
+.mv-lista .id { justify-self: start; margin-top: 1px; }
+.mv-lista b { font-weight: 500; font-size: 13.5px; line-height: 1.4; display: block; }
+.mv-lista p { margin: 3px 0 0; color: var(--mudo); font-size: 12.5px; line-height: 1.45; }
