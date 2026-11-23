@@ -172,7 +172,7 @@ td.det { background: #fafbfc; padding: 20px 24px; }
 /* modal de visualização */
 .mv { position: fixed; inset: 0; z-index: 60; display: grid; grid-template-columns: minmax(0, 1fr) 400px; background: #0c1215; }
 .mv[hidden] { display: none; }
-@media (max-width: 900px) { .mv { grid-template-columns: 1fr; grid-template-rows: minmax(0, 62vh) minmax(0, 1fr); } }
+
 .mv-palco { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 .mv-vista { position: relative; flex: 1; overflow: hidden; cursor: grab; touch-action: none; }
 .mv-vista.arrasta { cursor: grabbing; }
@@ -208,7 +208,28 @@ td.det { background: #fafbfc; padding: 20px 24px; }
 .mv-txt .dl { grid-template-columns: 1fr; gap: 2px; }
 .mv-txt .dl dd { margin-bottom: 10px; }
 .mv-dica { color: var(--mudo); font-size: 12.5px; padding: 12px 20px; border-top: 1px solid var(--linha); }
-@media (max-width: 900px) { .mv-dica { display: none; } .mv-zoom { bottom: 108px; } }
+/* modal no celular: barra escura no topo, imagem na largura toda, controles compactos, texto embaixo */
+@media (max-width: 900px) {
+  .mv { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, min(50vh, calc(74vw + 58px))) minmax(0, 1fr); }
+  .mv-lado { display: contents; }
+  .mv-lado-cab { order: 0; background: #0c1215; border-bottom: 0; padding: 10px 12px 6px 16px; }
+  .mv-pos { color: rgba(255, 255, 255, .78); }
+  .mv-fechar { background: rgba(255, 255, 255, .14); }
+  .mv-fechar::before, .mv-fechar::after { background: #fff; }
+  .mv-palco { order: 1; }
+  .mv-txt { order: 2; background: #fff; border-radius: 16px 16px 0 0; padding: 18px 16px 24px; }
+  .mv-txt h3 { font-size: 18px; }
+  .mv-dica { display: none; }
+  .mv-vista img { box-shadow: 0 8px 24px rgba(0, 0, 0, .4); }
+  .mv-seta { width: 34px; height: 34px; font-size: 18px; top: calc(50% - 30px); background: rgba(255, 255, 255, .16); }
+  .mv-seta.esq { left: 6px; } .mv-seta.dir { right: 6px; }
+  .mv-zoom { display: none !important; } /* no celular: pinça e toque duplo */
+  .mv-zoom button { height: 28px; min-width: 28px; padding: 0 6px; font-size: 13px; }
+  .mv-zoom .pct { min-width: 44px; }
+  .mv-trilha { height: 58px; padding: 6px 12px 10px; gap: 6px; scrollbar-width: none; }
+  .mv-trilha::-webkit-scrollbar { display: none; }
+  .mv-trilha button { width: 68px; height: 42px; border-radius: 6px; }
+}
 
 /* diff dos prompts (padrão de revisão de código) */
 .dl { display: grid; grid-template-columns: 236px minmax(0, 1fr); gap: 16px; align-items: start; }

@@ -109,7 +109,7 @@
     $(".mv-dica", mv).textContent = M.modo === "img" ? "Role ou use + e − para o zoom, arraste para mover, ← → para passar." : "Use o protótipo como uma página. As setas da tela passam para o próximo.";
   }
   function mvAjustar() {
-    var W = vista.clientWidth, H = vista.clientHeight, m = 32;
+    var W = vista.clientWidth, H = vista.clientHeight, m = W < 600 ? 10 : 32;
     M.fit = Math.min((W - m * 2) / M.w, (H - m * 2) / M.h, 1.5);
     M.s = M.fit; M.x = (W - M.w * M.s) / 2; M.y = (H - M.h * M.s) / 2; mvAplicar();
   }
