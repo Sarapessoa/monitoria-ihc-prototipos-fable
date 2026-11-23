@@ -39,9 +39,18 @@
   <a href="https://github.com/Sarapessoa/monitoria-ihc-prototipos-fable/tree/main/registro">registro ↗</a>
 </footer>
 
-<div id="zoom" class="zoom" hidden>
-  <button type="button" class="zoom-fechar" aria-label="Fechar">Fechar</button>
-  <img alt="">
+<div id="visor" class="visor" hidden role="dialog" aria-modal="true" aria-label="Visualizador">
+  <div class="visor-bar">
+    <span class="visor-tit"></span><span class="visor-pos mono"></span>
+    <div class="visor-acoes">
+      <button type="button" data-v="ant" aria-label="Anterior">‹</button>
+      <button type="button" data-v="prox" aria-label="Próxima">›</button>
+      <button type="button" data-v="tam">Tamanho real</button>
+      <a class="visor-ext" target="_blank" rel="noopener">Nova aba ↗</a>
+      <button type="button" data-v="fechar">Fechar</button>
+    </div>
+  </div>
+  <div class="visor-corpo"></div>
 </div>
 
 <script src="dados.js"></script>

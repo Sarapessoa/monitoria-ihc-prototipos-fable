@@ -17,10 +17,10 @@
     ["Tratar erro", "ok", "ok", "ruim"], ["Acompanhar", "parcial", "parcial", "ruim"], ["Ajuda", "na", "na", "na"]
   ];
   var MUDOU = [
-    ["Resolvido em B e C", ["E1-01", "E1-04", "E1-08"], "Rejeitar no Dashboard, referente da confiança, cor da prioridade"],
-    ["Persiste nos três", ["E1-02", "PB-01", "PC-01", "E1-06", "PB-02", "PC-03"], "lista de alunos e autoria dos históricos"],
-    ["Novo em B e C", ["PB-05", "PC-04"], "telefone exibido, contra R3"],
-    ["Novo em C", ["PC-02"], "sem confiança da IA"]
+    ["Resolvido em B e C", ["E1-01", "E1-04", "E1-08"], "Rejeitar no Dashboard, referente da confiança, cor da prioridade", "pos"],
+    ["Persiste nos três", ["E1-02", "PB-01", "PC-01", "E1-06", "PB-02", "PC-03"], "lista de alunos e autoria dos históricos", "par"],
+    ["Novo em B e C", ["PB-05", "PC-04"], "telefone exibido, contra R3", "neg"],
+    ["Novo em C", ["PC-02"], "sem confiança da IA", "neg"]
   ];
   var GRUPOS = [["E1-02", "PB-01", "PC-01"], ["E1-06", "PB-02", "PC-03"], ["E1-07", "PB-03", "PC-05"], ["E1-05", "PB-04"], ["PB-05", "PC-04"]];
   var TELAS = [["moldura", "Frame Master"], ["dashboard", "Dashboard"], ["alunos", "Alunos"], ["relatorios", "Relatórios"]];
@@ -58,12 +58,63 @@
     return '<span class="mk ' + EST[k][2] + '" title="' + esc(txt) + '" aria-label="' + EST[k][1] + '"></span>';
   }
 
+  // ---------- Visualizador (figuras e protótipos dentro da página) ----------
+  var V = { lista: [], i: 0, modo: "img", real: false, volta: null };
+  var vis = $("#visor"), vCorpo = $(".visor-corpo", vis), vTit = $(".visor-tit", vis), vExt = $(".visor-ext", vis);
+  function vDesenhar() {
+    var ant = $('[data-v="ant"]', vis), prox = $('[data-v="prox"]', vis), tam = $('[data-v="tam"]', vis);
+    if (V.modo === "img") {
+      var el = V.lista[V.i], src = el.getAttribute("data-zoom");
+      vTit.textContent = el.getAttribute("data-tit") || "";
+      vCorpo.className = "visor-corpo" + (V.real ? " real" : "");
+      vCorpo.innerHTML = '<img src="' + src + '" alt="' + esc(vTit.textContent) + '">';
+      vExt.href = src;
+      ant.hidden = prox.hidden = V.lista.length < 2; tam.hidden = false;
+      tam.textContent = V.real ? "Ajustar à tela" : "Tamanho real";
+      $(".visor-pos", vis).textContent = V.lista.length > 1 ? (V.i + 1) + " / " + V.lista.length : "";
+    } else {
+      vCorpo.className = "visor-corpo frame";
+      vCorpo.innerHTML = '<div class="frame-caixa"><iframe src="' + V.url + '" title="' + esc(V.tit) + '"></iframe></div>';
+      vTit.textContent = V.tit; vExt.href = V.url;
+      ant.hidden = prox.hidden = tam.hidden = true; $(".visor-pos", vis).textContent = "";
+      vEscala();
+    }
+  }
+  function vEscala() {
+    var cx = $(".frame-caixa", vCorpo); if (!cx) return;
+    var w = vCorpo.clientWidth - 32, h = vCorpo.clientHeight - 32, k = Math.min(w / 1672, h / 941);
+    cx.style.width = Math.floor(1672 * k) + "px"; cx.style.height = Math.floor(941 * k) + "px";
+    $("iframe", cx).style.transform = "scale(" + k + ")";
+  }
+  window.addEventListener("resize", function () { if (!vis.hidden && V.modo === "frame") vEscala(); });
+  function vAbrir() { V.volta = document.activeElement; vis.hidden = false; document.body.style.overflow = "hidden"; vDesenhar(); $('[data-v="fechar"]', vis).focus(); }
+  function vFechar() { vis.hidden = true; vCorpo.innerHTML = ""; document.body.style.overflow = ""; if (V.volta && V.volta.focus) V.volta.focus(); }
+  function vPasso(d) { if (V.modo !== "img" || V.lista.length < 2) return; V.i = (V.i + d + V.lista.length) % V.lista.length; V.real = false; vDesenhar(); }
   document.addEventListener("click", function (e) {
     var t = e.target.closest("[data-zoom]");
-    if (t) { var z = $("#zoom"); $("img", z).src = t.getAttribute("data-zoom"); z.hidden = false; $(".zoom-fechar", z).focus(); return; }
-    if (e.target.closest("#zoom")) $("#zoom").hidden = true;
+    if (t && !vis.contains(t)) {
+      var g = t.getAttribute("data-galeria"), raiz = t.closest(".secao") || document;
+      V.lista = Array.prototype.slice.call(raiz.querySelectorAll("[data-zoom]")).filter(function (x) { return x.getAttribute("data-galeria") === g; });
+      V.i = Math.max(0, V.lista.indexOf(t)); V.modo = "img"; V.real = false; vAbrir(); return;
+    }
+    var pr = e.target.closest("[data-prot]");
+    if (pr) { V.modo = "frame"; V.url = pr.getAttribute("data-prot"); V.tit = pr.getAttribute("data-tit"); vAbrir(); return; }
+    var b = e.target.closest("[data-v]");
+    if (b && vis.contains(b)) {
+      var a = b.getAttribute("data-v");
+      if (a === "fechar") vFechar(); else if (a === "ant") vPasso(-1); else if (a === "prox") vPasso(1);
+      else if (a === "tam") { V.real = !V.real; vDesenhar(); }
+      return;
+    }
+    if (!vis.hidden && V.modo === "img" && e.target.tagName === "IMG" && vis.contains(e.target)) { V.real = !V.real; vDesenhar(); return; }
+    if (!vis.hidden && e.target === vCorpo) vFechar();
   });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") $("#zoom").hidden = true; });
+  document.addEventListener("keydown", function (e) {
+    if (vis.hidden) return;
+    if (e.key === "Escape") vFechar(); else if (e.key === "ArrowLeft") vPasso(-1); else if (e.key === "ArrowRight") vPasso(1);
+  });
+  var abrir = function (url, tit) { return '<button type="button" class="lnk" data-prot="' + url + '" data-tit="' + esc(tit) + '">Abrir protótipo</button>'; };
+  var cn = function (c) { return '<span class="cn">' + c + "</span>"; };
 
   // ---------- Visão geral ----------
   function tamTotal(c) { return ["P0", "P1", "P2", "P3"].reduce(function (s, p) { return s + D.prompts[p].tam[c][1]; }, 0); }
@@ -72,15 +123,15 @@
     ["A", "B", "C"].forEach(function (c) {
       var ps = D.problemas.filter(function (p) { return p.cenario === c; });
       var sv = [3, 2, 1].map(function (s) { var n = ps.filter(function (p) { return p.sev === s; }).length; return n ? "<span>" + pt(s) + n + "</span>" : ""; }).join("");
-      h += '<div class="cel"><span class="rot">' + c + '</span><div class="cen-nome">' + CEN[c].nome + '</div><p class="cen-sub">' + CEN[c].sub + "</p>" +
+      h += '<div class="cel">' + cn(c) + '<div class="cen-nome">' + CEN[c].nome + '</div><p class="cen-sub">' + CEN[c].sub + "</p>" +
         '<div class="metricas"><div><b>' + CEN[c].esp + "</b><span>especificações</span></div><div><b>" + fmt(tamTotal(c)) + "</b><span>palavras no prompt</span></div><div><b>" + ps.length + '</b><span>problemas</span></div></div><div class="sevs">' + sv + "</div></div>";
     });
     h += "</div>";
     h += '<div class="bloco"><span class="rot">Tarefas</span><div class="tab"><table><thead><tr><th>Tarefa</th><th class="c">A</th><th class="c">B</th><th class="c">C</th></tr></thead><tbody>' +
-      TAREFAS.map(function (t) { return "<tr><td>" + t[0] + "</td>" + [1, 2, 3].map(function (i) { var e = EST[t[i]]; return '<td class="c">' + mk(t[i]) + "</td>"; }).join("") + "</tr>"; }).join("") +
+      TAREFAS.map(function (t) { return "<tr><td>" + t[0] + "</td>" + [1, 2, 3].map(function (i) { return '<td class="st st-' + t[i] + '">' + mk(t[i]) + " " + EST[t[i]][1] + "</td>"; }).join("") + "</tr>"; }).join("") +
       '</tbody></table></div><div class="legenda">' + ["ok", "parcial", "ruim", "na"].map(function (k) { return mk(k) + " " + EST[k][1]; }).join(" &nbsp; ") + "</div></div>";
     h += '<div class="bloco"><span class="rot">O que mudou em relação a A</span><div class="lista">' +
-      MUDOU.map(function (m) { return '<div class="mud"><div>' + m[0] + "</div><div>" + esc(m[2]) + " &nbsp; " + m[1].map(idl).join(" ") + "</div></div>"; }).join("") + "</div></div>";
+      MUDOU.map(function (m) { return '<div class="mud"><div><span class="tag t-' + m[3] + '">' + m[0] + "</span></div><div>" + esc(m[2]) + " &nbsp; " + m[1].map(idl).join(" ") + "</div></div>"; }).join("") + "</div></div>";
     h += '<div class="bloco"><span class="rot">Tabelas do relatório</span>' +
       [["Tabela 19 · Matriz de resultados", D.t19], ["Tabela 18 · Síntese da UX", D.t18], ["Tabela 20 · Explicitação por plano de Garrett", D.t20], ["Tabela 21 · Conjunto mínimo", D.t21]]
         .map(function (t) { return '<details class="tab-d"><summary>' + t[0] + "</summary>" + tabela(t[1], true) + "</details>"; }).join("") + "</div>";
@@ -94,8 +145,8 @@
     ["A", "B", "C"].forEach(function (c) {
       var src = img(c, eT.tela, eT.anot === "1");
       var ps = D.problemas.filter(function (p) { return p.cenario === c && p.telas.indexOf(eT.tela) >= 0; }).sort(function (a, b) { return b.sev - a.sev; });
-      h += '<div><div class="tela-cab"><span><span class="rot">' + c + "</span> &nbsp;<b>" + CEN[c].nome + '</b></span><a href="' + vivo(c, eT.tela) + '" target="_blank" rel="noopener">Abrir ↗</a></div>' +
-        '<img class="tela-img" loading="lazy" src="' + src + '" data-zoom="' + src + '" alt="' + NOME_TELA[eT.tela] + ", " + CEN[c].nome + '">' +
+      h += '<div><div class="tela-cab"><span>' + cn(c) + " <b>" + CEN[c].nome + "</b></span>" + abrir(vivo(c, eT.tela), NOME_TELA[eT.tela] + " · " + c + " " + CEN[c].nome) + "</div>" +
+        '<button type="button" class="zoomavel" data-zoom="' + src + '" data-galeria="telas" data-tit="' + NOME_TELA[eT.tela] + " · " + c + " " + CEN[c].nome + (eT.anot === "1" && eT.tela !== "moldura" ? " · anotada" : "") + '"><img class="tela-img" loading="lazy" src="' + src + '" alt="' + NOME_TELA[eT.tela] + ", " + CEN[c].nome + '"></button>' +
         (ps.length ? '<ul class="lp">' + ps.map(function (p) { return '<li><a href="#problemas/' + p.id + '">' + pt(p.sev) + '<span class="mono">' + p.id + "</span>" + esc(p.curto) + "</a></li>"; }).join("") + "</ul>"
           : '<p class="vazio">' + (eT.tela === "moldura" ? "Moldura reutilizada nas demais telas" : "Sem problemas registrados") + "</p>") + "</div>";
     });
@@ -234,7 +285,7 @@
           "<div>Origem</div><div>" + esc(p.nota) + (p.specs.length ? " " + specs(p.specs.join(" ")) : "") + "</div>" +
           "<div>Severidade</div><div>" + p.sev + "</div>" +
           (outros.length ? "<div>Também em</div><div>" + outros.map(idl).join(" ") + "</div>" : "") +
-          '</div></div><div><img loading="lazy" src="' + src + '" data-zoom="' + src + '" alt="' + NOME_TELA[p.telas[0]] + " anotado, " + p.cenario + '"><div class="legenda">' + esc(p.evidencia) + "</div></div></div>";
+          '</div></div><div><button type="button" class="zoomavel" data-zoom="' + src + '" data-galeria="prob-' + p.id + '" data-tit="' + p.id + " · " + NOME_TELA[p.telas[0]] + " · " + p.cenario + " " + CEN[p.cenario].nome + '"><img loading="lazy" src="' + src + '" alt="' + NOME_TELA[p.telas[0]] + " anotado, " + p.cenario + '"></button><div class="legenda">' + esc(p.evidencia) + "</div></div></div>";
       }
       h += "</div>";
     });
@@ -256,7 +307,7 @@
     var h = '<div class="cab"><h2>Melhorias propostas</h2><span class="rot">Máximo · fora da comparação</span></div><div class="grade g3">' +
       ["dashboard", "alunos", "relatorios"].map(function (t) {
         var src = "../maximo/" + t + ".png";
-        return '<div><div class="tela-cab"><b>' + NOME_TELA[t] + '</b><a href="../maximo/' + t + '.html" target="_blank" rel="noopener">Abrir ↗</a></div><img class="tela-img" style="border-bottom:0" loading="lazy" src="' + src + '" data-zoom="' + src + '" alt="' + NOME_TELA[t] + ', Máximo"></div>';
+        return '<div><div class="tela-cab"><b>' + NOME_TELA[t] + "</b>" + abrir("../maximo/" + t + ".html", NOME_TELA[t] + " · Máximo") + '</div><button type="button" class="zoomavel" data-zoom="' + src + '" data-galeria="melh" data-tit="' + NOME_TELA[t] + ' · Máximo"><img class="tela-img" style="border-bottom:0" loading="lazy" src="' + src + '" alt="' + NOME_TELA[t] + ', Máximo"></button></div>';
       }).join("") + "</div>";
     h += '<div class="bloco"><span class="rot">Especificações acrescentadas · resultado</span><div class="tab"><table><thead><tr><th>ID</th><th>Especificação</th><th>Origem</th><th>Resultado</th></tr></thead><tbody>' +
       D.melhorias.map(function (m) { return '<tr id="melh-' + m.id + '"><td class="mono">' + m.id + "</td><td>" + esc(m.espec) + '</td><td style="color:var(--apoio)">' + esc(m.origem) + '</td><td>' + resSim(m.resultado) + ' <span style="color:var(--apoio)">' + esc(m.resultado.replace(/^(Sim|Parcial|N\/V)(:\s*|,\s*)?/, "")) + "</span></td></tr>"; }).join("") +
