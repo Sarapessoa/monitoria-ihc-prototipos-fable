@@ -6,14 +6,14 @@
 <title>MonitorIA - análise dos cenários</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
 <header class="topo">
-  <div class="trilho topo-in">
-    <a class="marca" href="#visao">MonitorIA <span class="mono">análise A · B · C</span></a>
-    <nav class="abas" aria-label="Seções">
+  <div class="envolve topo-in">
+    <a class="marca" href="#visao"><i>M</i>MonitorIA <small>Análise dos cenários</small></a>
+    <nav class="nav" aria-label="Seções">
       <a href="#visao" data-aba="visao">Visão geral</a>
       <a href="#telas" data-aba="telas">Telas</a>
       <a href="#prompts" data-aba="prompts">Prompts</a>
@@ -21,11 +21,11 @@
       <a href="#problemas" data-aba="problemas">Problemas</a>
       <a href="#melhorias" data-aba="melhorias">Melhorias</a>
     </nav>
-    <a class="ext" href="../">Protótipos ↗</a>
+    <a class="voltar" href="../">Protótipos</a>
   </div>
 </header>
 
-<main class="trilho">
+<main class="envolve">
   <section id="sec-visao" class="secao"></section>
   <section id="sec-telas" class="secao"></section>
   <section id="sec-prompts" class="secao"></section>
@@ -34,23 +34,28 @@
   <section id="sec-melhorias" class="secao"></section>
 </main>
 
-<footer class="trilho rodape mono">
-  NP2 · Aplicações em IHC · PPGIA Unifor 2026.2 · dados fictícios ·
-  <a href="https://github.com/Sarapessoa/monitoria-ihc-prototipos-fable/tree/main/registro">registro ↗</a>
+<footer class="rodape">
+  NP2 de Aplicações em IHC, PPGIA Unifor, 2026.2. Dados fictícios. Prompts e registros na
+  <a href="https://github.com/Sarapessoa/monitoria-ihc-prototipos-fable/tree/main/registro">pasta registro</a>.
 </footer>
 
-<div id="visor" class="visor" hidden role="dialog" aria-modal="true" aria-label="Visualizador">
-  <div class="visor-bar">
-    <span class="visor-tit"></span><span class="visor-pos mono"></span>
-    <div class="visor-acoes">
-      <button type="button" data-v="ant" aria-label="Anterior">‹</button>
-      <button type="button" data-v="prox" aria-label="Próxima">›</button>
-      <button type="button" data-v="tam">Tamanho real</button>
-      <a class="visor-ext" target="_blank" rel="noopener">Nova aba ↗</a>
-      <button type="button" data-v="fechar">Fechar</button>
+<div id="mv" class="mv" hidden role="dialog" aria-modal="true" aria-label="Visualização">
+  <div class="mv-palco">
+    <div class="mv-vista"></div>
+    <button type="button" class="mv-seta esq" data-mv="ant" aria-label="Anterior">‹</button>
+    <button type="button" class="mv-seta dir" data-mv="prox" aria-label="Próxima">›</button>
+    <div class="mv-zoom" role="group" aria-label="Zoom">
+      <button type="button" data-mv="menos" aria-label="Diminuir zoom">−</button>
+      <button type="button" data-mv="ajustar" class="pct" aria-label="Ajustar à tela">100%</button>
+      <button type="button" data-mv="mais" aria-label="Aumentar zoom">+</button>
     </div>
+    <div class="mv-trilha" aria-label="Miniaturas"></div>
   </div>
-  <div class="visor-corpo"></div>
+  <aside class="mv-lado">
+    <div class="mv-lado-cab"><span class="mv-pos"></span><button type="button" class="mv-fechar" data-mv="fechar" aria-label="Fechar"></button></div>
+    <div class="mv-txt"></div>
+    <div class="mv-dica">Role ou use + e − para o zoom, arraste para mover, ← → para passar.</div>
+  </aside>
 </div>
 
 <script src="dados.js"></script>
