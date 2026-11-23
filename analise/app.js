@@ -89,6 +89,9 @@
   }
   function mvFechar() { mv.hidden = true; vista.innerHTML = ""; document.body.style.overflow = ""; if (M.volta && M.volta.focus) M.volta.focus(); }
   function mvIr(k) { M.i = (k + M.itens.length) % M.itens.length; if (!M.itens[M.i].prot) M.modo = "img"; mvMostrar(); }
+  var celular = function () { return window.matchMedia("(max-width: 900px)").matches; };
+  // no celular, o protótipo também é movido e ampliado como imagem; "Tocar" libera os cliques nele
+  var movel = function () { return M.modo === "img" || (celular() && !M.tocar); };
   function mvMostrar() {
     var it = M.itens[M.i], varios = M.itens.length > 1;
     $(".mv-pos", mv).textContent = varios ? (M.i + 1) + " de " + M.itens.length : "";
@@ -96,26 +99,42 @@
     $$("button", trilha).forEach(function (b, k) { b.classList.toggle("ativo", k === M.i); });
     var at = $("button.ativo", trilha); if (at) at.scrollIntoView({ block: "nearest", inline: "center" });
     $(".mv-zoom", mv).hidden = M.modo !== "img";
+    mv.classList.toggle("frame", M.modo === "frame");
+    mvTocar(false);
+    M.w = 0;
     if (M.modo === "img") {
       vista.innerHTML = '<img alt="">';
       var im = $("img", vista);
       im.onload = function () { M.w = im.naturalWidth; M.h = im.naturalHeight; mvAjustar(); };
       im.src = it.src;
     } else {
-      vista.innerHTML = '<iframe src="' + it.prot + '" title="Protótipo navegável"></iframe>';
-      mvFrame();
+      vista.innerHTML = '<div class="mv-fr"><iframe src="' + it.prot + '" title="Protótipo navegável"></iframe><div class="mv-capa"></div></div>';
+      M.w = 1672; M.h = 941; mvAjustar();
+      $(".mv-fbar-ext", mv).href = it.prot;
     }
     txt.innerHTML = mvTexto(it); txt.scrollTop = 0;
     $(".mv-dica", mv).textContent = M.modo === "img" ? "Role ou use + e − para o zoom, arraste para mover, ← → para passar." : "Use o protótipo como uma página. As setas da tela passam para o próximo.";
   }
+  function mvTocar(v) {
+    M.tocar = v; mv.classList.toggle("tocar", v);
+    var b = $("[data-mv='alternar']", mv); b.textContent = v ? "Mover a tela" : "Tocar no protótipo"; b.setAttribute("aria-pressed", v); b.classList.toggle("ativo", v);
+  }
   function mvAjustar() {
+    if (!M.w) return;
     var W = vista.clientWidth, H = vista.clientHeight, m = W < 600 ? 10 : 32;
-    M.fit = Math.min((W - m * 2) / M.w, (H - m * 2) / M.h, 1.5);
-    M.s = M.fit; M.x = (W - M.w * M.s) / 2; M.y = (H - M.h * M.s) / 2; mvAplicar();
+    if (M.modo === "frame" && celular()) {
+      // protótipo no celular: altura da tela, legível, começando pela esquerda
+      M.fit = Math.min((W - m * 2) / M.w, (H - m * 2) / M.h);
+      M.s = Math.min(1, (H - m * 2) / M.h); M.x = m; M.y = (H - M.h * M.s) / 2;
+    } else {
+      M.fit = Math.min((W - m * 2) / M.w, (H - m * 2) / M.h, M.modo === "frame" ? 1 : 1.5);
+      M.s = M.fit; M.x = (W - M.w * M.s) / 2; M.y = (H - M.h * M.s) / 2;
+    }
+    mvAplicar();
   }
   function mvAplicar() {
-    var im = $("img", vista); if (!im) return;
-    im.style.transform = "translate(" + M.x + "px," + M.y + "px) scale(" + M.s + ")";
+    var el = M.modo === "img" ? $("img", vista) : $(".mv-fr", vista); if (!el) return;
+    el.style.transform = "translate(" + M.x + "px," + M.y + "px) scale(" + M.s + ")";
     $(".mv-zoom .pct", mv).textContent = Math.round(M.s * 100) + "%";
   }
   function mvZoom(f, cx, cy) {
@@ -123,35 +142,43 @@
     var ns = Math.max(M.fit * 0.5, Math.min(8, M.s * f));
     M.x = cx - (cx - M.x) * (ns / M.s); M.y = cy - (cy - M.y) * (ns / M.s); M.s = ns; mvAplicar();
   }
-  function mvFrame() {
-    var f = $("iframe", vista); if (!f) return;
-    var W = vista.clientWidth - 48, H = vista.clientHeight - 48, k = Math.min(W / 1672, H / 941);
-    f.style.width = "1672px"; f.style.height = "941px";
-    f.style.transform = "translate(" + ((vista.clientWidth - 1672 * k) / 2) + "px," + ((vista.clientHeight - 941 * k) / 2) + "px) scale(" + k + ")";
-  }
-  window.addEventListener("resize", function () { if (mv.hidden) return; if (M.modo === "img" && M.w) mvAjustar(); else mvFrame(); });
+  function mvDuplo(cx, cy) { if (Math.abs(M.s - M.fit) < 0.01) mvZoom(Math.max(1, M.fit * 2) / M.s, cx, cy); else mvAjustar(); }
+  window.addEventListener("resize", function () { if (!mv.hidden) mvAjustar(); });
   vista.addEventListener("wheel", function (e) {
-    if (M.modo !== "img") return; e.preventDefault();
+    if (!movel()) return; e.preventDefault();
     var r = vista.getBoundingClientRect(); mvZoom(Math.exp(-e.deltaY * 0.0015), e.clientX - r.left, e.clientY - r.top);
   }, { passive: false });
+  var toque = { t: 0, x: 0, y: 0, mov: 0 };
   vista.addEventListener("pointerdown", function (e) {
-    if (M.modo !== "img") return;
-    vista.setPointerCapture(e.pointerId); M.pts[e.pointerId] = [e.clientX, e.clientY]; vista.classList.add("arrasta");
+    if (!movel()) return;
+    vista.setPointerCapture(e.pointerId); M.pts[e.pointerId] = [e.clientX, e.clientY]; vista.classList.add("arrasta"); toque.mov = 0;
   });
   vista.addEventListener("pointermove", function (e) {
     if (!M.pts[e.pointerId]) return;
     var ids = Object.keys(M.pts), r = vista.getBoundingClientRect();
-    if (ids.length === 1) { M.x += e.clientX - M.pts[e.pointerId][0]; M.y += e.clientY - M.pts[e.pointerId][1]; M.pts[e.pointerId] = [e.clientX, e.clientY]; mvAplicar(); return; }
+    if (ids.length === 1) { var dx = e.clientX - M.pts[e.pointerId][0], dy = e.clientY - M.pts[e.pointerId][1]; toque.mov += Math.abs(dx) + Math.abs(dy); M.x += dx; M.y += dy; M.pts[e.pointerId] = [e.clientX, e.clientY]; mvAplicar(); return; }
     var a = M.pts[ids[0]], b = M.pts[ids[1]], d0 = Math.hypot(a[0] - b[0], a[1] - b[1]);
-    M.pts[e.pointerId] = [e.clientX, e.clientY];
+    M.pts[e.pointerId] = [e.clientX, e.clientY]; toque.mov += 99;
     a = M.pts[ids[0]]; b = M.pts[ids[1]];
     var d1 = Math.hypot(a[0] - b[0], a[1] - b[1]);
     if (d0 > 0) mvZoom(d1 / d0, (a[0] + b[0]) / 2 - r.left, (a[1] + b[1]) / 2 - r.top);
   });
-  ["pointerup", "pointercancel"].forEach(function (ev) { vista.addEventListener(ev, function (e) { delete M.pts[e.pointerId]; if (!Object.keys(M.pts).length) vista.classList.remove("arrasta"); }); });
+  ["pointerup", "pointercancel"].forEach(function (ev) {
+    vista.addEventListener(ev, function (e) {
+      if (!M.pts[e.pointerId]) return;
+      delete M.pts[e.pointerId]; if (!Object.keys(M.pts).length) vista.classList.remove("arrasta");
+      // toque duplo (o dblclick não é confiável no celular)
+      if (ev === "pointerup" && e.pointerType !== "mouse" && toque.mov < 10) {
+        var agora = Date.now(), r = vista.getBoundingClientRect();
+        toque.ultimo = agora;
+        if (agora - toque.t < 320 && Math.hypot(e.clientX - toque.x, e.clientY - toque.y) < 30) { mvDuplo(e.clientX - r.left, e.clientY - r.top); toque.t = 0; }
+        else { toque.t = agora; toque.x = e.clientX; toque.y = e.clientY; }
+      }
+    });
+  });
   vista.addEventListener("dblclick", function (e) {
-    if (M.modo !== "img") return; var r = vista.getBoundingClientRect();
-    if (Math.abs(M.s - M.fit) < 0.01) mvZoom(Math.max(1, M.fit * 2) / M.s, e.clientX - r.left, e.clientY - r.top); else mvAjustar();
+    if (!movel() || Date.now() - (toque.ultimo || 0) < 800) return; // o toque já tratou o duplo toque
+    var r = vista.getBoundingClientRect(); mvDuplo(e.clientX - r.left, e.clientY - r.top);
   });
   mv.addEventListener("click", function (e) {
     var b = e.target.closest("[data-mv]"), ir = e.target.closest("[data-mv-ir]");
@@ -161,6 +188,7 @@
     if (a === "fechar") mvFechar(); else if (a === "ant") mvIr(M.i - 1); else if (a === "prox") mvIr(M.i + 1);
     else if (a === "mais") mvZoom(1.25); else if (a === "menos") mvZoom(0.8); else if (a === "ajustar") mvAjustar();
     else if (a === "modo") { M.modo = M.modo === "img" ? "frame" : "img"; mvMostrar(); }
+    else if (a === "alternar") mvTocar(!M.tocar);
     else if (a === "ver") { mvFechar(); location.hash = b.getAttribute("data-alvo"); }
   });
   document.addEventListener("keydown", function (e) {

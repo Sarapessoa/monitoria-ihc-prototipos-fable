@@ -177,7 +177,10 @@ td.det { background: #fafbfc; padding: 20px 24px; }
 .mv-vista { position: relative; flex: 1; overflow: hidden; cursor: grab; touch-action: none; }
 .mv-vista.arrasta { cursor: grabbing; }
 .mv-vista img { position: absolute; top: 0; left: 0; max-width: none; transform-origin: 0 0; user-select: none; -webkit-user-drag: none; background: #fff; border-radius: 4px; box-shadow: 0 20px 60px rgba(0, 0, 0, .45); }
-.mv-vista iframe { position: absolute; border: 0; background: #fff; transform-origin: 0 0; border-radius: 6px; }
+.mv-fr { position: absolute; top: 0; left: 0; width: 1672px; height: 941px; transform-origin: 0 0; background: #fff; border-radius: 6px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, .45); }
+.mv-fr iframe { width: 1672px; height: 941px; border: 0; display: block; }
+.mv-capa { position: absolute; inset: 0; display: none; }
+.mv-fbar { display: none; }
 .mv-zoom { position: absolute; left: 50%; bottom: 112px; transform: translateX(-50%); display: flex; gap: 2px; padding: 4px; border-radius: 12px; background: rgba(20, 30, 35, .82); backdrop-filter: blur(8px); box-shadow: 0 0 0 1px rgba(255, 255, 255, .08); z-index: 2; }
 .mv-zoom button { height: 32px; min-width: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: #e8eef0; font-size: 14px; font-weight: 500; cursor: pointer; }
 .mv-zoom button:hover { background: rgba(255, 255, 255, .12); }
@@ -298,3 +301,18 @@ mark.dl-del-w { background: #ffb3ab; color: inherit; border-radius: 3px; padding
 .mv-lista .id { justify-self: start; margin-top: 1px; }
 .mv-lista b { font-weight: 500; font-size: 13.5px; line-height: 1.4; display: block; }
 .mv-lista p { margin: 3px 0 0; color: var(--mudo); font-size: 12.5px; line-height: 1.45; }
+
+/* protótipo no celular: tela cheia, mover/ampliar ou tocar */
+@media (max-width: 900px) {
+  .mv.frame { grid-template-rows: auto minmax(0, 1fr); }
+  .mv.frame .mv-txt, .mv.frame .mv-trilha { display: none; }
+  .mv.frame .mv-capa { display: block; }
+  .mv.frame.tocar .mv-capa { display: none; }
+  .mv.frame.tocar .mv-vista { cursor: auto; }
+  .mv.frame .mv-fbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px calc(12px + env(safe-area-inset-bottom)); background: #0c1215; border-top: 1px solid rgba(255, 255, 255, .1); }
+  .mv-fb { height: 36px; padding: 0 12px; border: 0; border-radius: 10px; background: rgba(255, 255, 255, .12); color: #fff; font: 500 14px var(--fonte); display: inline-flex; align-items: center; text-decoration: none; cursor: pointer; }
+  .mv-fb:hover { text-decoration: none; }
+  .mv-fb-prim { background: #fff; color: var(--marca); flex: 1; justify-content: center; }
+  .mv-fb-prim.ativo { background: var(--marca-2); color: #fff; }
+  .mv.frame .mv-seta { top: 50%; }
+}
