@@ -206,7 +206,7 @@
   }
   function rVisao() {
     var pA = probsDe("A"), gA = pA.filter(function (p) { return p.sev === 3; }).length;
-    var h = '<div class="heroi"><h1>Como a explicitação de IHC no prompt mudou os protótipos</h1><p>Três prompts com níveis diferentes de explicitação, as mesmas quatro telas e as mesmas seis tarefas.</p></div><div class="g3">';
+    var h = '<div class="titulo"><div><h1>Visão geral</h1><p>Três prompts com níveis diferentes de explicitação de IHC, as mesmas telas e as mesmas tarefas.</p></div></div><div class="g3">';
     ABC.forEach(function (c) {
       var ps = probsDe(c), graves = ps.filter(function (p) { return p.sev === 3; }).length, ref = c !== "A";
       var cont = [3, 2, 1].map(function (s) { return [s, ps.filter(function (p) { return p.sev === s; }).length]; }).filter(function (x) { return x[1]; });
@@ -246,20 +246,38 @@
   });
   $("#sec-telas").addEventListener("change", function (ev) { if (ev.target.id === "chAnot") { eT.anot = ev.target.checked ? "1" : "0"; rTelas(); } });
 
-  // ---------------- Prompts ----------------
+  // ---------------- Prompts (diff no padrão de revisão de código) ----------------
   var NP = { P0: "Frame Master", P1: "Dashboard", P2: "Alunos", P3: "Relatórios" };
   var eP = { p: "P1", modo: "AB", abertos: {} }, eM = { p: "P1", abertos: {} };
-  function ln(n, m, t, cls, tg) { return '<div class="ln ' + (cls || "") + '"><span class="n">' + n + '</span><span class="m">' + m + '</span><span class="t">' + (t === "" ? " " : t) + '</span><span class="tg">' + (tg || "") + "</span></div>"; }
+  // linha de diff: g1/g2 = números, k = ctx | del | add | vazio
+  function lin(g1, g2, k, html) {
+    var mk = k === "del" ? "−" : k === "add" ? "+" : "";
+    return '<div class="dl-l dl-' + k + '"><span class="dl-g">' + (g1 || "") + '</span><span class="dl-g">' + (g2 || "") + '</span><span class="dl-mk">' + mk + '</span><span class="dl-tx">' + (html === "" ? " " : html) + "</span></div>";
+  }
+  function lin1(n, k, html, tags) {
+    var mk = k === "del" ? "−" : k === "add" ? "+" : k === "alt" ? "~" : "";
+    return '<div class="dl-l dl-' + k + (tags ? " dl-tem" : "") + '"><span class="dl-g">' + (n || "") + '</span><span class="dl-mk">' + mk + '</span><span class="dl-tx">' + (html === "" ? " " : html) + "</span>" + (tags ? '<span class="dl-tags">' + tags + "</span>" : "") + "</div>";
+  }
+  function nota(tag, verbo) {
+    return '<div class="dl-nota"><span class="dl-nota-in"><span class="dl-nota-v' + (/^Alterado/.test(verbo) ? " alt" : "") + '">' + verbo + "</span>" + specs(tag) + '<span class="dl-nota-t">' + esc(tag.replace(/M\d\d\s*/g, "").replace(/;\s*$/, "").replace(/^;\s*/, "")) + "</span></span></div>";
+  }
+  function realce(antigo, novo) {
+    // o novo é o antigo sem um trecho: realça o trecho retirado
+    var i = 0; while (i < novo.length && antigo[i] === novo[i]) i++;
+    var j = 0; while (j < novo.length - i && antigo[antigo.length - 1 - j] === novo[novo.length - 1 - j]) j++;
+    return esc(antigo.slice(0, i)) + '<mark class="dl-del-w">' + esc(antigo.slice(i, antigo.length - j)) + "</mark>" + esc(antigo.slice(antigo.length - j));
+  }
+  function expandir(n, k) { return '<button type="button" class="dl-exp" data-abrir="' + k + '"><span class="dl-exp-i" aria-hidden="true">⋯</span>Mostrar ' + n + " linhas iguais</button>"; }
   function dobrar(L, igual, chave, abertos, render) {
     var h = "", i = 0;
     while (i < L.length) {
       if (igual(L[i])) {
         var j = i; while (j < L.length && igual(L[j])) j++;
         var k = chave + ":" + i, x;
-        if (j - i > 4 && !abertos[k]) {
-          var a = i === 0 ? 0 : 1, b = j === L.length ? 0 : 1;
+        if (j - i > 6 && !abertos[k]) {
+          var a = i === 0 ? 0 : 2, b = j === L.length ? 0 : 2;
           for (x = i; x < i + a; x++) h += render(x);
-          h += '<button type="button" class="dobra" data-abrir="' + k + '">Mostrar ' + (j - i - a - b) + " linhas iguais</button>";
+          h += expandir(j - i - a - b, k);
           for (x = j - b; x < j; x++) h += render(x);
         } else for (x = i; x < j; x++) h += render(x);
         i = j;
@@ -267,32 +285,46 @@
     }
     return h;
   }
-  function listaP(estado, conta) {
-    return '<div class="pr-lista">' + ["P0", "P1", "P2", "P3"].map(function (p) {
-      return '<button type="button" data-p="' + p + '" class="' + (estado.p === p ? "ativo" : "") + '"><span>' + NP[p] + '</span><span class="mono">' + conta(p) + "</span></button>";
+  function quadros(n, total, k) {
+    var c = Math.max(1, Math.round(5 * n / Math.max(total, 1))), h = "";
+    for (var i = 0; i < 5; i++) h += '<i class="' + (i < c ? k : "") + '"></i>';
+    return '<span class="qs">' + h + "</span>";
+  }
+  function arquivos(estado, stat) {
+    return '<div class="dl-arqs" role="tablist">' + ["P0", "P1", "P2", "P3"].map(function (p) {
+      var s = stat(p);
+      return '<button type="button" role="tab" aria-selected="' + (estado.p === p) + '" data-p="' + p + '" class="' + (estado.p === p ? "ativo" : "") + '"><span class="dl-arq-n"><span class="mono">' + p + "</span>" + NP[p] + '</span><span class="dl-arq-s">' + s + "</span></button>";
     }).join("") + "</div>";
+  }
+  function statB(p) {
+    var L = D.prompts[p].A, rem = L.filter(function (l) { return l.s === "cut" && l.t.trim(); }).length, alt = L.filter(function (l) { return l.s === "chg"; }).length;
+    return '<span class="n-del">−' + rem + "</span>" + quadros(rem, L.filter(function (l) { return l.t.trim(); }).length, "q-del");
   }
   function rAB(P) {
     var L = P.A;
-    return '<div class="cod">' + dobrar(L, function (l) { return !l.s; }, eP.p, eP.abertos, function (i) {
+    return '<div class="dl-cod">' + dobrar(L, function (l) { return !l.s && l.b; }, eP.p, eP.abertos, function (i) {
       var l = L[i];
-      if (!l.s) return ln(i + 1, "", esc(l.t));
-      if (l.s === "cut") return ln(i + 1, "−", esc(l.t), "rem", l.ini ? specs(l.tag) + '<span class="rot-c">' + esc(l.tag.replace(/M\d\d\s*/g, "").replace(/^;\s*/, "")) + "</span>" : "");
-      return ln(i + 1, "~", esc(l.t) + "  →  " + esc(l.novo), "tro", specs(l.tag));
+      if (!l.s && l.b) return lin(i + 1, l.b, "ctx", esc(l.t));
+      if (!l.s) return lin(i + 1, "", "del", "");
+      if (l.s === "cut") return (l.ini ? nota(l.tag, "Retirado em B") : "") + lin(i + 1, "", "del", esc(l.t));
+      return nota(l.tag, "Alterado em B") + lin(i + 1, "", "del", realce(l.t, l.novo)) + lin("", l.b, "add", esc(l.novo));
     }) + "</div>";
   }
   function rAC(P) {
-    return '<div class="lado"><div><div class="sub-cab"><span class="cen-top">' + letra("A", true) + "Baseline</span><span class=\"conta\">" + P.tam.A[1] + ' palavras</span></div><div class="cod">' +
-      P.A.map(function (l, i) { return ln(i + 1, "", esc(l.t)); }).join("") + '</div></div><div><div class="sub-cab"><span class="cen-top">' + letra("C", true) + 'Mínimo</span><span class="conta">' + P.tam.C[1] + ' palavras</span></div><div class="cod">' +
-      P.C.map(function (l, i) { return ln(i + 1, "", esc(l.t), "", specs(l.tags.join(" "))); }).join("") +
-      '</div><div class="nota"><b>Especificações de A sem correspondência em C</b><span class="ids">' + specs(SEM_EM_C.join(" ")) + "</span></div></div></div>";
+    var a = P.A.map(function (l, i) { return lin1(i + 1, "ctx", esc(l.t)); }).join("");
+    var c = P.C.map(function (l, i) { return lin1(i + 1, "ctx", esc(l.t), l.tags.length ? specs(l.tags.join(" ")) : ""); }).join("");
+    return '<div class="dl-lado"><div><div class="dl-sub">' + letra("A", true) + "Baseline <span class=\"conta\">" + P.tam.A[1] + ' palavras</span></div><div class="dl-cod dl-c1">' + a + '</div></div><div><div class="dl-sub">' + letra("C", true) + 'Mínimo <span class="conta">' + P.tam.C[1] + ' palavras</span></div><div class="dl-cod dl-c1">' + c +
+      '</div><div class="dl-falta"><b>Sem correspondência em C</b><span class="ids">' + specs(SEM_EM_C.join(" ")) + "</span></div></div></div>";
   }
   function rPrompts() {
-    var P = D.prompts[eP.p];
-    var conta = function (p) { return eP.modo === "AB" ? "−" + D.prompts[p].A.filter(function (l) { return l.s === "cut" && l.t.trim(); }).length : D.prompts[p].tam.C[1] + " pal."; };
-    var leg = eP.modo === "AB" ? '<span class="conta"><span class="qd" style="background:#fecaca"></span>retirada em B &nbsp; <span class="qd" style="background:#fde68a"></span>alterada</span>' : '<span class="conta">Etiquetas: o que cada linha de C realiza</span>';
-    var h = '<div class="titulo"><div><h1>Prompts</h1><p>' + (eP.modo === "AB" ? "O que saiu do Prompt Baseline para formar B." : "O Prompt Baseline ao lado do prompt reescrito de C.") + '</p></div></div><div class="ferr">' + seg("modo", eP.modo, [["AB", "Baseline → B"], ["AC", "Baseline × C"]]) + '<span class="dir">' + leg + "</span></div>" +
-      '<div class="painel pr">' + listaP(eP, conta) + '<div><div class="pr-cab"><b>' + eP.p + " · " + NP[eP.p] + '</b><span class="conta">A ' + P.tam.A[1] + " · B " + P.tam.B[1] + " · C " + P.tam.C[1] + " palavras</span></div>" + (eP.modo === "AB" ? rAB(P) : rAC(P)) + "</div></div>";
+    var P = D.prompts[eP.p], ab = eP.modo === "AB";
+    var statC = function (p) { return '<span class="conta">' + D.prompts[p].tam.C[1] + " pal.</span>"; };
+    var rem = P.A.filter(function (l) { return l.s === "cut" && l.t.trim(); }).length, alt = P.A.filter(function (l) { return l.s === "chg"; }).length;
+    var cab = '<div class="dl-cab"><div class="dl-cab-t"><span class="mono">' + eP.p + "</span>" + NP[eP.p] + "</div>" +
+      (ab ? '<div class="dl-cab-s"><span class="n-del">−' + rem + ' linhas</span>' + (alt ? '<span class="n-alt">~' + alt + (alt > 1 ? " alteradas" : " alterada") + "</span>" : "") + "<span class=\"conta\">A " + P.tam.A[1] + " → B " + P.tam.B[1] + " palavras</span></div>"
+        : '<div class="dl-cab-s"><span class="conta">Etiquetas: o que cada linha de C realiza</span></div>') + "</div>";
+    var h = '<div class="titulo"><div><h1>Prompts</h1><p>' + (ab ? "O que saiu do Prompt Baseline para formar B." : "O Prompt Baseline ao lado do prompt reescrito de C.") + '</p></div></div><div class="ferr">' + seg("modo", eP.modo, [["AB", "Baseline → B"], ["AC", "Baseline × C"]]) + "</div>" +
+      '<div class="dl">' + arquivos(eP, ab ? statB : statC) + '<div class="painel dl-pai">' + cab + (ab ? rAB(P) : rAC(P)) + "</div></div>";
     $("#sec-prompts").innerHTML = h;
   }
   $("#sec-prompts").addEventListener("click", function (ev) {
@@ -390,14 +422,16 @@
       }).join("") + "</div>";
     h += '<div class="bloco"><h2>Especificações acrescentadas</h2><div class="painel tab"><table><thead><tr><th>ID</th><th>Especificação</th><th>Origem</th><th>Resultado</th></tr></thead><tbody>' +
       D.melhorias.map(function (m) { return '<tr><td><span class="id">' + m.id + '</span></td><td class="n">' + esc(m.espec) + '</td><td style="color:var(--sub)">' + esc(m.origem) + "</td><td>" + seloRes(m.resultado) + ' <span style="color:var(--sub)">' + esc(m.resultado.replace(/^(Sim|Parcial|N\/V)(:\s*|,\s*)?/, "")) + "</span></td></tr>"; }).join("") + "</tbody></table></div></div>";
-    var conta = function (p) { return "+" + D.prompts[p].MAX.filter(function (l) { return l.s === "add"; }).length; };
-    h += '<div class="bloco"><h2>Prompt: Baseline → Máximo</h2><div class="painel pr">' + listaP(eM, conta) + '<div><div class="pr-cab"><b>' + eM.p + " · " + NP[eM.p] + '</b><span class="conta"><span class="qd" style="background:#bbf7d0"></span>acrescentada &nbsp; <span class="qd" style="background:#fde68a"></span>símbolo trocado por descrição</span></div><div class="cod">' +
+    var statM = function (p) { var L2 = D.prompts[p].MAX, n = L2.filter(function (l) { return l.s === "add"; }).length; return '<span class="n-add">+' + n + "</span>" + quadros(n, L2.length, "q-add"); };
+    var nAdd = L.filter(function (l) { return l.s === "add"; }).length, nChg = L.filter(function (l) { return l.s === "chg"; }).length;
+    var nums = [], c0 = 0; L.forEach(function (l) { nums.push(l.s === "del" ? "" : ++c0); });
+    h += '<div class="bloco"><h2>Prompt: Baseline → Máximo</h2><div class="dl">' + arquivos(eM, statM) + '<div class="painel dl-pai"><div class="dl-cab"><div class="dl-cab-t"><span class="mono">' + eM.p + "</span>" + NP[eM.p] + '</div><div class="dl-cab-s"><span class="n-add">+' + nAdd + " linhas</span>" + (nChg ? '<span class="n-alt">~' + nChg + " símbolos trocados por descrição</span>" : "") + '</div></div><div class="dl-cod dl-c1">' +
       dobrar(L, function (l) { return l.s === "eq"; }, "M" + eM.p, eM.abertos, function (i) {
         var l = L[i];
-        if (l.s === "eq") return ln("", "", esc(l.t));
-        if (l.s === "del") return ln("", "−", esc(l.t), "rem");
-        if (l.s === "chg") return ln("", "~", esc(l.t), "tro");
-        return ln("", "+", esc(l.t), "add", specs((l.ms || []).join(" ")));
+        if (l.s === "eq") return lin1(nums[i], "ctx", esc(l.t));
+        if (l.s === "del") return lin1("", "del", esc(l.t));
+        if (l.s === "chg") return lin1(nums[i], "alt", esc(l.t));
+        return lin1(nums[i], "add", esc(l.t), (l.ms || []).length ? specs(l.ms.join(" ")) : "");
       }) + "</div></div></div></div>";
     $("#sec-melhorias").innerHTML = h;
   }
