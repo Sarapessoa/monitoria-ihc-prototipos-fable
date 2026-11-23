@@ -1,6 +1,6 @@
-"""Gera um cenário (INT, MAX ou MIN) com Claude Fable 5.2 pelo claude CLI.
+"""Gera um cenário (B, MIN ou MAX) com Claude Fable 5.2 pelo claude CLI.
 
-Uso: python gerar.py MAX
+Uso: python gerar.py B
 Cada cenário é uma conversa nova; P0 a P3 vão em sequência na mesma conversa.
 Saída: execucoes/<cenário>/ com moldura.html, dashboard.html, alunos.html,
 relatorios.html, as capturas PNG, as respostas completas e o registro.

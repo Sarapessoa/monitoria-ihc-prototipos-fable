@@ -2,784 +2,902 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MonitorIA – Dashboard</title>
-<meta name="viewport" content="width=1672, initial-scale=1">
 <style>
-:root{
-  --petrol:#0D3B4C; --petrol-2:#0A2F3D; --orange:#FF7A00; --white:#FFFFFF; --gray:#F5F7FA;
-  --line:#E6EBF0; --text:#0D3B4C; --muted:#6B8290;
-  --side-w:288px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{font-family:"Inter","Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;background:var(--gray);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased}
-button{font-family:inherit;border:0;background:none;cursor:pointer;color:inherit}
-a{text-decoration:none;color:inherit}
-.app{display:flex;width:100vw;height:100vh;min-width:1100px;min-height:640px}
+  :root{
+    --sb-w:272px;
+    --hd-h:72px;
+    --navy:#101a3a;
+    --navy-2:#18244d;
+    --primary:#4f5bd5;
+    --primary-soft:#eceefd;
+    --accent:#19c3b1;
+    --bg:#f1f3f9;
+    --surface:#ffffff;
+    --line:#e3e6f0;
+    --text:#1b2140;
+    --muted:#6b7392;
+    --sb-text:#b9c1e0;
+    --danger:#e5484d;
+    --ok:#12805c;--ok-soft:#e3f6ee;
+    --warn:#a15c00;--warn-soft:#fff1d6;
+    --bad:#c2292e;--bad-soft:#fde8e8;
+    --teal:#0b8a7d;--teal-soft:#dff7f4;
+  }
+  body.dark{
+    --bg:#0c1226;
+    --surface:#151c36;
+    --line:#263056;
+    --text:#e8ebf8;
+    --muted:#98a1c4;
+    --primary-soft:#232c58;
+    --ok:#5fd6a8;--ok-soft:#123a30;
+    --warn:#f2bd5b;--warn-soft:#3d2f12;
+    --bad:#ff8f93;--bad-soft:#431c22;
+    --teal:#5ee0d2;--teal-soft:#0f3a3a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  html,body{height:100%}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);color:var(--text);
+    overflow:hidden;font-size:14px;
+  }
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  svg{display:block}
+  .ico{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
-/* ---------- Sidebar ---------- */
-.sidebar{width:var(--side-w);flex:0 0 var(--side-w);background:linear-gradient(180deg,var(--petrol) 0%,var(--petrol-2) 100%);color:#fff;display:flex;flex-direction:column;padding:28px 20px 0;position:relative;overflow:hidden;transition:width .28s ease,flex-basis .28s ease,padding .28s ease}
-.brand{display:flex;align-items:center;gap:12px;padding:0 6px;white-space:nowrap}
-.brand svg{flex:0 0 44px}
-.wordmark{font-size:26px;font-weight:700;letter-spacing:-.5px;line-height:1}
-.wordmark b{color:var(--orange);font-weight:800}
-.tagline{font-size:11.5px;line-height:1.55;color:rgba(255,255,255,.66);margin:16px 6px 0;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,.12)}
-.nav{margin-top:22px;display:flex;flex-direction:column;gap:8px;position:relative;z-index:2}
-.nav-item{display:flex;align-items:center;gap:14px;width:100%;height:50px;padding:0 16px;border-radius:14px;color:#fff;font-size:15px;font-weight:500;text-align:left;white-space:nowrap;transition:background .18s ease,transform .18s ease}
-.nav-item svg{flex:0 0 22px}
-.nav-item:hover{background:rgba(255,255,255,.09)}
-.nav-item:focus-visible,.icon-btn:focus-visible,.menu-btn:focus-visible,.profile:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
-.nav-item.active{background:var(--orange);box-shadow:0 8px 20px -8px rgba(255,122,0,.75);font-weight:600}
-.side-deco{position:absolute;left:0;right:0;bottom:0;height:210px;pointer-events:none;z-index:1}
-.side-deco svg{width:288px;height:210px;display:block}
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    position:fixed;left:0;top:0;bottom:0;width:var(--sb-w);
+    background:linear-gradient(180deg,var(--navy) 0%,#0c1430 100%);
+    color:#fff;display:flex;flex-direction:column;
+    transition:width .22s ease;z-index:30;overflow:hidden;
+  }
+  .sb-brand{padding:22px 22px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .logo{display:flex;align-items:center;gap:11px;white-space:nowrap}
+  .logo-mark{width:40px;height:40px;flex:none}
+  .logo-word{font-size:22px;font-weight:700;letter-spacing:-.3px}
+  .logo-word b{color:var(--accent);font-weight:800}
+  .sb-desc{
+    margin-top:14px;font-size:11.5px;line-height:1.5;color:var(--sb-text);
+    width:228px;
+  }
+  .sb-label{
+    padding:20px 26px 8px;font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;
+    color:#7781a8;font-weight:600;white-space:nowrap;
+  }
+  .nav{list-style:none;padding:0 14px;display:flex;flex-direction:column;gap:4px}
+  .nav-item{
+    display:flex;align-items:center;gap:14px;width:100%;
+    height:46px;padding:0 14px;border-radius:12px;
+    color:var(--sb-text);font-size:14.5px;font-weight:500;white-space:nowrap;text-align:left;
+    transition:background .15s,color .15s;position:relative;
+  }
+  .nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+  .nav-item:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .nav-item.active{background:var(--primary);color:#fff;box-shadow:0 6px 16px rgba(79,91,213,.4)}
+  .sb-foot{
+    margin-top:auto;padding:18px 26px;font-size:11px;color:#6d779e;white-space:nowrap;
+    border-top:1px solid rgba(255,255,255,.08);
+  }
 
-.app.collapsed{--side-w:88px}
-.app.collapsed .sidebar{padding-left:16px;padding-right:16px}
-.app.collapsed .brand{justify-content:center;padding:0}
-.app.collapsed .brand .wordmark,.app.collapsed .nav-item span{display:none}
-.app.collapsed .tagline{height:0;overflow:hidden;margin-top:22px;padding:0}
-.app.collapsed .nav-item{justify-content:center;padding:0}
+  body.collapsed{--sb-w:76px}
+  body.collapsed .sb-brand{padding:22px 18px 20px}
+  body.collapsed .logo-word,
+  body.collapsed .sb-desc,
+  body.collapsed .nav-item span,
+  body.collapsed .sb-foot span{display:none}
+  body.collapsed .sb-label{visibility:hidden}
+  body.collapsed .nav-item{justify-content:center;padding:0}
+  body.collapsed .sb-foot{padding:18px 0;text-align:center}
 
-/* ---------- Header ---------- */
-.right{flex:1;display:flex;flex-direction:column;min-width:0}
-.topbar{height:80px;flex:0 0 80px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 32px 0 24px;box-shadow:0 1px 0 var(--line),0 6px 18px -14px rgba(13,59,76,.35);position:relative;z-index:20}
-.top-left{display:flex;align-items:center;gap:18px}
-.menu-btn{width:44px;height:44px;border-radius:50%;background:var(--gray);display:grid;place-items:center;color:var(--petrol);transition:background .18s,transform .18s}
-.menu-btn:hover{background:#E9EEF3}
-.menu-btn:active{transform:scale(.94)}
-.top-left .brand{padding:0;gap:10px}
-.top-left .wordmark{font-size:22px;color:var(--petrol)}
-.top-right{display:flex;align-items:center;gap:10px}
-.pop-wrap{position:relative}
-.icon-btn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--petrol);position:relative;transition:background .18s}
-.icon-btn:hover,.icon-btn[aria-expanded="true"]{background:var(--gray)}
-.badge{position:absolute;top:8px;right:8px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--orange);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;border:2px solid #fff;box-sizing:content-box}
-.badge[hidden]{display:none}
-.divider{width:1px;height:36px;background:var(--line);margin:0 10px}
-.profile{display:flex;align-items:center;gap:12px;padding:6px 10px 6px 6px;border-radius:28px;transition:background .18s;text-align:left}
-.profile:hover,.profile[aria-expanded="true"]{background:var(--gray)}
-.avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;flex:0 0 46px;box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(255,122,0,.55)}
-.avatar svg{display:block}
-.p-name{font-size:14.5px;font-weight:700;color:var(--petrol);line-height:1.2}
-.p-role{font-size:12px;color:var(--muted);margin-top:2px}
-.chev{color:var(--muted);transition:transform .2s}
-.profile[aria-expanded="true"] .chev{transform:rotate(180deg)}
+  /* ---------- Header ---------- */
+  .header{
+    position:fixed;top:0;right:0;left:var(--sb-w);height:var(--hd-h);
+    background:var(--surface);border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 28px 0 24px;transition:left .22s ease;z-index:20;
+  }
+  .hd-left{display:flex;align-items:center;gap:16px}
+  .menu-btn{
+    width:44px;height:44px;border-radius:50%;
+    display:grid;place-items:center;
+    background:var(--primary-soft);color:var(--primary);
+    transition:background .15s,transform .15s;
+  }
+  .menu-btn:hover{background:var(--primary);color:#fff}
+  .menu-btn:active{transform:scale(.94)}
+  .header .logo-mark{width:34px;height:34px}
+  .header .logo-word{font-size:20px;color:var(--text)}
+  .hd-right{display:flex;align-items:center;gap:10px}
+  .icon-wrap{position:relative}
+  .icon-btn{
+    width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+    color:var(--muted);border:1px solid var(--line);background:var(--surface);
+    transition:background .15s,color .15s,border-color .15s;position:relative;
+  }
+  .icon-btn:hover,.icon-btn[aria-expanded="true"]{background:var(--primary-soft);color:var(--primary);border-color:transparent}
+  .icon-btn:focus-visible,.menu-btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+  .badge{
+    position:absolute;top:-3px;right:-3px;min-width:19px;height:19px;padding:0 5px;
+    border-radius:10px;background:var(--danger);color:#fff;font-size:11px;font-weight:700;
+    display:grid;place-items:center;border:2px solid var(--surface);
+  }
+  .divider{width:1px;height:36px;background:var(--line);margin:0 10px}
+  .profile{display:flex;align-items:center;gap:12px}
+  .avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;flex:none;box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--accent)}
+  .avatar svg{width:100%;height:100%}
+  .p-name{font-weight:700;font-size:14.5px;line-height:1.25}
+  .p-role{font-size:12.5px;color:var(--muted)}
 
-/* ---------- Popovers ---------- */
-.pop{position:absolute;top:56px;right:0;width:320px;background:#fff;border-radius:18px;box-shadow:0 20px 50px -12px rgba(13,59,76,.28),0 0 0 1px var(--line);padding:8px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .16s,transform .16s;z-index:30}
-.pop.open{opacity:1;transform:none;pointer-events:auto}
-.pop-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 8px;font-size:14px;font-weight:700}
-.pop-head button{font-size:12px;font-weight:600;color:var(--orange)}
-.pop-head button:hover{text-decoration:underline}
-.pop-row{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:12px;width:100%;text-align:left;font-size:13px;line-height:1.4;color:var(--petrol)}
-.pop-row:hover{background:var(--gray)}
-.pop-row small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px}
-.dot{flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:var(--orange);margin-top:5px}
-.pop-row.read .dot{background:#D5DDE3}
-.ini{flex:0 0 34px;height:34px;border-radius:50%;background:#E3EEF2;color:var(--petrol);font-size:12px;font-weight:700;display:grid;place-items:center}
-.set-row{display:flex;align-items:center;justify-content:space-between;padding:12px;font-size:13.5px;border-radius:12px}
-.switch{width:42px;height:24px;border-radius:12px;background:#D5DDE3;position:relative;transition:background .18s;flex:0 0 42px}
-.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .18s}
-.switch[aria-checked="true"]{background:var(--orange)}
-.switch[aria-checked="true"]::after{transform:translateX(18px)}
-.pop.small{width:220px}
-.pop.small .pop-row{align-items:center;font-size:13.5px;font-weight:500}
-.pop hr{border:0;border-top:1px solid var(--line);margin:6px 8px}
+  /* ---------- Dropdowns ---------- */
+  .panel{
+    position:absolute;top:56px;right:0;width:340px;
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    box-shadow:0 18px 44px rgba(16,26,58,.18);
+    opacity:0;transform:translateY(-6px);pointer-events:none;
+    transition:opacity .15s,transform .15s;z-index:40;overflow:hidden;
+  }
+  .panel.open{opacity:1;transform:none;pointer-events:auto}
+  .panel-hd{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--line)}
+  .panel-hd h3{font-size:15px;font-weight:700}
+  .link-btn{font-size:12.5px;color:var(--primary);font-weight:600}
+  .link-btn:hover{text-decoration:underline}
+  .link-btn:disabled{color:var(--muted);cursor:default;text-decoration:none}
+  .p-list{list-style:none}
+  .p-row{
+    display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;
+    padding:13px 18px;border-bottom:1px solid var(--line);position:relative;
+  }
+  .p-list li:last-child .p-row{border-bottom:0}
+  .p-row:hover{background:var(--bg)}
+  .p-row.unread::after{content:"";position:absolute;right:16px;top:20px;width:8px;height:8px;border-radius:50%;background:var(--primary)}
+  .p-row.unread .p-title{font-weight:700}
+  .p-dot{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--primary-soft);color:var(--primary);font-weight:700;font-size:12.5px}
+  .p-dot .ico{width:17px;height:17px}
+  .p-title{font-size:13.5px;line-height:1.35;padding-right:16px}
+  .p-sub{font-size:12px;color:var(--muted);margin-top:2px}
+  .set-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .set-row:last-child{border-bottom:0}
+  .set-row small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+  .switch{width:42px;height:24px;border-radius:12px;background:#c9cee0;position:relative;transition:background .15s;flex:none}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .switch[aria-checked="true"]{background:var(--primary)}
+  .switch[aria-checked="true"]::after{left:21px}
+  .switch:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 
-/* ---------- Main ---------- */
-.main{flex:1;padding:28px 32px 32px;min-height:0;display:flex}
-.canvas{flex:1;background:#fff;border-radius:32px;box-shadow:0 18px 48px -24px rgba(13,59,76,.28),0 2px 6px rgba(13,59,76,.04);position:relative;overflow:hidden}
-.canvas .deco{position:absolute;inset:0;transition:opacity .3s;background-image:radial-gradient(rgba(13,59,76,.07) 1.2px,transparent 1.4px);background-size:28px 28px;-webkit-mask-image:radial-gradient(ellipse at center,transparent 30%,#000 100%);mask-image:radial-gradient(ellipse at center,transparent 30%,#000 100%)}
-.canvas svg.net{position:absolute;inset:0;width:100%;height:100%;transition:opacity .3s}
-.canvas.plain .deco,.canvas.plain svg.net{opacity:0}
+  /* ---------- Main ---------- */
+  .main{
+    position:fixed;top:var(--hd-h);left:var(--sb-w);right:0;bottom:0;
+    padding:24px 28px 28px 24px;transition:left .22s ease;
+  }
+  .content{
+    width:100%;height:100%;
+    background:var(--surface);border:1px solid var(--line);border-radius:20px;
+    box-shadow:0 4px 18px rgba(16,26,58,.05);
+    overflow:auto;
+  }
 
-.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--petrol);color:#fff;font-size:13px;padding:11px 18px;border-radius:12px;box-shadow:0 12px 30px -10px rgba(13,59,76,.6);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60}
-.toast.show{opacity:1;transform:translate(-50%,0)}
+  /* ---------- Toast ---------- */
+  .toast{
+    position:fixed;left:50%;bottom:44px;transform:translate(-50%,20px);
+    background:var(--navy);color:#fff;padding:12px 20px;border-radius:12px;font-size:13.5px;
+    box-shadow:0 12px 30px rgba(16,26,58,.3);opacity:0;pointer-events:none;
+    transition:opacity .2s,transform .2s;z-index:90;display:flex;align-items:center;gap:10px;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .toast .ico{width:18px;height:18px;color:var(--accent)}
 
-/* ================= SLOT: DASHBOARD ================= */
-.content{position:absolute;inset:0;z-index:1;padding:20px 26px 22px;display:flex;flex-direction:column;gap:14px;overflow:auto}
-.hello{display:flex;align-items:center;justify-content:space-between;flex:0 0 auto}
-.hello h1{font-size:23px;font-weight:700;letter-spacing:-.4px;line-height:1.2}
-.hello p{font-size:13.5px;color:var(--muted);margin-top:3px}
-.seal{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 14px;border-radius:16px;background:#EEF4F6;font-size:12px;font-weight:600;color:var(--petrol)}
-.pulse{width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 0 rgba(255,122,0,.5);animation:pulse 2s infinite}
-@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(255,122,0,0)}100%{box-shadow:0 0 0 0 rgba(255,122,0,0)}}
+  /* =====================================================
+     MÓDULO DASHBOARD (somente dentro do slot de conteúdo)
+     ===================================================== */
+  .dash{height:100%;min-height:740px;padding:18px 22px 20px;display:flex;flex-direction:column;gap:14px}
+  .d-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .d-top h1{font-size:22px;font-weight:700;letter-spacing:-.3px}
+  .d-top p{color:var(--muted);font-size:13.5px;margin-top:2px}
+  .live{
+    display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:20px;
+    background:var(--teal-soft);color:var(--teal);font-size:12.5px;font-weight:600;white-space:nowrap;
+  }
+  .live i{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(25,195,177,.6);animation:pulse 2s infinite}
+  @keyframes pulse{70%{box-shadow:0 0 0 7px rgba(25,195,177,0)}100%{box-shadow:0 0 0 0 rgba(25,195,177,0)}}
 
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;flex:0 0 auto}
-.kpi{background:#fff;border-radius:18px;border:1px solid var(--line);box-shadow:0 6px 18px -12px rgba(13,59,76,.25);padding:13px 14px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;min-height:84px}
-.kpi::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:3px;border-radius:0 3px 3px 0;background:var(--orange)}
-.kpi-ic{flex:0 0 44px;height:44px;border-radius:13px;background:#EEF4F6;color:var(--petrol);display:grid;place-items:center}
-.kpi-v{font-size:24px;font-weight:700;letter-spacing:-.5px;line-height:1.1}
-.kpi-v small{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:0}
-.kpi-l{font-size:11.5px;color:var(--muted);line-height:1.3;margin-top:3px}
-.kpi.ai{border-color:rgba(255,122,0,.45);background:linear-gradient(135deg,#fff 55%,#FFF4E8)}
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .kpi{
+    display:flex;align-items:center;gap:12px;padding:12px 14px;
+    border:1px solid var(--line);border-radius:14px;background:var(--surface);min-width:0;
+  }
+  .kpi-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none}
+  .kpi-ic.c1{background:var(--primary-soft);color:var(--primary)}
+  .kpi-ic.c2{background:var(--ok-soft);color:var(--ok)}
+  .kpi-ic.c3{background:var(--warn-soft);color:var(--warn)}
+  .kpi-ic.c4{background:var(--teal-soft);color:var(--teal)}
+  .kpi-ic.c5{background:linear-gradient(135deg,#5b67e6,#19c3b1);color:#fff}
+  .kpi-val{font-size:22px;font-weight:700;line-height:1.1;letter-spacing:-.3px}
+  .kpi-val small{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:0}
+  .kpi-lb{font-size:11.5px;color:var(--muted);line-height:1.3;margin-top:3px}
+  .kpi.ai{border-color:transparent;box-shadow:0 0 0 1.5px var(--primary)}
 
-.panel{flex:1 1 auto;min-height:480px;background:var(--gray);border-radius:22px;padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px}
-.panel-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
-.panel-head h2{font-size:16.5px;font-weight:700;letter-spacing:-.2px}
-.panel-head p{font-size:12px;color:var(--muted);margin-top:2px}
-.count{font-size:12px;color:var(--muted);white-space:nowrap}
-.count b{color:var(--petrol)}
-.cols{flex:1;min-height:0;display:grid;grid-template-columns:292px 1fr 330px;gap:14px}
-.card{background:#fff;border-radius:16px;border:1px solid var(--line);box-shadow:0 4px 14px -10px rgba(13,59,76,.22);padding:14px 16px}
-.card h3{font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:8px}
-.col{display:flex;flex-direction:column;gap:14px;min-height:0}
+  .board{flex:1;min-height:0;border:1px solid var(--line);border-radius:16px;display:flex;flex-direction:column;overflow:hidden}
+  .board-hd{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:11px 16px;border-bottom:1px solid var(--line);background:var(--bg)}
+  .board-hd h2{font-size:15.5px;font-weight:700}
+  .board-hd p{font-size:12px;color:var(--muted);margin-top:1px}
+  .counter{font-size:12px;color:var(--muted);white-space:nowrap}
+  .counter b{color:var(--text)}
+  .board-bd{flex:1;min-height:0;display:grid;grid-template-columns:372px 1fr}
 
-/* lista */
-.list-card{display:flex;flex-direction:column;min-height:0;padding:14px 12px}
-.list-card h3{padding:0 4px}
-.chips{display:flex;gap:6px;margin:10px 4px}
-.chip{height:28px;padding:0 12px;border-radius:14px;border:1px solid var(--line);font-size:12px;font-weight:600;color:var(--muted);transition:.15s}
-.chip:hover{border-color:var(--petrol);color:var(--petrol)}
-.chip[aria-pressed="true"]{background:var(--petrol);border-color:var(--petrol);color:#fff}
-.list{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:6px}
-.stu{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 10px;border-radius:12px;border:1px solid transparent;transition:.15s}
-.stu:hover{background:var(--gray)}
-.stu[aria-selected="true"]{background:#FFF6EC;border-color:rgba(255,122,0,.55)}
-.stu:focus-visible,.btn:focus-visible,.chip:focus-visible,.fb:focus-visible,.opt:focus-visible,.link:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
-.av{flex:0 0 36px;height:36px;border-radius:50%;background:#E3EEF2;color:var(--petrol);font-size:12px;font-weight:700;display:grid;place-items:center;position:relative}
-.av.done::after{content:"";position:absolute;right:-3px;bottom:-3px;width:15px;height:15px;border-radius:50%;border:2px solid #fff;background:var(--petrol) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/10px no-repeat}
-.stu-t{flex:1;min-width:0}
-.stu-n{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stu-c{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
-.prio{flex:0 0 auto;font-size:10.5px;font-weight:700;letter-spacing:.4px;padding:3px 8px;border-radius:8px}
-.prio.alta{background:#FFE9D3;color:#A84C00}
-.prio.media{background:#E3EEF2;color:var(--petrol)}
-.list-foot{font-size:11.5px;color:var(--muted);padding:10px 4px 0;display:flex;justify-content:space-between}
-.list-foot a{color:var(--petrol);font-weight:600}
-.list-foot a:hover{text-decoration:underline}
-.empty{font-size:12.5px;color:var(--muted);padding:16px 6px}
+  /* lista */
+  .lst{border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+  .lst-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px}
+  .lst-hd span{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  .chips{display:flex;gap:5px}
+  .chip-f{padding:4px 10px;border-radius:14px;font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--line)}
+  .chip-f:hover{color:var(--primary);border-color:var(--primary)}
+  .chip-f[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+  .chip-f:focus-visible,.stu:focus-visible,.btn:focus-visible,.txt-btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+  .stu-list{list-style:none;flex:1;min-height:0;overflow:auto;padding:2px 10px 6px;display:flex;flex-direction:column;gap:5px}
+  .stu{
+    width:100%;display:flex;align-items:center;gap:10px;text-align:left;
+    padding:8px 10px;border-radius:12px;border:1.5px solid transparent;transition:background .12s,border-color .12s;
+  }
+  .stu:hover{background:var(--bg)}
+  .stu[aria-current="true"]{background:var(--primary-soft);border-color:var(--primary)}
+  .ini{width:36px;height:36px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:12.5px;background:var(--bg);color:var(--primary);border:1px solid var(--line)}
+  .stu-main{flex:1;min-width:0}
+  .stu-name{font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .stu-sub{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+  .stu-sub.done{color:var(--ok);font-weight:600}
+  .stu-sub.rej{color:var(--muted);font-weight:600}
+  .stu-side{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none}
+  .stu-conf{font-size:11px;color:var(--muted)}
+  .prio{padding:2px 8px;border-radius:6px;font-size:10.5px;font-weight:700;letter-spacing:.5px}
+  .prio.alta{background:var(--bad-soft);color:var(--bad)}
+  .prio.media{background:var(--warn-soft);color:var(--warn)}
+  .lst-ft{padding:8px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+  .lst-ft a{color:var(--primary);font-weight:600}
+  .lst-ft a:hover{text-decoration:underline}
+  .empty{padding:24px 12px;text-align:center;color:var(--muted);font-size:13px}
 
-/* aluno */
-.stu-card{display:flex;flex-direction:column;gap:12px}
-.stu-top{display:flex;align-items:flex-start;gap:14px}
-.av.lg{flex:0 0 50px;height:50px;font-size:16px}
-.stu-top h4{font-size:17px;font-weight:700;letter-spacing:-.2px}
-.meta{font-size:12.5px;color:var(--muted);margin-top:3px}
-.meta b{color:var(--petrol);font-weight:600}
-.stu-tags{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:7px}
-.prio.big{font-size:11.5px;padding:4px 10px}
-.ai-seal{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--petrol);border:1px dashed rgba(13,59,76,.35);border-radius:10px;padding:4px 9px;white-space:nowrap}
-.ai-seal svg{color:var(--orange)}
-.conf{display:flex;align-items:center;gap:12px;font-size:12.5px}
-.conf-l{font-weight:600;white-space:nowrap}
-.bar{flex:1;height:8px;border-radius:4px;background:#E6EBF0;overflow:hidden}
-.bar i{display:block;height:100%;border-radius:4px;background:var(--petrol);transition:width .5s ease}
-.conf-v{font-weight:700;font-size:14px;min-width:38px;text-align:right}
-.conf-t{font-size:11.5px;color:var(--muted);white-space:nowrap}
-.loading .bar i{width:100%!important;background:linear-gradient(90deg,#E6EBF0,#9DB4BE,#E6EBF0);background-size:200% 100%;animation:sh 1s linear infinite}
-@keyframes sh{to{background-position:-200% 0}}
+  /* detalhe */
+  .det{min-height:0;overflow:auto;padding:12px 16px 14px;display:flex;flex-direction:column;gap:10px}
+  .det-hd{display:flex;align-items:center;gap:14px}
+  .det-hd .ini{width:46px;height:46px;font-size:15px}
+  .det-id{flex:1;min-width:0}
+  .det-l1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .det-l1 h3{font-size:17px;font-weight:700}
+  .seal{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:12px;font-size:11px;font-weight:600;background:var(--primary-soft);color:var(--primary)}
+  .seal .ico{width:13px;height:13px}
+  .det-meta{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .det-meta b{color:var(--text);font-weight:600}
+  .conf{width:250px;flex:none;padding:8px 12px;border:1px solid var(--line);border-radius:12px}
+  .conf-top{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--muted)}
+  .conf-top b{font-size:18px;color:var(--text)}
+  .bar{height:8px;border-radius:4px;background:var(--line);margin:5px 0;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#5b67e6,#19c3b1);transition:width .5s ease}
+  .conf-note{font-size:11px;color:var(--muted)}
+  .conf.busy .bar i{width:35%!important;animation:slide 1s infinite ease-in-out}
+  @keyframes slide{0%{margin-left:-35%}100%{margin-left:100%}}
 
-/* explicação */
-.exp-card{flex:1;display:flex;flex-direction:column;min-height:0}
-.xai{flex:0 0 26px;height:26px;border-radius:8px;background:#FFF0E0;color:#C25400;display:grid;place-items:center}
-.factors{list-style:none;margin-top:10px;flex:1;display:flex;flex-direction:column;justify-content:space-around}
-.factors li{display:flex;align-items:center;gap:10px;font-size:12.5px;padding:6px 0;border-bottom:1px solid #F0F3F6}
-.factors li:last-child{border-bottom:0}
-.ck{flex:0 0 18px;height:18px;border-radius:50%;background:var(--petrol);color:#fff;display:grid;place-items:center}
-.factors b{font-weight:600;white-space:nowrap}
-.factors span{margin-left:auto;color:var(--muted);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rec{margin-top:10px;background:#FFF6EC;border-left:3px solid var(--orange);border-radius:12px;padding:11px 14px;font-size:13px;line-height:1.45;display:flex;gap:10px;align-items:flex-start}
-.rec svg{flex:0 0 18px;color:var(--orange);margin-top:1px}
-.rec b{font-weight:700}
+  .why{border:1px solid var(--line);border-radius:14px;padding:11px 14px;background:var(--surface)}
+  .why-t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
+  .xai{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--teal-soft);color:var(--teal);flex:none}
+  .xai .ico{width:16px;height:16px}
+  .facts{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:5px 22px;margin:9px 0 10px}
+  .facts li{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.35}
+  .facts .ck{width:17px;height:17px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;flex:none;margin-top:1px}
+  .facts .ck .ico{width:11px;height:11px;stroke-width:2.6}
+  .facts b{font-weight:600}
+  .facts span span{color:var(--muted)}
+  .rec{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:10px;background:var(--primary-soft);font-size:13px;line-height:1.4}
+  .rec .ico{width:18px;height:18px;color:var(--primary);margin-top:1px}
+  .rec small{display:block;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--primary);margin-bottom:1px}
 
-/* decisão */
-.dec-card{flex:1;display:flex;flex-direction:column;min-height:0}
-.dec-body{margin-top:12px;display:flex;flex-direction:column;gap:8px}
-.btn{height:36px;border-radius:11px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;transition:.15s;border:1.5px solid var(--petrol);color:var(--petrol);background:#fff}
-.btn:hover{background:#EEF4F6}
-.btn:active{transform:scale(.985)}
-.btn.primary{height:42px;background:var(--orange);border-color:var(--orange);color:#fff;font-size:13.5px;box-shadow:0 8px 18px -8px rgba(255,122,0,.7)}
-.btn.primary:hover{background:#EB7000;border-color:#EB7000}
-.btn:disabled{opacity:.55;cursor:default}
-.link{font-size:12px;color:var(--muted);text-decoration:underline;align-self:center;padding:2px 6px;border-radius:6px}
-.link:hover{color:var(--petrol)}
-.note{margin-top:auto;display:flex;gap:9px;align-items:flex-start;font-size:11.5px;line-height:1.45;color:var(--muted);background:var(--gray);border-radius:11px;padding:9px 11px}
-.note svg{flex:0 0 16px;color:var(--petrol);margin-top:1px}
-.lbl{font-size:12px;font-weight:600}
-.opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.opt{height:34px;border-radius:10px;border:1.5px solid var(--line);font-size:12.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:.15s}
-.opt:hover{border-color:var(--petrol)}
-.opt[aria-checked="true"]{border-color:var(--orange);background:#FFF6EC}
-.opt em{font-style:normal;font-size:9.5px;font-weight:700;background:var(--petrol);color:#fff;border-radius:5px;padding:1px 5px}
-.dec-body textarea{font-family:inherit;font-size:12.5px;color:var(--petrol);border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;resize:none;height:52px;outline:none}
-.dec-body textarea:focus{border-color:var(--petrol)}
-.two{display:grid;grid-template-columns:1fr 1.4fr;gap:8px}
-.two .btn.primary{height:38px}
-.two .btn{height:38px}
-.result{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:flex-start;background:#F8FBFC}
-.result .ck{flex:0 0 26px;height:26px}
-.result.no .ck{background:#9DB4BE}
-.result strong{display:block;font-size:13.5px}
-.result p{font-size:12.5px;color:var(--muted);line-height:1.45;margin-top:3px}
-.result q{display:block;font-size:12px;color:var(--petrol);margin-top:6px;font-style:italic}
+  .dec{border:1px solid var(--line);border-radius:14px;padding:11px 14px}
+  .dec-t{display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:14px}
+  .dec-t span{font-size:11.5px;font-weight:500;color:var(--muted)}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;margin:9px 0 8px;align-items:center}
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:10px;
+    font-size:13px;font-weight:600;border:1.5px solid var(--line);background:var(--surface);color:var(--text);
+    transition:background .12s,border-color .12s,color .12s,opacity .12s;white-space:nowrap;
+  }
+  .btn .ico{width:16px;height:16px}
+  .btn:hover{border-color:var(--primary);color:var(--primary)}
+  .btn.pri{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn.pri:hover{background:#414cc0;border-color:#414cc0;color:#fff}
+  .btn:disabled{opacity:.45;cursor:not-allowed;border-color:var(--line);color:var(--muted)}
+  .btn.pri:disabled{background:var(--muted);border-color:var(--muted);color:#fff}
+  .txt-btn{font-size:12.5px;font-weight:600;color:var(--bad);padding:6px 8px;border-radius:8px;margin-left:auto}
+  .txt-btn:hover{background:var(--bad-soft)}
+  .txt-btn:disabled{opacity:.4;cursor:not-allowed;background:none}
+  .human{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted)}
+  .human .ico{width:15px;height:15px;color:var(--primary)}
+  .result{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:13px;margin-top:9px;line-height:1.35}
+  .result .ico{width:18px;height:18px}
+  .result.ok{background:var(--ok-soft);color:var(--ok)}
+  .result.rej{background:var(--bg);color:var(--text)}
+  .result span{flex:1}
+  .result button{font-weight:700;font-size:12.5px;text-decoration:underline;color:inherit;white-space:nowrap}
 
-/* feedback */
-.fb-row{display:flex;gap:8px;margin-top:10px}
-.fb{flex:1;height:36px;border-radius:11px;border:1.5px solid var(--line);font-size:12.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:7px;transition:.15s}
-.fb:hover{border-color:var(--petrol)}
-.fb[aria-pressed="true"]{background:var(--petrol);border-color:var(--petrol);color:#fff}
-.fb-msg{font-size:11.5px;color:var(--muted);line-height:1.4;margin-top:9px;display:flex;gap:7px;align-items:center;min-height:32px}
-.fb-msg svg{flex:0 0 15px;color:var(--orange)}
-
-/* modal */
-.overlay{position:fixed;inset:0;background:rgba(10,47,61,.45);display:grid;place-items:center;z-index:50;opacity:0;pointer-events:none;transition:opacity .18s}
-.overlay.open{opacity:1;pointer-events:auto}
-.modal{width:600px;max-height:86vh;overflow:auto;background:#fff;border-radius:22px;padding:24px 26px;box-shadow:0 30px 80px -20px rgba(10,47,61,.6);transform:translateY(8px);transition:transform .18s}
-.overlay.open .modal{transform:none}
-.modal-h{display:flex;align-items:flex-start;gap:12px}
-.modal-h h3{font-size:17px;font-weight:700}
-.modal-h p{font-size:12.5px;color:var(--muted);margin-top:3px}
-.x{margin-left:auto;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--muted)}
-.x:hover{background:var(--gray);color:var(--petrol)}
-.wrow{display:grid;grid-template-columns:1fr 150px 40px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid #F0F3F6;font-size:13px}
-.wrow small{display:block;color:var(--muted);font-size:12px;margin-top:1px}
-.wrow .bar i{background:var(--orange)}
-.wrow em{font-style:normal;font-weight:700;text-align:right}
-.modal h5{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:16px 0 4px}
-.modal .txt{font-size:13px;line-height:1.55}
-.modal .btn{width:auto;padding:0 22px;margin:18px 0 0 auto}
+  /* modal */
+  .ovl{position:fixed;inset:0;background:rgba(12,18,38,.55);display:grid;place-items:center;z-index:80}
+  .modal{width:560px;max-height:84vh;display:flex;flex-direction:column;background:var(--surface);border-radius:18px;box-shadow:0 30px 70px rgba(0,0,0,.35);overflow:hidden}
+  .m-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line)}
+  .m-hd h3{font-size:16px}
+  .m-x{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--muted)}
+  .m-x:hover{background:var(--bg);color:var(--text)}
+  .m-bd{padding:16px 20px;overflow:auto;font-size:13px;line-height:1.5}
+  .m-bd h4{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:14px 0 7px}
+  .m-bd h4:first-child{margin-top:0}
+  .m-ft{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line)}
+  .w-row{display:grid;grid-template-columns:1fr 120px 38px;gap:10px;align-items:center;padding:5px 0}
+  .w-row small{display:block;color:var(--muted);font-size:12px}
+  .w-row .bar{margin:0}
+  .w-row em{font-style:normal;font-weight:700;text-align:right;font-size:12.5px}
+  .note{padding:10px 12px;border-radius:10px;background:var(--bg);font-size:12.5px;color:var(--muted)}
+  .opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;margin-bottom:7px;cursor:pointer}
+  .opt:has(input:checked){border-color:var(--primary);background:var(--primary-soft)}
+  .opt input{accent-color:var(--primary);width:16px;height:16px}
+  .opt b{font-weight:600}
+  .opt .seal{margin-left:auto}
+  textarea{width:100%;min-height:70px;resize:vertical;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font:inherit;font-size:13px;color:var(--text);background:var(--surface)}
+  textarea:focus{outline:none;border-color:var(--primary)}
 </style>
 </head>
 <body>
+
+<!-- Símbolos SVG reutilizáveis -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <!-- Logo MonitorIA: pessoas (nós com arco), dados (conexões) e IA (núcleo laranja) -->
-    <symbol id="logo-mark" viewBox="0 0 44 44">
-      <rect x="1" y="1" width="42" height="42" rx="13" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".28"/>
-      <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none">
-        <path d="M22 22 L12 13"/><path d="M22 22 L32 13"/><path d="M22 22 L22 33.5"/>
-        <path d="M7.5 20 a5 5 0 0 1 9 0" opacity=".85"/>
-        <path d="M27.5 20 a5 5 0 0 1 9 0" opacity=".85"/>
-      </g>
-      <circle cx="12" cy="12" r="3" fill="currentColor"/>
-      <circle cx="32" cy="12" r="3" fill="currentColor"/>
-      <circle cx="22" cy="34" r="2.6" fill="currentColor"/>
-      <circle cx="22" cy="22" r="6.2" fill="#FF7A00"/>
-      <path d="M22 18.4 l1 2.6 2.6 1 -2.6 1 -1 2.6 -1 -2.6 -2.6 -1 2.6 -1z" fill="#fff"/>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5b67e6"/><stop offset="1" stop-color="#19c3b1"/>
+    </linearGradient>
+    <symbol id="logo" viewBox="0 0 40 40">
+      <rect width="40" height="40" rx="11" fill="url(#lg)"/>
+      <path d="M7 22h6l3-8 5 14 4-10 2 4h6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M30 6l1.2 2.8L34 10l-2.8 1.2L30 14l-1.2-2.8L26 10l2.800-1.200z" fill="#fff"/>
     </symbol>
-    <symbol id="i-ai" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="6.5" width="11" height="11" rx="2.5"/><path d="M12 9.5l.9 1.6 1.6.9-1.6.9-.9 1.6-.9-1.6-1.6-.9 1.6-.9z"/><path d="M9.5 3v3.5M14.5 3v3.5M9.5 17.5V21M14.5 17.5V21M3 9.5h3.5M3 14.5h3.5M17.5 9.5H21M17.5 14.5H21"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12.5l4 4 8-9"/></symbol>
-    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.2"/></symbol>
-    <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4l1.8 4.7L17.500 10.500l-4.700 1.800L11 17l-1.800-4.700L4.500 10.500l4.700-1.800z"/><path d="M18.500 15.500l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></symbol>
+    <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="10" rx="2"/><rect x="13" y="3" width="8" height="6" rx="2"/><rect x="13" y="11" width="8" height="10" rx="2"/><rect x="3" y="15" width="8" height="6" rx="2"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.500 20c.5-3.600 3.200-5.500 6.500-5.500s6 1.900 6.500 5.500"/><path d="M16 4.800a3.500 3.500 0 010 6.400M18.500 14.800c1.700.8 2.700 2.500 3 5.200"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1h-8l-5 4v-4H4a1 1 0 01-1-1V6a1 1 0 011-1z"/><path d="M8 10h8M8 13h5"/></symbol>
+    <symbol id="i-ai" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="3"/><path d="M10 10.500v3M14 10.500v3M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></symbol>
+    <symbol id="i-report" viewBox="0 0 24 24"><path d="M6 3h9l4 4v13a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M14 3v5h5M9 17v-3M12 17v-6M15 17v-4"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.500 2.500 0 114 2c-.9.7-1.500 1.200-1.500 2.500M12 17.200v.1"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0112 0v5l1.500 2h-15z"/><path d="M10 20.500a2 2 0 004 0"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.500"/><path d="M3.500 7l8.500 6 8.500-6"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.800l1.300 2.400 2.700-.6 1 2.500 2.600 1-.6 2.700 2.200 1.200-2.200 1.200.6 2.700-2.600 1-1 2.500-2.700-.6-1.300 2.400-1.300-2.400-2.700.6-1-2.500-2.600-1 .6-2.700L2.800 12 5 10.800l-.6-2.700 2.600-1 1-2.500 2.700.6z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.500v.1"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.1"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.500l4.500 4.500L19 7.500"/></symbol>
+    <symbol id="i-checkc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.300l2.800 2.800L16 9.500"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M7.500 15l3.500-4 3 2.500L19 8"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.500 6.500l4 4"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 01-14.300 4.900M4 12a8 8 0 0114.300-4.900"/><path d="M18.500 3.500v4h-4M5.500 20.500v-4h4"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 17h6M10 20.500h4"/><path d="M12 3a6 6 0 00-3.500 10.900c.5.4.8 1 .8 1.600V17h5.400v-1.500c0-.6.3-1.200.8-1.600A6 6 0 0012 3z"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.500-3.200 7.800-8 9-4.800-1.200-8-4.500-8-9V6z"/><path d="M9 12l2.200 2.200L15 10.500"/></symbol>
   </defs>
 </svg>
 
-<div class="app" id="app">
-  <!-- MENU LATERAL -->
-  <aside class="sidebar" id="sidebar" aria-label="Menu principal">
-    <div class="brand" aria-label="MonitorIA">
-      <svg width="44" height="44" style="color:#fff"><use href="#logo-mark"/></svg>
-      <div class="wordmark">Monitor<b>IA</b></div>
-    </div>
-    <p class="tagline">Sistema Inteligente de Apoio à Jornada Digital do Estudante em Ambientes Virtuais de Aprendizagem</p>
+<!-- MENU LATERAL -->
+<aside class="sidebar" id="sidebar" aria-label="Menu principal">
+  <div class="sb-brand">
+    <a class="logo" href="dashboard.html" aria-label="MonitorIA">
+      <svg class="logo-mark"><use href="#logo"/></svg>
+      <span class="logo-word">Monitor<b>IA</b></span>
+    </a>
+    <p class="sb-desc">Sistema Inteligente de Apoio à Jornada Digital do Estudante em Ambientes Virtuais de Aprendizagem</p>
+  </div>
 
-    <nav class="nav">
-      <a class="nav-item active" href="dashboard.html" title="Dashboard" aria-current="page">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="9" rx="2"/><rect x="13.5" y="3.5" width="7" height="5" rx="2"/><rect x="13.5" y="11.5" width="7" height="9" rx="2"/><rect x="3.5" y="15.5" width="7" height="5" rx="2"/></svg>
-        <span>Dashboard</span>
-      </a>
-      <a class="nav-item" href="alunos.html" title="Alunos">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.4c2.1.8 3.5 2.8 3.5 5.6"/></svg>
-        <span>Alunos</span>
-      </a>
-      <button class="nav-item" type="button" data-off="Comunicação" title="Comunicação">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-7l-4.5 3.5V17.500H4A1.500 1.500 0 0 1 2.500 16V7A1.500 1.500 0 0 1 4 5.500z"/><path d="M7.500 10h9M7.500 13.500h5.500"/></svg>
-        <span>Comunicação</span>
-      </button>
-      <button class="nav-item" type="button" data-off="Inteligência Artificial" title="Inteligência Artificial">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.500" y="6.500" width="11" height="11" rx="2.500"/><path d="M12 9.500l.9 1.600 1.600.9-1.600.9-.9 1.600-.9-1.600-1.600-.9 1.600-.9z"/><path d="M9.500 3v3.500M14.500 3v3.500M9.500 17.500V21M14.500 17.500V21M3 9.500h3.500M3 14.500h3.500M17.500 9.500H21M17.500 14.500H21"/></svg>
-        <span>Inteligência Artificial</span>
-      </button>
-      <a class="nav-item" href="relatorios.html" title="Relatórios">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.500 3h8l4.500 4.500V19.500A1.500 1.500 0 0 1 17.500 21h-11A1.500 1.500 0 0 1 5 19.500v-15A1.500 1.500 0 0 1 6.500 3z"/><path d="M14 3v5h5"/><path d="M9 17v-3M12 17v-5.500M15 17v-2"/></svg>
-        <span>Relatórios</span>
-      </a>
-      <button class="nav-item" type="button" data-off="Ajuda" title="Ajuda">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.600 2.600 0 1 1 3.700 2.300c-.8.4-1.200 1-1.200 1.900"/><path d="M12 16.800v.2"/></svg>
-        <span>Ajuda</span>
-      </button>
-    </nav>
+  <div class="sb-label">Menu</div>
+  <ul class="nav">
+    <li><a class="nav-item active" href="dashboard.html" title="Dashboard" aria-current="page"><svg class="ico"><use href="#i-dash"/></svg><span>Dashboard</span></a></li>
+    <li><a class="nav-item" href="alunos.html" title="Alunos"><svg class="ico"><use href="#i-users"/></svg><span>Alunos</span></a></li>
+    <li><button class="nav-item" type="button" data-off="Comunicação" title="Comunicação"><svg class="ico"><use href="#i-chat"/></svg><span>Comunicação</span></button></li>
+    <li><button class="nav-item" type="button" data-off="Inteligência Artificial" title="Inteligência Artificial"><svg class="ico"><use href="#i-ai"/></svg><span>Inteligência Artificial</span></button></li>
+    <li><a class="nav-item" href="relatorios.html" title="Relatórios"><svg class="ico"><use href="#i-report"/></svg><span>Relatórios</span></a></li>
+    <li><button class="nav-item" type="button" data-off="Ajuda" title="Ajuda"><svg class="ico"><use href="#i-help"/></svg><span>Ajuda</span></button></li>
+  </ul>
 
-    <div class="side-deco" aria-hidden="true">
-      <svg viewBox="0 0 288 210" fill="none">
-        <g stroke="#fff" stroke-width="1" opacity=".16">
-          <path d="M-10 190 L48 150 L96 176 L150 120 L208 158 L262 104 L300 130"/>
-          <path d="M48 150 L70 96 L150 120 L176 60 L262 104"/>
-          <path d="M96 176 L130 215M208 158 L230 215M70 96 L20 70M176 60 L230 30"/>
-        </g>
-        <g fill="#fff" opacity=".35">
-          <circle cx="48" cy="150" r="3"/><circle cx="96" cy="176" r="2.500"/><circle cx="208" cy="158" r="3"/><circle cx="262" cy="104" r="2.500"/><circle cx="70" cy="96" r="2.500"/><circle cx="176" cy="60" r="2"/><circle cx="20" cy="70" r="1.800"/><circle cx="230" cy="30" r="1.800"/>
-        </g>
-        <circle cx="150" cy="120" r="4" fill="#FF7A00" opacity=".9"/>
-        <circle cx="150" cy="120" r="9" stroke="#FF7A00" opacity=".35"/>
-      </svg>
-    </div>
-  </aside>
+  <div class="sb-foot"><span>MonitorIA · v1.0</span></div>
+</aside>
 
-  <div class="right">
-    <!-- CABEÇALHO -->
-    <header class="topbar">
-      <div class="top-left">
-        <button class="menu-btn" id="menuBtn" type="button" aria-label="Recolher ou expandir menu" aria-expanded="true" aria-controls="sidebar">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round"><path d="M4.500 7h15M4.500 12h15M4.500 17h15"/></svg>
-        </button>
-        <div class="brand" aria-label="MonitorIA">
-          <svg width="38" height="38" style="color:#0D3B4C;flex:0 0 38px"><use href="#logo-mark"/></svg>
-          <div class="wordmark">Monitor<b>IA</b></div>
-        </div>
+<!-- CABEÇALHO -->
+<header class="header">
+  <div class="hd-left">
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Recolher ou expandir menu" aria-controls="sidebar" aria-expanded="true">
+      <svg class="ico"><use href="#i-menu"/></svg>
+    </button>
+    <a class="logo" href="dashboard.html" aria-label="MonitorIA">
+      <svg class="logo-mark"><use href="#logo"/></svg>
+      <span class="logo-word">Monitor<b>IA</b></span>
+    </a>
+  </div>
+
+  <div class="hd-right">
+    <div class="icon-wrap">
+      <button class="icon-btn" type="button" data-panel="pNotif" aria-label="Notificações" aria-expanded="false">
+        <svg class="ico"><use href="#i-bell"/></svg><span class="badge" id="bNotif">3</span>
+      </button>
+      <div class="panel" id="pNotif" role="dialog" aria-label="Notificações">
+        <div class="panel-hd"><h3>Notificações</h3><button class="link-btn" type="button" data-readall="pNotif">Marcar todas como lidas</button></div>
+        <ul class="p-list">
+          <li><button class="p-row unread" type="button"><span class="p-dot"><svg class="ico"><use href="#i-alert"/></svg></span><span><span class="p-title">5 alunos sem acesso ao AVA há mais de 7 dias</span><div class="p-sub">há 12 min</div></span></button></li>
+          <li><button class="p-row unread" type="button"><span class="p-dot"><svg class="ico"><use href="#i-report"/></svg></span><span><span class="p-title">Relatório semanal de engajamento disponível</span><div class="p-sub">há 1 h</div></span></button></li>
+          <li><button class="p-row unread" type="button"><span class="p-dot"><svg class="ico"><use href="#i-info"/></svg></span><span><span class="p-title">Prazo da Atividade 3 encerra amanhã</span><div class="p-sub">há 3 h</div></span></button></li>
+        </ul>
       </div>
+    </div>
 
-      <div class="top-right">
-        <div class="pop-wrap">
-          <button class="icon-btn" type="button" data-pop="popNotif" aria-label="Notificações" aria-expanded="false">
-            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16.500V11a6 6 0 0 1 12 0v5.500l1.500 2h-15z"/><path d="M10 21a2.200 2.200 0 0 0 4 0"/></svg>
-            <span class="badge" id="notifBadge">3</span>
-          </button>
-          <div class="pop" id="popNotif" role="dialog" aria-label="Notificações">
-            <div class="pop-head">Notificações <button type="button" id="markRead">Marcar como lidas</button></div>
-            <button class="pop-row" type="button"><i class="dot"></i><span>Novos alertas de engajamento disponíveis<small>há 12 min</small></span></button>
-            <button class="pop-row" type="button"><i class="dot"></i><span>Sincronização com o AVA concluída<small>há 1 h</small></span></button>
-            <button class="pop-row" type="button"><i class="dot"></i><span>Relatório semanal pronto para consulta<small>ontem</small></span></button>
-          </div>
-        </div>
-
-        <div class="pop-wrap">
-          <button class="icon-btn" type="button" data-pop="popMsg" aria-label="Mensagens" aria-expanded="false">
-            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.500" width="18" height="13" rx="2.500"/><path d="M3.800 7.500l8.200 6 8.200-6"/></svg>
-            <span class="badge" id="msgBadge">2</span>
-          </button>
-          <div class="pop" id="popMsg" role="dialog" aria-label="Mensagens">
-            <div class="pop-head">Mensagens</div>
-            <button class="pop-row" type="button"><i class="ini">CT</i><span>Coordenação de Tutoria<small>Reunião de alinhamento confirmada.</small></span></button>
-            <button class="pop-row" type="button"><i class="ini">ST</i><span>Suporte Técnico<small>Seu chamado foi atualizado.</small></span></button>
-          </div>
-        </div>
-
-        <div class="pop-wrap">
-          <button class="icon-btn" type="button" data-pop="popSet" aria-label="Configurações" aria-expanded="false">
-            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.800l1.600 2.500 2.900-.6.900 2.800 2.800.9-.600 2.900 2.500 1.600-2.500 1.600.600 2.900-2.800.9-.900 2.800-2.900-.600-1.600 2.500-1.600-2.500-2.900.600-.900-2.800-2.800-.900.600-2.900L1.900 12.900l2.500-1.600-.600-2.900 2.800-.900.900-2.800 2.900.600z" transform="translate(1.200 1.200) scale(.9)"/></svg>
-          </button>
-          <div class="pop" id="popSet" role="dialog" aria-label="Configurações">
-            <div class="pop-head">Configurações</div>
-            <div class="set-row"><span id="lblCompact">Menu lateral compacto</span><button class="switch" id="swCompact" type="button" role="switch" aria-checked="false" aria-labelledby="lblCompact"></button></div>
-            <div class="set-row"><span id="lblDeco">Detalhes visuais de fundo</span><button class="switch" id="swDeco" type="button" role="switch" aria-checked="true" aria-labelledby="lblDeco"></button></div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="pop-wrap">
-          <button class="profile" type="button" data-pop="popUser" aria-label="Perfil de Maria Monitor" aria-expanded="false">
-            <span class="avatar">
-              <svg width="46" height="46" viewBox="0 0 46 46">
-                <defs>
-                  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DCE8EC"/><stop offset="1" stop-color="#B9CDD5"/></linearGradient>
-                  <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3C9A8"/><stop offset="1" stop-color="#E2AC88"/></linearGradient>
-                  <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5A3625"/><stop offset="1" stop-color="#2E1A12"/></linearGradient>
-                </defs>
-                <rect width="46" height="46" fill="url(#bg)"/>
-                <path d="M10.500 30c-2.500-9-1-21 12.500-21s15 12 12.500 21c-1 3.500-3 6-5 7H15.500c-2-1-4-3.500-5-7z" fill="url(#hair)"/>
-                <path d="M5 46c1-8 7-11 13-12h10c6 1 12 4 13 12z" fill="#0D3B4C"/>
-                <path d="M18 34l5 6 5-6-2.500-1h-5z" fill="#fff"/>
-                <rect x="19.800" y="27" width="6.400" height="8" rx="3" fill="#D9A07C"/>
-                <ellipse cx="23" cy="21" rx="7.600" ry="9" fill="url(#skin)"/>
-                <path d="M14.800 20c1-6 5-8.500 9.500-8.500 4 0 7 2.500 7.200 8-3-.5-6.500-2.500-8.500-5.500-1.500 3-4.500 5-8.200 6z" fill="url(#hair)"/>
-                <ellipse cx="20" cy="21.500" rx=".9" ry="1.100" fill="#3A2318"/><ellipse cx="26" cy="21.500" rx=".9" ry="1.100" fill="#3A2318"/>
-                <path d="M18.600 19.600q1.400-.9 2.800 0M24.600 19.600q1.400-.9 2.800 0" stroke="#4A2D1F" stroke-width=".7" fill="none" stroke-linecap="round"/>
-                <path d="M20.300 25.600q2.700 2 5.400 0" stroke="#B5564A" stroke-width="1.100" fill="none" stroke-linecap="round"/>
-                <ellipse cx="18.300" cy="24" rx="1.500" ry=".9" fill="#E89A86" opacity=".45"/><ellipse cx="27.700" cy="24" rx="1.500" ry=".9" fill="#E89A86" opacity=".45"/>
-              </svg>
-            </span>
-            <span>
-              <span class="p-name" style="display:block">Maria Monitor</span>
-              <span class="p-role" style="display:block">Monitoria EaD</span>
-            </span>
-            <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M6.500 9.500l5.500 5.500 5.500-5.500"/></svg>
-          </button>
-          <div class="pop small" id="popUser" role="menu" aria-label="Menu do usuário">
-            <button class="pop-row" type="button" role="menuitem" data-msg="Perfil de Maria Monitor — Monitoria EaD">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round"><circle cx="12" cy="8.500" r="3.500"/><path d="M5 20c0-3.600 3.100-6 7-6s7 2.400 7 6"/></svg>Meu perfil</button>
-            <hr>
-            <button class="pop-row" type="button" role="menuitem" data-msg="Sair não está disponível neste protótipo">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.500h3.500A1.500 1.500 0 0 1 19 6v12a1.500 1.500 0 0 1-1.500 1.500H14"/><path d="M10.500 8.500L14 12l-3.500 3.500M14 12H4.500"/></svg>Sair</button>
-          </div>
-        </div>
+    <div class="icon-wrap">
+      <button class="icon-btn" type="button" data-panel="pMsg" aria-label="Mensagens" aria-expanded="false">
+        <svg class="ico"><use href="#i-mail"/></svg><span class="badge" id="bMsg">2</span>
+      </button>
+      <div class="panel" id="pMsg" role="dialog" aria-label="Mensagens">
+        <div class="panel-hd"><h3>Mensagens</h3><button class="link-btn" type="button" data-readall="pMsg">Marcar todas como lidas</button></div>
+        <ul class="p-list">
+          <li><button class="p-row unread" type="button"><span class="p-dot">JS</span><span><span class="p-title">João Silva</span><div class="p-sub">Professora, não consegui enviar a atividade…</div></span></button></li>
+          <li><button class="p-row unread" type="button"><span class="p-dot">AC</span><span><span class="p-title">Ana Costa</span><div class="p-sub">Obrigada pelo retorno sobre o fórum!</div></span></button></li>
+          <li><button class="p-row" type="button"><span class="p-dot">CP</span><span><span class="p-title">Coordenação Pedagógica</span><div class="p-sub">Reunião de monitoria na sexta, 14h.</div></span></button></li>
+        </ul>
       </div>
-    </header>
+    </div>
 
-    <!-- ÁREA CENTRAL DINÂMICA: módulo Dashboard (cenário HAX "When Right") -->
-    <main class="main">
-      <section class="canvas" id="canvas" aria-label="Dashboard">
-        <div class="deco" aria-hidden="true"></div>
-        <svg class="net" viewBox="0 0 1320 800" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true">
-          <g stroke="#0D3B4C" stroke-width="1" opacity=".07">
-            <path d="M1320 90 L1210 130 L1130 70 L1040 150 L1150 230 L1210 130"/>
-            <path d="M1150 230 L1250 300 L1320 260M1040 150 L960 90 L900 0M1130 70 L1160 0"/>
-            <path d="M0 700 L90 650 L170 720 L260 640 L150 570 L90 650"/>
-            <path d="M260 640 L360 700 L420 800M170 720 L190 800M150 570 L60 520 L0 540"/>
-            <path d="M1320 720 L1240 680 L1180 740 L1100 800"/>
-          </g>
-          <g fill="#0D3B4C" opacity=".12">
-            <circle cx="1210" cy="130" r="4"/><circle cx="1130" cy="70" r="3"/><circle cx="1150" cy="230" r="3"/><circle cx="960" cy="90" r="2.500"/><circle cx="1250" cy="300" r="2.500"/>
-            <circle cx="90" cy="650" r="4"/><circle cx="170" cy="720" r="3"/><circle cx="150" cy="570" r="3"/><circle cx="360" cy="700" r="2.500"/><circle cx="60" cy="520" r="2.500"/>
-            <circle cx="1240" cy="680" r="3"/><circle cx="1180" cy="740" r="2.500"/>
-          </g>
-          <g fill="#FF7A00" opacity=".28">
-            <circle cx="1040" cy="150" r="4"/><circle cx="260" cy="640" r="4"/>
-          </g>
-          <g stroke="#FF7A00" opacity=".12"><circle cx="1040" cy="150" r="11"/><circle cx="260" cy="640" r="11"/></g>
+    <div class="icon-wrap">
+      <button class="icon-btn" type="button" data-panel="pSet" aria-label="Configurações" aria-expanded="false">
+        <svg class="ico"><use href="#i-gear"/></svg>
+      </button>
+      <div class="panel" id="pSet" role="dialog" aria-label="Configurações" style="width:300px">
+        <div class="panel-hd"><h3>Configurações</h3></div>
+        <div class="set-row"><div>Menu compacto<small>Exibir apenas os ícones</small></div><button class="switch" id="swCompact" type="button" role="switch" aria-checked="false" aria-label="Menu compacto"></button></div>
+        <div class="set-row"><div>Modo escuro<small>Reduz o brilho da interface</small></div><button class="switch" id="swDark" type="button" role="switch" aria-checked="false" aria-label="Modo escuro"></button></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="profile" aria-label="Usuária logada: Maria Monitor, Monitoria EaD">
+      <div class="avatar">
+        <svg viewBox="0 0 96 96" role="img" aria-label="Foto de Maria Monitor">
+          <defs>
+            <linearGradient id="avBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dfe6f3"/><stop offset="1" stop-color="#b9c6de"/></linearGradient>
+            <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3cdb0"/><stop offset="1" stop-color="#dba584"/></linearGradient>
+            <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a3a26"/><stop offset="1" stop-color="#2e1b11"/></linearGradient>
+          </defs>
+          <rect width="96" height="96" fill="url(#avBg)"/>
+          <path d="M21 46c-2-22 9-35 27-35s29 13 27 35c-1 12 3 22 6 30H15c3-8 7-18 6-30z" fill="url(#hair)"/>
+          <path d="M10 96c1-15 12-22 26-24h24c14 2 25 9 26 24z" fill="#1f2b55"/>
+          <path d="M38 72l10 14 10-14-4-3H42z" fill="#f7f8fc"/>
+          <path d="M36 72l12 24H30zM60 72L48 96h18z" fill="#2a3970"/>
+          <path d="M40 58h16v13c-2 5-14 5-16 0z" fill="#d49d7c"/>
+          <ellipse cx="48" cy="43" rx="17" ry="20.500" fill="url(#skin)"/>
+          <path d="M30 42c0-15 8-22 19-22 12 0 18 8 18 22-4-6-9-11-14-13-6 5-16 7-23 13z" fill="url(#hair)"/>
+          <path d="M37 39.500c2-1.600 5-1.600 7 0M52 39.500c2-1.600 5-1.600 7 0" stroke="#3a2416" stroke-width="1.400" fill="none" stroke-linecap="round"/>
+          <ellipse cx="40.500" cy="44" rx="2" ry="1.700" fill="#2b1a10"/><ellipse cx="55.500" cy="44" rx="2" ry="1.700" fill="#2b1a10"/>
+          <circle cx="41.100" cy="43.500" r=".5" fill="#fff"/><circle cx="56.100" cy="43.500" r=".5" fill="#fff"/>
+          <path d="M48 46v5.500c-.8.8-1.800.9-2.500.6" stroke="#c48a6b" stroke-width="1.100" fill="none" stroke-linecap="round"/>
+          <path d="M42.500 55.500c3.500 2.600 7.500 2.600 11 0" stroke="#b5524f" stroke-width="1.900" fill="none" stroke-linecap="round"/>
+          <circle cx="36.500" cy="51" r="3" fill="#e9a48f" opacity=".45"/><circle cx="59.500" cy="51" r="3" fill="#e9a48f" opacity=".45"/>
         </svg>
-
-        <div class="content">
-          <div class="hello">
-            <div>
-              <h1>Olá, Maria Monitor!</h1>
-              <p>A IA encontrou situações que precisam da sua atenção hoje.</p>
-            </div>
-            <span class="seal"><i class="pulse"></i>Monitoramento inteligente ativo</span>
-          </div>
-
-          <div class="kpis">
-            <div class="kpi">
-              <div class="kpi-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.900-6 6.500-6s6.500 2.400 6.500 6"/><path d="M16 4.800a3.500 3.500 0 0 1 0 6.400"/><path d="M18 14.400c2.100.8 3.500 2.800 3.500 5.600"/></svg></div>
-              <div><div class="kpi-v">1.030</div><div class="kpi-l">Total de alunos acompanhados</div></div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.500l3 3 5.500-6.500"/></svg></div>
-              <div><div class="kpi-v">726</div><div class="kpi-l">Primeiro acesso realizado</div></div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 15.500H3z"/><path d="M12 10v4.500M12 17v.2"/></svg></div>
-              <div><div class="kpi-v">304</div><div class="kpi-l">Aguardando primeiro acesso ao AVA</div></div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v16h16"/><path d="M7.500 15l3.500-4 3 2.500 5-6.500"/></svg></div>
-              <div><div class="kpi-v">70%</div><div class="kpi-l">Taxa de ativação das turmas</div></div>
-            </div>
-            <div class="kpi ai">
-              <div class="kpi-ic"><svg width="24" height="24"><use href="#i-ai"/></svg></div>
-              <div><div class="kpi-v">45 <small>casos</small></div><div class="kpi-l">Prioridades identificadas pela IA</div></div>
-            </div>
-          </div>
-
-          <section class="panel" aria-labelledby="panelT">
-            <div class="panel-head">
-              <div>
-                <h2 id="panelT">Painel Inteligente de Apoio à Decisão</h2>
-                <p>A IA analisa acessos ao AVA e o histórico de contatos para sugerir quem contatar primeiro e por qual canal. Você decide o que fazer.</p>
-              </div>
-              <div class="count"><b id="decCount">0</b> de 45 casos com decisão registrada</div>
-            </div>
-
-            <div class="cols">
-              <!-- Lista priorizada -->
-              <div class="card list-card">
-                <h3>Estudantes priorizados pela IA</h3>
-                <div class="chips" role="group" aria-label="Filtrar por prioridade">
-                  <button class="chip" type="button" data-f="all" aria-pressed="true">Todas</button>
-                  <button class="chip" type="button" data-f="alta" aria-pressed="false">Alta</button>
-                  <button class="chip" type="button" data-f="media" aria-pressed="false">Média</button>
-                </div>
-                <div class="list" id="list" role="listbox" aria-label="Estudantes priorizados"></div>
-                <div class="list-foot"><span id="listInfo">Mostrando 5 de 45</span><a href="alunos.html">Ver todos os alunos</a></div>
-              </div>
-
-              <!-- Aluno + explicação -->
-              <div class="col">
-                <div class="card stu-card">
-                  <div class="stu-top">
-                    <div class="av lg" id="dIni">MO</div>
-                    <div>
-                      <h4 id="dName">Maria Oliveira</h4>
-                      <div class="meta">Curso: <b id="dCourse">Assistente Administrativo</b></div>
-                      <div class="meta">Status: <b id="dStatus">Aguardando primeiro acesso ao AVA</b></div>
-                    </div>
-                    <div class="stu-tags">
-                      <span class="prio big alta" id="dPrio">PRIORIDADE ALTA</span>
-                      <span class="ai-seal"><svg width="14" height="14"><use href="#i-spark"/></svg>Análise gerada por Inteligência Artificial</span>
-                    </div>
-                  </div>
-                  <div class="conf" id="conf">
-                    <span class="conf-l">Confiança da IA</span>
-                    <div class="bar" role="progressbar" aria-label="Confiança da IA" aria-valuemin="0" aria-valuemax="100" aria-valuenow="87" id="confBar"><i style="width:87%"></i></div>
-                    <span class="conf-v" id="confV">87%</span>
-                    <span class="conf-t" id="confT">Confiança alta</span>
-                  </div>
-                </div>
-
-                <div class="card exp-card">
-                  <h3><span class="xai" title="IA explicável"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.500 10.900c.6.500 1 1.200 1 2.100h5c0-.9.400-1.600 1-2.100A6 6 0 0 0 12 3z"/></svg></span>Por que a IA classificou este aluno como prioridade?</h3>
-                  <ul class="factors" id="factors"></ul>
-                  <div class="rec"><svg width="18" height="18"><use href="#i-spark"/></svg><span id="recTxt"></span></div>
-                </div>
-              </div>
-
-              <!-- Decisão + feedback -->
-              <div class="col">
-                <div class="card dec-card">
-                  <h3>Decisão da Monitoria</h3>
-                  <div class="dec-body" id="decBody"></div>
-                  <div class="note"><svg width="16" height="16"><use href="#i-info"/></svg><span>A decisão final pertence ao monitor. A IA apenas recomenda ações de apoio.</span></div>
-                </div>
-                <div class="card">
-                  <h3>Essa recomendação foi útil?</h3>
-                  <div class="fb-row">
-                    <button class="fb" type="button" id="fbUp" aria-pressed="false">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M7.500 10.500l3.500-7c1.500 0 2.500 1 2.500 2.500V9.500h4.700c1.200 0 2 1.100 1.700 2.200l-1.700 6.500c-.2.800-.9 1.300-1.700 1.300H7.500z"/><path d="M7.500 10.500H4v9h3.500"/></svg>Sim</button>
-                    <button class="fb" type="button" id="fbDown" aria-pressed="false">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg)"><path d="M7.500 10.500l3.500-7c1.500 0 2.500 1 2.500 2.500V9.500h4.700c1.200 0 2 1.100 1.700 2.200l-1.700 6.500c-.2.800-.9 1.300-1.700 1.300H7.500z"/><path d="M7.500 10.500H4v9h3.500"/></svg>Precisa melhorar</button>
-                  </div>
-                  <div class="fb-msg" id="fbMsg"></div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-    </main>
-  </div>
-</div>
-
-<!-- Explicação completa -->
-<div class="overlay" id="overlay" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
-    <div class="modal-h">
-      <span class="xai" style="flex:0 0 34px;height:34px;border-radius:10px"><svg width="20" height="20"><use href="#i-ai"/></svg></span>
-      <div><h3 id="mTitle">Explicação completa da análise</h3><p id="mSub"></p></div>
-      <button class="x" type="button" id="mClose" aria-label="Fechar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div>
+        <div class="p-name">Maria Monitor</div>
+        <div class="p-role">Monitoria EaD</div>
+      </div>
     </div>
-    <h5>Peso de cada fator na classificação</h5>
-    <div id="mRows"></div>
-    <h5>Recomendação</h5>
-    <p class="txt" id="mRec"></p>
-    <h5>Limites desta análise</h5>
-    <p class="txt">A IA usa apenas registros do AVA, do histórico de contatos e dos dados cadastrais. Contatos feitos fora do sistema não são considerados. Avalie o contexto do aluno antes de decidir.</p>
-    <button class="btn" type="button" id="mOk">Fechar</button>
+  </div>
+</header>
+
+<!-- ÁREA CENTRAL DINÂMICA — MÓDULO DASHBOARD -->
+<main class="main">
+  <section class="content" id="area-dinamica" aria-label="Dashboard">
+    <div class="dash">
+
+      <div class="d-top">
+        <div>
+          <h1>Olá, Maria Monitor!</h1>
+          <p>A IA encontrou situações que precisam da sua atenção hoje.</p>
+        </div>
+        <span class="live"><i></i>Monitoramento inteligente ativo</span>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><span class="kpi-ic c1"><svg class="ico"><use href="#i-users"/></svg></span><div><div class="kpi-val">1.030</div><div class="kpi-lb">Total de alunos acompanhados</div></div></div>
+        <div class="kpi"><span class="kpi-ic c2"><svg class="ico"><use href="#i-checkc"/></svg></span><div><div class="kpi-val">726</div><div class="kpi-lb">Primeiro acesso realizado</div></div></div>
+        <div class="kpi"><span class="kpi-ic c3"><svg class="ico"><use href="#i-alert"/></svg></span><div><div class="kpi-val">304</div><div class="kpi-lb">Aguardando primeiro acesso ao AVA</div></div></div>
+        <div class="kpi"><span class="kpi-ic c4"><svg class="ico"><use href="#i-chart"/></svg></span><div><div class="kpi-val">70%</div><div class="kpi-lb">Taxa de ativação das turmas</div></div></div>
+        <div class="kpi ai"><span class="kpi-ic c5"><svg class="ico"><use href="#i-ai"/></svg></span><div><div class="kpi-val">45 <small>casos</small></div><div class="kpi-lb">Prioridades identificadas pela IA</div></div></div>
+      </div>
+
+      <div class="board">
+        <div class="board-hd">
+          <div>
+            <h2>Painel Inteligente de Apoio à Decisão</h2>
+            <p>A IA analisa acessos ao AVA e o histórico de contatos para sugerir quem contatar primeiro e por qual canal. Ela não envia mensagens nem decide por você.</p>
+          </div>
+          <div class="counter" id="counter"></div>
+        </div>
+
+        <div class="board-bd">
+          <!-- Lista priorizada -->
+          <div class="lst">
+            <div class="lst-hd">
+              <span>Priorizados pela IA</span>
+              <div class="chips" role="group" aria-label="Filtrar por prioridade">
+                <button class="chip-f" type="button" data-f="todas" aria-pressed="true">Todas</button>
+                <button class="chip-f" type="button" data-f="alta" aria-pressed="false">Alta</button>
+                <button class="chip-f" type="button" data-f="media" aria-pressed="false">Média</button>
+              </div>
+            </div>
+            <ul class="stu-list" id="stuList"></ul>
+            <div class="lst-ft"><span id="lstCount"></span><a href="alunos.html">Ver todos em Alunos</a></div>
+          </div>
+
+          <!-- Detalhe do estudante -->
+          <div class="det" id="det" aria-live="polite">
+            <div class="det-hd">
+              <span class="ini" id="dIni"></span>
+              <div class="det-id">
+                <div class="det-l1">
+                  <h3 id="dName"></h3>
+                  <span class="prio" id="dPrio"></span>
+                  <span class="seal"><svg class="ico"><use href="#i-ai"/></svg>Análise gerada por Inteligência Artificial</span>
+                </div>
+                <div class="det-meta">Curso: <b id="dCourse"></b> &nbsp;·&nbsp; Status: <b id="dStatus"></b></div>
+              </div>
+              <div class="conf" id="confBox">
+                <div class="conf-top"><span>Confiança da IA</span><b id="dConf"></b></div>
+                <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="dBarWrap" aria-label="Confiança da IA"><i id="dBar"></i></div>
+                <div class="conf-note" id="dConfNote"></div>
+              </div>
+            </div>
+
+            <div class="why">
+              <div class="why-t"><span class="xai" title="IA explicável"><svg class="ico"><use href="#i-bulb"/></svg></span>Por que a IA classificou este aluno como prioridade?</div>
+              <ul class="facts" id="dFacts"></ul>
+              <div class="rec"><svg class="ico"><use href="#i-ai"/></svg><div><small>Recomendação da IA</small><span id="dRec"></span></div></div>
+            </div>
+
+            <div class="dec">
+              <div class="dec-t">Decisão da Monitoria <span>Você pode aceitar, ajustar ou rejeitar</span></div>
+              <div class="btns">
+                <button class="btn pri" type="button" id="bAccept"><svg class="ico"><use href="#i-check"/></svg>Aceitar recomendação</button>
+                <button class="btn" type="button" id="bAdjust"><svg class="ico"><use href="#i-edit"/></svg>Ajustar estratégia</button>
+                <button class="btn" type="button" id="bRe"><svg class="ico"><use href="#i-refresh"/></svg>Solicitar nova análise</button>
+                <button class="btn" type="button" id="bExplain"><svg class="ico"><use href="#i-info"/></svg>Ver explicação completa</button>
+                <button class="txt-btn" type="button" id="bReject">Rejeitar</button>
+              </div>
+              <div class="human"><svg class="ico"><use href="#i-shield"/></svg>A decisão final pertence ao monitor. A IA apenas recomenda ações de apoio.</div>
+              <div class="result" id="result" hidden><svg class="ico"><use href="#i-checkc"/></svg><span id="resultTxt"></span><button type="button" id="bUndo">Desfazer</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- Modal -->
+<div class="ovl" id="ovl" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="m-hd"><h3 id="mTitle"></h3><button class="m-x" type="button" id="mX" aria-label="Fechar"><svg class="ico"><use href="#i-x"/></svg></button></div>
+    <div class="m-bd" id="mBody"></div>
+    <div class="m-ft" id="mFoot"></div>
   </div>
 </div>
 
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico"><use href="#i-info"/></svg><span id="toastTxt"></span></div>
 
 <script>
 (function(){
-  var app=document.getElementById('app'), menuBtn=document.getElementById('menuBtn'),
-      swCompact=document.getElementById('swCompact'), swDeco=document.getElementById('swDeco'),
-      canvas=document.getElementById('canvas'), toast=document.getElementById('toast'), tt;
-  function $(id){return document.getElementById(id)}
-  function showToast(m){toast.textContent=m;toast.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('show')},2400)}
+  var body = document.body;
+  var $ = function(id){ return document.getElementById(id); };
+  var menuBtn = $('menuBtn'), swCompact = $('swCompact'), swDark = $('swDark');
 
-  /* ---------- Frame ---------- */
-  function setCollapsed(c){
-    app.classList.toggle('collapsed',c);
-    menuBtn.setAttribute('aria-expanded',String(!c));
-    swCompact.setAttribute('aria-checked',String(c));
+  /* ---------- Frame: menu lateral ---------- */
+  function setCollapsed(on){
+    body.classList.toggle('collapsed', on);
+    menuBtn.setAttribute('aria-expanded', String(!on));
+    swCompact.setAttribute('aria-checked', String(on));
   }
-  menuBtn.addEventListener('click',function(){setCollapsed(!app.classList.contains('collapsed'))});
-  swCompact.addEventListener('click',function(){setCollapsed(!app.classList.contains('collapsed'))});
-  swDeco.addEventListener('click',function(){
-    var on=swDeco.getAttribute('aria-checked')!=='true';
-    swDeco.setAttribute('aria-checked',String(on));
-    canvas.classList.toggle('plain',!on);
+  menuBtn.addEventListener('click', function(){ setCollapsed(!body.classList.contains('collapsed')); });
+  swCompact.addEventListener('click', function(){ setCollapsed(!body.classList.contains('collapsed')); });
+  swDark.addEventListener('click', function(){
+    var on = !body.classList.contains('dark');
+    body.classList.toggle('dark', on);
+    swDark.setAttribute('aria-checked', String(on));
   });
-  var triggers=[].slice.call(document.querySelectorAll('[data-pop]'));
+
+  /* ---------- Frame: painéis do cabeçalho ---------- */
+  var triggers = document.querySelectorAll('[data-panel]');
   function closeAll(except){
     triggers.forEach(function(t){
-      if(t===except)return;
-      t.setAttribute('aria-expanded','false');
-      $(t.dataset.pop).classList.remove('open');
+      var p = $(t.dataset.panel);
+      if(p !== except){ p.classList.remove('open'); t.setAttribute('aria-expanded','false'); }
     });
   }
   triggers.forEach(function(t){
-    t.addEventListener('click',function(e){
+    t.addEventListener('click', function(e){
       e.stopPropagation();
-      var p=$(t.dataset.pop), open=!p.classList.contains('open');
-      closeAll(t);
-      p.classList.toggle('open',open);
-      t.setAttribute('aria-expanded',String(open));
+      var p = $(t.dataset.panel);
+      var open = !p.classList.contains('open');
+      closeAll(p);
+      p.classList.toggle('open', open);
+      t.setAttribute('aria-expanded', String(open));
     });
   });
-  document.querySelectorAll('.pop').forEach(function(p){p.addEventListener('click',function(e){e.stopPropagation()})});
-  document.addEventListener('click',function(){closeAll()});
-  var nb=$('notifBadge');
-  function updateNotif(){
-    var n=document.querySelectorAll('#popNotif .pop-row:not(.read)').length;
-    nb.textContent=n; nb.hidden=n===0;
+  document.querySelectorAll('.panel').forEach(function(p){
+    p.addEventListener('click', function(e){ e.stopPropagation(); });
+  });
+  document.addEventListener('click', function(){ closeAll(null); });
+
+  var badges = { pNotif: $('bNotif'), pMsg: $('bMsg') };
+  function refreshBadge(id){
+    var panel = $(id);
+    var n = panel.querySelectorAll('.p-row.unread').length;
+    badges[id].textContent = n;
+    badges[id].hidden = n === 0;
+    panel.querySelector('[data-readall]').disabled = n === 0;
   }
-  document.querySelectorAll('#popNotif .pop-row').forEach(function(r){
-    r.addEventListener('click',function(){r.classList.add('read');updateNotif()});
+  ['pNotif','pMsg'].forEach(function(id){
+    var panel = $(id);
+    panel.querySelectorAll('.p-row').forEach(function(r){
+      r.addEventListener('click', function(){ r.classList.remove('unread'); refreshBadge(id); });
+    });
+    panel.querySelector('[data-readall]').addEventListener('click', function(){
+      panel.querySelectorAll('.p-row.unread').forEach(function(r){ r.classList.remove('unread'); });
+      refreshBadge(id);
+    });
+    refreshBadge(id);
   });
-  $('markRead').addEventListener('click',function(){
-    document.querySelectorAll('#popNotif .pop-row').forEach(function(r){r.classList.add('read')});updateNotif();
-  });
-  var mb=$('msgBadge');
-  document.querySelectorAll('#popMsg .pop-row').forEach(function(r){
-    r.addEventListener('click',function(){
-      if(!r.dataset.read){r.dataset.read='1';r.style.opacity='.6';
-        var n=document.querySelectorAll('#popMsg .pop-row:not([data-read])').length;mb.textContent=n;mb.hidden=n===0;}
+
+  /* ---------- Toast ---------- */
+  var toast = $('toast'), toastTxt = $('toastTxt'), timer;
+  function showToast(msg){
+    toastTxt.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(timer);
+    timer = setTimeout(function(){ toast.classList.remove('show'); }, 3000);
+  }
+  document.querySelectorAll('[data-off]').forEach(function(b){
+    b.addEventListener('click', function(){
+      showToast('O módulo "' + b.dataset.off + '" não está disponível neste protótipo.');
     });
   });
-  document.querySelectorAll('#popUser [data-msg]').forEach(function(b){
-    b.addEventListener('click',function(){closeAll();showToast(b.dataset.msg)});
-  });
-  document.querySelectorAll('[data-off]').forEach(function(b){
-    b.addEventListener('click',function(){showToast('Módulo "'+b.dataset.off+'" não faz parte deste protótipo')});
-  });
 
-  /* ---------- Dashboard ---------- */
-  var FL=['Tempo sem acessar o AVA','Histórico de tentativas de contato','Último canal utilizado','Respostas anteriores','Dados cadastrais disponíveis'];
-  var CH=['WhatsApp','E-mail','Ligação','SMS'];
-  var S=[
-    {n:'Maria Oliveira',i:'MO',c:'Assistente Administrativo',p:'alta',conf:87,conf2:89,ch:'WhatsApp',
-     f:['12 dias desde a matrícula','2 tentativas sem retorno','E-mail','Nenhuma resposta aos e-mails','Celular com WhatsApp cadastrado'],w:[35,25,15,15,10]},
-    {n:'João Pedro Santos',i:'JS',c:'Auxiliar de Recursos Humanos',p:'alta',conf:82,conf2:84,ch:'Ligação',
-     f:['15 dias desde a matrícula','3 tentativas sem retorno','WhatsApp','Mensagens lidas, sem resposta','Celular e telefone fixo cadastrados'],w:[38,27,12,15,8]},
-    {n:'Ana Beatriz Lima',i:'AL',c:'Operador de Computador',p:'alta',conf:79,conf2:81,ch:'WhatsApp',
-     f:['9 dias desde a matrícula','1 tentativa sem retorno','E-mail','E-mail devolvido pelo servidor','Celular cadastrado'],w:[30,20,15,20,15]},
-    {n:'Carlos Eduardo Souza',i:'CS',c:'Assistente de Logística',p:'media',conf:74,conf2:75,ch:'E-mail',
-     f:['6 dias desde a matrícula','Nenhuma tentativa registrada','Nenhum contato realizado','Sem contatos anteriores','E-mail validado, sem celular'],w:[40,15,10,10,25]},
-    {n:'Fernanda Rocha',i:'FR',c:'Assistente Administrativo',p:'media',conf:68,conf2:71,ch:'WhatsApp',
-     f:['5 dias desde a matrícula','1 tentativa sem retorno','Ligação','Não atendeu à ligação','Celular com WhatsApp cadastrado'],w:[32,22,16,18,12]}
+  /* =====================================================
+     MÓDULO DASHBOARD
+     ===================================================== */
+  var TOTAL = 45;
+  var ST = 'Aguardando primeiro acesso ao AVA';
+  var students = [
+    {id:1,name:'Maria Oliveira',course:'Assistente Administrativo',status:ST,prio:'alta',conf:87,reconf:[89,88],channel:'WhatsApp',
+      f:['12 dias desde a matrícula','2 tentativas sem resposta','E-mail','Respondeu por WhatsApp na matrícula','Celular e e-mail válidos']},
+    {id:2,name:'Carlos Henrique Souza',course:'Técnico em Logística',status:ST,prio:'alta',conf:82,reconf:[84,83],channel:'Ligação telefônica',
+      f:['15 dias desde a matrícula','3 tentativas sem resposta','WhatsApp','Não respondeu a mensagens de texto','Celular e telefone fixo válidos']},
+    {id:3,name:'Juliana Ferreira',course:'Auxiliar de Recursos Humanos',status:ST,prio:'alta',conf:79,reconf:[81,80],channel:'WhatsApp',
+      f:['10 dias desde a matrícula','1 tentativa sem resposta','E-mail','Sem respostas registradas','Celular válido; e-mail não confirmado']},
+    {id:4,name:'Rafael Almeida',course:'Informática Básica',status:ST,prio:'media',conf:74,reconf:[76,75],channel:'E-mail',
+      f:['7 dias desde a matrícula','1 tentativa sem resposta','WhatsApp','Costuma responder por e-mail','E-mail válido; celular desatualizado']},
+    {id:5,name:'Beatriz Santos',course:'Assistente Administrativo',status:ST,prio:'media',conf:64,reconf:[66,67],channel:'SMS',
+      f:['6 dias desde a matrícula','Nenhuma tentativa registrada','Nenhum','Sem respostas registradas','Somente celular; e-mail ausente']},
+    {id:6,name:'Lucas Pereira',course:'Operador de Computador',status:ST,prio:'media',conf:71,reconf:[73,72],channel:'WhatsApp',
+      f:['8 dias desde a matrícula','1 tentativa sem resposta','Ligação telefônica','Atendeu 1 ligação e pediu retorno','Celular e e-mail válidos']}
   ];
-  S.forEach(function(s){s.dec=null;s.fb=null;s.re=false});
-  var sel=0, filter='all', mode='btns', adjCh=null, loading=false;
+  var FACTORS = ['Tempo sem acessar o AVA','Histórico de tentativas de contato','Último canal utilizado','Respostas anteriores','Dados cadastrais disponíveis'];
+  var WEIGHTS = [34,24,16,15,11];
+  var CHANNELS = ['WhatsApp','Ligação telefônica','E-mail','SMS'];
 
-  function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
-  function prioLabel(p){return p==='alta'?'ALTA':'MÉDIA'}
-  function recText(s){return 'A IA recomenda contato via <b>'+s.ch+'</b>, pois apresentou maior efetividade em situações semelhantes.'}
+  var selected = 1, filter = 'todas', busy = false;
+  students.forEach(function(s){ s.decision = null; s.stamp = 'analisado hoje às 08:15'; s.reIdx = 0; });
+
+  function initials(n){ var p = n.split(' '); return (p[0][0] + p[p.length-1][0]).toUpperCase(); }
+  function cur(){ return students.filter(function(s){ return s.id === selected; })[0]; }
+  function prioLabel(p){ return p === 'alta' ? 'ALTA' : 'MÉDIA'; }
+  function decisionShort(s){
+    if(!s.decision) return null;
+    if(s.decision.type === 'rejected') return 'Recomendação rejeitada por você';
+    return '✓ Contato via ' + s.decision.channel + ' definido por você';
+  }
 
   function renderList(){
-    var el=$('list'), html='', shown=0;
-    S.forEach(function(s,ix){
-      if(filter!=='all'&&s.p!==filter)return; shown++;
-      html+='<button class="stu" type="button" role="option" data-ix="'+ix+'" aria-selected="'+(ix===sel)+'">'+
-        '<span class="av'+(s.dec?' done':'')+'">'+s.i+'</span>'+
-        '<span class="stu-t"><span class="stu-n" style="display:block">'+s.n+'</span><span class="stu-c" style="display:block">'+s.c+'</span></span>'+
-        '<span class="prio '+s.p+'">'+prioLabel(s.p)+'</span></button>';
+    var ul = $('stuList'); ul.innerHTML = '';
+    var vis = students.filter(function(s){ return filter === 'todas' || s.prio === filter; });
+    vis.forEach(function(s){
+      var li = document.createElement('li');
+      var d = decisionShort(s);
+      var subCls = s.decision ? (s.decision.type === 'rejected' ? ' rej' : ' done') : '';
+      li.innerHTML =
+        '<button class="stu" type="button" aria-current="' + (s.id === selected) + '">' +
+          '<span class="ini">' + initials(s.name) + '</span>' +
+          '<span class="stu-main"><div class="stu-name">' + s.name + '</div>' +
+          '<div class="stu-sub' + subCls + '">' + (d || s.course) + '</div></span>' +
+          '<span class="stu-side"><span class="prio ' + s.prio + '">' + prioLabel(s.prio) + '</span>' +
+          '<span class="stu-conf">Confiança ' + s.conf + '%</span></span>' +
+        '</button>';
+      li.firstChild.addEventListener('click', function(){
+        if(busy) return;
+        selected = s.id; renderList(); renderDetail();
+      });
+      ul.appendChild(li);
     });
-    el.innerHTML=html||'<div class="empty">Nenhum estudante neste filtro.</div>';
-    $('listInfo').textContent='Mostrando '+shown+' de 45';
-    $('decCount').textContent=S.filter(function(s){return s.dec}).length;
+    if(!vis.length){ ul.innerHTML = '<li class="empty">Nenhum estudante neste filtro.</li>'; }
+    $('lstCount').textContent = 'Exibindo ' + vis.length + ' de ' + TOTAL + ' casos';
+    var done = students.filter(function(s){ return s.decision; }).length;
+    $('counter').innerHTML = 'Decisões registradas por você hoje: <b>' + done + ' de ' + TOTAL + '</b>';
   }
-  $('list').addEventListener('click',function(e){
-    var b=e.target.closest('.stu'); if(!b||loading)return;
-    sel=+b.dataset.ix; mode='btns'; renderAll();
-  });
-  document.querySelectorAll('.chip').forEach(function(c){
-    c.addEventListener('click',function(){
-      filter=c.dataset.f;
-      document.querySelectorAll('.chip').forEach(function(x){x.setAttribute('aria-pressed',String(x===c))});
-      renderList();
-    });
-  });
+
+  function confNote(s){
+    var lvl = s.conf >= 80 ? 'Alta confiança' : (s.conf >= 70 ? 'Confiança moderada' : 'Confiança baixa — revise os dados');
+    return lvl + ' · ' + s.stamp;
+  }
 
   function renderDetail(){
-    var s=S[sel];
-    $('dIni').textContent=s.i; $('dName').textContent=s.n; $('dCourse').textContent=s.c;
-    var p=$('dPrio'); p.className='prio big '+s.p; p.textContent='PRIORIDADE '+prioLabel(s.p);
-    $('confBar').firstElementChild.style.width=s.conf+'%'; $('confBar').setAttribute('aria-valuenow',s.conf);
-    $('confV').textContent=s.conf+'%';
-    $('confT').textContent=(s.conf>=80?'Confiança alta':'Confiança moderada')+(s.re?' · atualizada agora':'');
-    $('factors').innerHTML=FL.map(function(l,k){
-      return '<li><i class="ck"><svg width="11" height="11"><use href="#i-check"/></svg></i><b>'+l+'</b><span>'+s.f[k]+'</span></li>';
+    var s = cur();
+    $('dIni').textContent = initials(s.name);
+    $('dName').textContent = s.name;
+    $('dPrio').textContent = 'PRIORIDADE ' + prioLabel(s.prio);
+    $('dPrio').className = 'prio ' + s.prio;
+    $('dCourse').textContent = s.course;
+    $('dStatus').textContent = s.status;
+    $('dConf').textContent = s.conf + '%';
+    $('dBar').style.width = s.conf + '%';
+    $('dBarWrap').setAttribute('aria-valuenow', s.conf);
+    $('dConfNote').textContent = confNote(s);
+    $('dFacts').innerHTML = FACTORS.map(function(f, i){
+      return '<li><span class="ck"><svg class="ico"><use href="#i-check"/></svg></span><span><b>' + f + '</b><br><span>' + s.f[i] + '</span></span></li>';
     }).join('');
-    $('recTxt').innerHTML=recText(s);
+    $('dRec').innerHTML = 'A IA recomenda contato via <b>' + s.channel + '</b>, pois apresentou maior efetividade em situações semelhantes.';
+
+    var dec = s.decision, res = $('result');
+    ['bAccept','bAdjust','bRe','bReject'].forEach(function(id){ $(id).disabled = !!dec; });
+    if(dec){
+      var txt;
+      if(dec.type === 'accepted') txt = 'Recomendação aceita: contato via ' + dec.channel + ' registrado no seu plano de ação para ' + s.name + '.';
+      else if(dec.type === 'adjusted') txt = 'Estratégia ajustada por você: contato via ' + dec.channel + ' para ' + s.name + (dec.note ? ' — "' + dec.note + '"' : '') + '.';
+      else txt = 'Você rejeitou a recomendação da IA para ' + s.name + '. Nenhuma ação foi registrada.';
+      $('resultTxt').textContent = txt;
+      res.className = 'result ' + (dec.type === 'rejected' ? 'rej' : 'ok');
+      res.hidden = false;
+    } else {
+      res.hidden = true;
+    }
   }
 
-  function renderDecision(){
-    var s=S[sel], el=$('decBody'), h='';
-    if(s.dec){
-      var d=s.dec, t, p;
-      if(d.t==='ok'){t='Recomendação aceita';p='Contato via '+d.ch+' com '+s.n+' adicionado à sua fila de ações.'}
-      else if(d.t==='adj'){t='Estratégia ajustada por você';p='Contato via '+d.ch+' com '+s.n+' adicionado à sua fila de ações.'}
-      else{t='Recomendação dispensada';p='Nenhuma ação foi criada para '+s.n+'. Você pode retomar quando quiser.'}
-      h='<div class="result'+(d.t==='no'?' no':'')+'"><i class="ck"><svg width="14" height="14"><use href="#i-check"/></svg></i><div><strong>'+t+'</strong><p>'+p+'</p>'+
-        (d.note?'<q>'+esc(d.note)+'</q>':'')+'</div></div>'+
-        '<button class="btn" type="button" data-a="undo">Desfazer decisão</button>';
-    }else if(mode==='adjust'){
-      h='<span class="lbl" id="chLbl">Canal de contato</span><div class="opts" role="radiogroup" aria-labelledby="chLbl">'+
-        CH.map(function(c){return '<button class="opt" type="button" role="radio" data-ch="'+c+'" aria-checked="'+(c===adjCh)+'">'+c+(c===s.ch?' <em>IA</em>':'')+'</button>'}).join('')+
-        '</div><label class="lbl" for="adjNote">Observação (opcional)</label>'+
-        '<textarea id="adjNote" placeholder="Ex.: aluno prefere contato à noite"></textarea>'+
-        '<div class="two"><button class="btn" type="button" data-a="cancel">Cancelar</button><button class="btn primary" type="button" data-a="save">Salvar ajuste</button></div>';
-    }else{
-      h='<button class="btn primary" type="button" data-a="accept"><svg width="17" height="17"><use href="#i-check"/></svg>Aceitar recomendação</button>'+
-        '<button class="btn" type="button" data-a="adjust"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4.500L16.500 4l3.500 3.500L8.500 19z"/><path d="M14 6.500l3.500 3.500"/></svg>Ajustar estratégia</button>'+
-        '<button class="btn" type="button" data-a="re"'+(loading?' disabled':'')+'><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-14 5.300M4 12a8 8 0 0 1 14-5.300"/><path d="M18.500 3v4h-4M5.500 21v-4h4"/></svg>'+(loading?'Analisando…':'Solicitar nova análise')+'</button>'+
-        '<button class="btn" type="button" data-a="full"><svg width="16" height="16"><use href="#i-info"/></svg>Ver explicação completa</button>'+
-        '<button class="link" type="button" data-a="dismiss">Dispensar recomendação</button>';
-    }
-    el.innerHTML=h;
+  function decide(type, channel, note){
+    var s = cur();
+    s.decision = { type:type, channel:channel, note:note || '' };
+    renderList(); renderDetail();
   }
 
-  $('decBody').addEventListener('click',function(e){
-    var o=e.target.closest('.opt');
-    if(o){adjCh=o.dataset.ch;document.querySelectorAll('.opt').forEach(function(x){x.setAttribute('aria-checked',String(x===o))});return}
-    var b=e.target.closest('[data-a]'); if(!b||b.disabled)return;
-    var s=S[sel], a=b.dataset.a;
-    if(a==='accept'){s.dec={t:'ok',ch:s.ch};showToast('Recomendação aceita para '+s.n)}
-    else if(a==='adjust'){mode='adjust';adjCh=s.ch}
-    else if(a==='cancel'){mode='btns'}
-    else if(a==='save'){
-      var note=$('adjNote').value.trim();
-      s.dec={t:adjCh===s.ch&&!note?'ok':'adj',ch:adjCh,note:note};mode='btns';
-      showToast('Estratégia registrada: contato via '+adjCh);
-    }
-    else if(a==='dismiss'){s.dec={t:'no'};showToast('Recomendação dispensada')}
-    else if(a==='undo'){s.dec=null;mode='btns';showToast('Decisão desfeita')}
-    else if(a==='full'){openModal();return}
-    else if(a==='re'){reanalyse();return}
-    renderList();renderDecision();
+  /* filtros */
+  document.querySelectorAll('.chip-f').forEach(function(c){
+    c.addEventListener('click', function(){
+      if(busy) return;
+      filter = c.dataset.f;
+      document.querySelectorAll('.chip-f').forEach(function(x){ x.setAttribute('aria-pressed', String(x === c)); });
+      var vis = students.filter(function(s){ return filter === 'todas' || s.prio === filter; });
+      if(vis.length && !vis.some(function(s){ return s.id === selected; })) selected = vis[0].id;
+      renderList(); renderDetail();
+    });
   });
 
-  function reanalyse(){
-    var s=S[sel], ix=sel;
-    loading=true; $('conf').classList.add('loading'); $('confV').textContent='…'; $('confT').textContent='Reanalisando dados…';
-    renderDecision();
+  /* aceitar */
+  $('bAccept').addEventListener('click', function(){
+    var s = cur();
+    decide('accepted', s.channel);
+    showToast('Recomendação aceita. Contato via ' + s.channel + ' registrado para ' + s.name + '.');
+  });
+
+  /* rejeitar */
+  $('bReject').addEventListener('click', function(){
+    var s = cur();
+    decide('rejected', null);
+    showToast('Recomendação rejeitada. Você pode desfazer a qualquer momento.');
+  });
+
+  /* desfazer */
+  $('bUndo').addEventListener('click', function(){
+    cur().decision = null;
+    renderList(); renderDetail();
+    showToast('Decisão desfeita. O caso voltou a aguardar sua decisão.');
+    $('bAccept').focus();
+  });
+
+  /* nova análise */
+  $('bRe').addEventListener('click', function(){
+    if(busy) return;
+    var s = cur(), box = $('confBox');
+    busy = true;
+    box.classList.add('busy');
+    $('dConf').textContent = '…';
+    $('dConfNote').textContent = 'Reanalisando dados mais recentes…';
+    ['bAccept','bAdjust','bRe','bReject','bExplain'].forEach(function(id){ $(id).disabled = true; });
     setTimeout(function(){
-      loading=false; $('conf').classList.remove('loading');
-      if(!s.re){s.re=true;s.conf=s.conf2;showToast('Nova análise concluída: recomendação mantida, confiança de '+s.conf+'%')}
-      else showToast('Nenhum dado novo desde a última análise');
-      if(ix===sel){renderDetail();renderDecision()}
-    },1400);
-  }
-
-  /* feedback */
-  function renderFb(){
-    var s=S[sel];
-    $('fbUp').setAttribute('aria-pressed',String(s.fb==='up'));
-    $('fbDown').setAttribute('aria-pressed',String(s.fb==='down'));
-    var ic='<svg width="15" height="15"><use href="#i-spark"/></svg>';
-    $('fbMsg').innerHTML=ic+'<span>'+(s.fb==='up'?'Obrigada! Casos semelhantes seguirão esta abordagem.':
-      s.fb==='down'?'Registrado. A IA vai rever os critérios para casos semelhantes.':
-      'Seu feedback ajuda a IA a aprender continuamente.')+'</span>';
-  }
-  function setFb(v){var s=S[sel];s.fb=s.fb===v?null:v;renderFb()}
-  $('fbUp').addEventListener('click',function(){setFb('up')});
-  $('fbDown').addEventListener('click',function(){setFb('down')});
-
-  /* modal */
-  var ov=$('overlay'), lastFocus;
-  function openModal(){
-    var s=S[sel];
-    $('mSub').textContent=s.n+' · '+s.c+' · confiança de '+s.conf+'%';
-    $('mRows').innerHTML=FL.map(function(l,k){
-      return '<div class="wrow"><div>'+l+'<small>'+s.f[k]+'</small></div><div class="bar"><i style="width:'+s.w[k]+'%"></i></div><em>'+s.w[k]+'%</em></div>';
-    }).join('');
-    $('mRec').innerHTML=recText(s);
-    lastFocus=document.activeElement;
-    ov.classList.add('open');ov.setAttribute('aria-hidden','false');$('mClose').focus();
-  }
-  function closeModal(){ov.classList.remove('open');ov.setAttribute('aria-hidden','true');if(lastFocus&&lastFocus.focus)lastFocus.focus()}
-  $('mClose').addEventListener('click',closeModal);
-  $('mOk').addEventListener('click',closeModal);
-  ov.addEventListener('click',function(e){if(e.target===ov)closeModal()});
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){if(ov.classList.contains('open'))closeModal();else closeAll()}
+      s.conf = s.reconf[s.reIdx % s.reconf.length];
+      s.reIdx++;
+      s.stamp = 'análise atualizada agora';
+      busy = false;
+      box.classList.remove('busy');
+      $('bExplain').disabled = false;
+      renderList(); renderDetail();
+      showToast('Nova análise concluída: recomendação mantida (' + s.channel + '), confiança ' + s.conf + '%.');
+    }, 1500);
   });
 
-  function renderAll(){renderList();renderDetail();renderDecision();renderFb()}
-  renderAll();
+  /* ---------- Modal ---------- */
+  var ovl = $('ovl'), lastFocus = null;
+  function openModal(title, html, footHtml){
+    lastFocus = document.activeElement;
+    $('mTitle').textContent = title;
+    $('mBody').innerHTML = html;
+    $('mFoot').innerHTML = footHtml;
+    ovl.hidden = false;
+    $('mX').focus();
+  }
+  function closeModal(){
+    ovl.hidden = true;
+    if(lastFocus) lastFocus.focus();
+  }
+  $('mX').addEventListener('click', closeModal);
+  ovl.addEventListener('click', function(e){ if(e.target === ovl) closeModal(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      if(!ovl.hidden) closeModal(); else closeAll(null);
+    }
+  });
+
+  /* explicação completa */
+  $('bExplain').addEventListener('click', function(){
+    var s = cur();
+    var rows = FACTORS.map(function(f, i){
+      return '<div class="w-row"><div><b>' + f + '</b><small>' + s.f[i] + '</small></div>' +
+             '<div class="bar"><i style="width:' + (WEIGHTS[i] / 34 * 100) + '%"></i></div><em>' + WEIGHTS[i] + '%</em></div>';
+    }).join('');
+    openModal('Explicação completa — ' + s.name,
+      '<h4>O que a IA fez</h4>' +
+      '<p>Comparou os dados de ' + s.name + ' com casos semelhantes de estudantes que ainda não acessaram o AVA e estimou a prioridade de contato (<b>' + prioLabel(s.prio) + '</b>) e o canal com maior chance de resposta (<b>' + s.channel + '</b>).</p>' +
+      '<h4>Peso de cada fator na classificação</h4>' + rows +
+      '<h4>Confiança da IA: ' + s.conf + '%</h4>' +
+      '<p>Indica o quanto este caso se parece com situações anteriores em que a recomendação funcionou. Não é uma garantia de resultado.</p>' +
+      '<h4>Limitações</h4>' +
+      '<div class="note">A IA usa apenas dados registrados no sistema. Ela não conhece motivos pessoais, combinações feitas fora da plataforma ou dados desatualizados. Se você souber de algo que a IA não sabe, ajuste a estratégia ou rejeite a recomendação.</div>',
+      '<button class="btn pri" type="button" id="mOk">Entendi</button>');
+    $('mOk').addEventListener('click', closeModal);
+  });
+
+  /* ajustar estratégia */
+  $('bAdjust').addEventListener('click', function(){
+    var s = cur();
+    var opts = CHANNELS.map(function(c){
+      var rec = c === s.channel;
+      return '<label class="opt"><input type="radio" name="canal" value="' + c + '"' + (rec ? ' checked' : '') + '><b>' + c + '</b>' +
+             (rec ? '<span class="seal">Recomendado pela IA</span>' : '') + '</label>';
+    }).join('');
+    openModal('Ajustar estratégia — ' + s.name,
+      '<h4>Canal de contato</h4>' + opts +
+      '<h4>Observação da monitoria (opcional)</h4>' +
+      '<textarea id="mNote" maxlength="140" placeholder="Ex.: ligar após as 18h, aluno trabalha em horário comercial."></textarea>',
+      '<button class="btn" type="button" id="mCancel">Cancelar</button><button class="btn pri" type="button" id="mSave">Salvar estratégia</button>');
+    $('mCancel').addEventListener('click', closeModal);
+    $('mSave').addEventListener('click', function(){
+      var ch = document.querySelector('input[name="canal"]:checked').value;
+      var note = $('mNote').value.trim();
+      ovl.hidden = true;
+      decide('adjusted', ch, note);
+      showToast('Estratégia ajustada por você: contato via ' + ch + ' para ' + s.name + '.');
+      $('bUndo').focus();
+    });
+  });
+
+  renderList();
+  renderDetail();
 })();
 </script>
 </body>

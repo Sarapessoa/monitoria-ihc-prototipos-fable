@@ -2,758 +2,952 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MonitorIA – Alunos · Perfil do Aluno</title>
-<meta name="viewport" content="width=1672, initial-scale=1">
 <style>
-:root{
-  --petrol:#0D3B4C; --petrol-2:#0A2F3D; --orange:#FF7A00; --white:#FFFFFF; --gray:#F5F7FA;
-  --line:#E6EBF0; --text:#0D3B4C; --muted:#6B8290;
-  --side-w:288px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{font-family:"Inter","Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;background:var(--gray);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased}
-button{font-family:inherit;border:0;background:none;cursor:pointer;color:inherit}
-a{text-decoration:none;color:inherit}
-.app{display:flex;width:100vw;height:100vh;min-width:1100px;min-height:640px}
+  :root{
+    --sb-w:272px;
+    --hd-h:72px;
+    --navy:#101a3a;
+    --navy-2:#18244d;
+    --primary:#4f5bd5;
+    --primary-soft:#eceefd;
+    --accent:#19c3b1;
+    --bg:#f1f3f9;
+    --surface:#ffffff;
+    --line:#e3e6f0;
+    --text:#1b2140;
+    --muted:#6b7392;
+    --sb-text:#b9c1e0;
+    --danger:#e5484d;
+    --ok:#12805c;--ok-soft:#e3f6ee;
+    --warn:#a15c00;--warn-soft:#fff1d6;--warn-line:#f0c36a;
+    --bad:#c2292e;--bad-soft:#fde8e8;
+    --teal:#0b8a7d;--teal-soft:#dff7f4;
+  }
+  body.dark{
+    --bg:#0c1226;
+    --surface:#151c36;
+    --line:#263056;
+    --text:#e8ebf8;
+    --muted:#98a1c4;
+    --primary-soft:#232c58;
+    --ok:#5fd6a8;--ok-soft:#123a30;
+    --warn:#f2bd5b;--warn-soft:#3d2f12;--warn-line:#8a6a22;
+    --bad:#ff8f93;--bad-soft:#431c22;
+    --teal:#5ee0d2;--teal-soft:#0f3a3a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  html,body{height:100%}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);color:var(--text);
+    overflow:hidden;font-size:14px;
+  }
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  svg{display:block}
+  .ico{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
-/* ---------- Sidebar ---------- */
-.sidebar{width:var(--side-w);flex:0 0 var(--side-w);background:linear-gradient(180deg,var(--petrol) 0%,var(--petrol-2) 100%);color:#fff;display:flex;flex-direction:column;padding:28px 20px 0;position:relative;overflow:hidden;transition:width .28s ease,flex-basis .28s ease,padding .28s ease}
-.brand{display:flex;align-items:center;gap:12px;padding:0 6px;white-space:nowrap}
-.brand svg{flex:0 0 44px}
-.wordmark{font-size:26px;font-weight:700;letter-spacing:-.5px;line-height:1}
-.wordmark b{color:var(--orange);font-weight:800}
-.tagline{font-size:11.5px;line-height:1.55;color:rgba(255,255,255,.66);margin:16px 6px 0;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,.12)}
-.nav{margin-top:22px;display:flex;flex-direction:column;gap:8px;position:relative;z-index:2}
-.nav-item{display:flex;align-items:center;gap:14px;width:100%;height:50px;padding:0 16px;border-radius:14px;color:#fff;font-size:15px;font-weight:500;text-align:left;white-space:nowrap;transition:background .18s ease,transform .18s ease}
-.nav-item svg{flex:0 0 22px}
-.nav-item:hover{background:rgba(255,255,255,.09)}
-.nav-item:focus-visible,.icon-btn:focus-visible,.menu-btn:focus-visible,.profile:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
-.nav-item.active{background:var(--orange);box-shadow:0 8px 20px -8px rgba(255,122,0,.75);font-weight:600}
-.side-deco{position:absolute;left:0;right:0;bottom:0;height:210px;pointer-events:none;z-index:1}
-.side-deco svg{width:288px;height:210px;display:block}
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    position:fixed;left:0;top:0;bottom:0;width:var(--sb-w);
+    background:linear-gradient(180deg,var(--navy) 0%,#0c1430 100%);
+    color:#fff;display:flex;flex-direction:column;
+    transition:width .22s ease;z-index:30;overflow:hidden;
+  }
+  .sb-brand{padding:22px 22px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .logo{display:flex;align-items:center;gap:11px;white-space:nowrap}
+  .logo-mark{width:40px;height:40px;flex:none}
+  .logo-word{font-size:22px;font-weight:700;letter-spacing:-.3px}
+  .logo-word b{color:var(--accent);font-weight:800}
+  .sb-desc{
+    margin-top:14px;font-size:11.5px;line-height:1.5;color:var(--sb-text);
+    width:228px;
+  }
+  .sb-label{
+    padding:20px 26px 8px;font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;
+    color:#7781a8;font-weight:600;white-space:nowrap;
+  }
+  .nav{list-style:none;padding:0 14px;display:flex;flex-direction:column;gap:4px}
+  .nav-item{
+    display:flex;align-items:center;gap:14px;width:100%;
+    height:46px;padding:0 14px;border-radius:12px;
+    color:var(--sb-text);font-size:14.5px;font-weight:500;white-space:nowrap;text-align:left;
+    transition:background .15s,color .15s;position:relative;
+  }
+  .nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+  .nav-item:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .nav-item.active{background:var(--primary);color:#fff;box-shadow:0 6px 16px rgba(79,91,213,.4)}
+  .sb-foot{
+    margin-top:auto;padding:18px 26px;font-size:11px;color:#6d779e;white-space:nowrap;
+    border-top:1px solid rgba(255,255,255,.08);
+  }
 
-.app.collapsed{--side-w:88px}
-.app.collapsed .sidebar{padding-left:16px;padding-right:16px}
-.app.collapsed .brand{justify-content:center;padding:0}
-.app.collapsed .brand .wordmark,.app.collapsed .nav-item span{display:none}
-.app.collapsed .tagline{height:0;overflow:hidden;margin-top:22px;padding:0}
-.app.collapsed .nav-item{justify-content:center;padding:0}
+  body.collapsed{--sb-w:76px}
+  body.collapsed .sb-brand{padding:22px 18px 20px}
+  body.collapsed .logo-word,
+  body.collapsed .sb-desc,
+  body.collapsed .nav-item span,
+  body.collapsed .sb-foot span{display:none}
+  body.collapsed .sb-label{visibility:hidden}
+  body.collapsed .nav-item{justify-content:center;padding:0}
+  body.collapsed .sb-foot{padding:18px 0;text-align:center}
 
-/* ---------- Header ---------- */
-.right{flex:1;display:flex;flex-direction:column;min-width:0}
-.topbar{height:80px;flex:0 0 80px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 32px 0 24px;box-shadow:0 1px 0 var(--line),0 6px 18px -14px rgba(13,59,76,.35);position:relative;z-index:20}
-.top-left{display:flex;align-items:center;gap:18px}
-.menu-btn{width:44px;height:44px;border-radius:50%;background:var(--gray);display:grid;place-items:center;color:var(--petrol);transition:background .18s,transform .18s}
-.menu-btn:hover{background:#E9EEF3}
-.menu-btn:active{transform:scale(.94)}
-.top-left .brand{padding:0;gap:10px}
-.top-left .wordmark{font-size:22px;color:var(--petrol)}
-.top-right{display:flex;align-items:center;gap:10px}
-.pop-wrap{position:relative}
-.icon-btn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--petrol);position:relative;transition:background .18s}
-.icon-btn:hover,.icon-btn[aria-expanded="true"]{background:var(--gray)}
-.badge{position:absolute;top:8px;right:8px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--orange);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;border:2px solid #fff;box-sizing:content-box}
-.badge[hidden]{display:none}
-.divider{width:1px;height:36px;background:var(--line);margin:0 10px}
-.profile{display:flex;align-items:center;gap:12px;padding:6px 10px 6px 6px;border-radius:28px;transition:background .18s;text-align:left}
-.profile:hover,.profile[aria-expanded="true"]{background:var(--gray)}
-.avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;flex:0 0 46px;box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(255,122,0,.55)}
-.avatar svg{display:block}
-.p-name{font-size:14.5px;font-weight:700;color:var(--petrol);line-height:1.2}
-.p-role{font-size:12px;color:var(--muted);margin-top:2px}
-.chev{color:var(--muted);transition:transform .2s}
-.profile[aria-expanded="true"] .chev{transform:rotate(180deg)}
+  /* ---------- Header ---------- */
+  .header{
+    position:fixed;top:0;right:0;left:var(--sb-w);height:var(--hd-h);
+    background:var(--surface);border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 28px 0 24px;transition:left .22s ease;z-index:20;
+  }
+  .hd-left{display:flex;align-items:center;gap:16px}
+  .menu-btn{
+    width:44px;height:44px;border-radius:50%;
+    display:grid;place-items:center;
+    background:var(--primary-soft);color:var(--primary);
+    transition:background .15s,transform .15s;
+  }
+  .menu-btn:hover{background:var(--primary);color:#fff}
+  .menu-btn:active{transform:scale(.94)}
+  .header .logo-mark{width:34px;height:34px}
+  .header .logo-word{font-size:20px;color:var(--text)}
+  .hd-right{display:flex;align-items:center;gap:10px}
+  .icon-wrap{position:relative}
+  .icon-btn{
+    width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+    color:var(--muted);border:1px solid var(--line);background:var(--surface);
+    transition:background .15s,color .15s,border-color .15s;position:relative;
+  }
+  .icon-btn:hover,.icon-btn[aria-expanded="true"]{background:var(--primary-soft);color:var(--primary);border-color:transparent}
+  .icon-btn:focus-visible,.menu-btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+  .badge{
+    position:absolute;top:-3px;right:-3px;min-width:19px;height:19px;padding:0 5px;
+    border-radius:10px;background:var(--danger);color:#fff;font-size:11px;font-weight:700;
+    display:grid;place-items:center;border:2px solid var(--surface);
+  }
+  .divider{width:1px;height:36px;background:var(--line);margin:0 10px}
+  .profile{display:flex;align-items:center;gap:12px}
+  .avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;flex:none;box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--accent)}
+  .avatar svg{width:100%;height:100%}
+  .p-name{font-weight:700;font-size:14.5px;line-height:1.25}
+  .p-role{font-size:12.5px;color:var(--muted)}
 
-/* ---------- Popovers ---------- */
-.pop{position:absolute;top:56px;right:0;width:320px;background:#fff;border-radius:18px;box-shadow:0 20px 50px -12px rgba(13,59,76,.28),0 0 0 1px var(--line);padding:8px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .16s,transform .16s;z-index:30}
-.pop.open{opacity:1;transform:none;pointer-events:auto}
-.pop-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 8px;font-size:14px;font-weight:700}
-.pop-head button{font-size:12px;font-weight:600;color:var(--orange)}
-.pop-head button:hover{text-decoration:underline}
-.pop-row{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:12px;width:100%;text-align:left;font-size:13px;line-height:1.4;color:var(--petrol)}
-.pop-row:hover{background:var(--gray)}
-.pop-row small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px}
-.dot{flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:var(--orange);margin-top:5px}
-.pop-row.read .dot{background:#D5DDE3}
-.ini{flex:0 0 34px;height:34px;border-radius:50%;background:#E3EEF2;color:var(--petrol);font-size:12px;font-weight:700;display:grid;place-items:center}
-.set-row{display:flex;align-items:center;justify-content:space-between;padding:12px;font-size:13.5px;border-radius:12px}
-.switch{width:42px;height:24px;border-radius:12px;background:#D5DDE3;position:relative;transition:background .18s;flex:0 0 42px}
-.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .18s}
-.switch[aria-checked="true"]{background:var(--orange)}
-.switch[aria-checked="true"]::after{transform:translateX(18px)}
-.pop.small{width:220px}
-.pop.small .pop-row{align-items:center;font-size:13.5px;font-weight:500}
-.pop hr{border:0;border-top:1px solid var(--line);margin:6px 8px}
+  /* ---------- Dropdowns ---------- */
+  .panel{
+    position:absolute;top:56px;right:0;width:340px;
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    box-shadow:0 18px 44px rgba(16,26,58,.18);
+    opacity:0;transform:translateY(-6px);pointer-events:none;
+    transition:opacity .15s,transform .15s;z-index:40;overflow:hidden;
+  }
+  .panel.open{opacity:1;transform:none;pointer-events:auto}
+  .panel-hd{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--line)}
+  .panel-hd h3{font-size:15px;font-weight:700}
+  .link-btn{font-size:12.5px;color:var(--primary);font-weight:600}
+  .link-btn:hover{text-decoration:underline}
+  .link-btn:disabled{color:var(--muted);cursor:default;text-decoration:none}
+  .p-list{list-style:none}
+  .p-row{
+    display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;
+    padding:13px 18px;border-bottom:1px solid var(--line);position:relative;
+  }
+  .p-list li:last-child .p-row{border-bottom:0}
+  .p-row:hover{background:var(--bg)}
+  .p-row.unread::after{content:"";position:absolute;right:16px;top:20px;width:8px;height:8px;border-radius:50%;background:var(--primary)}
+  .p-row.unread .p-title{font-weight:700}
+  .p-dot{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--primary-soft);color:var(--primary);font-weight:700;font-size:12.5px}
+  .p-dot .ico{width:17px;height:17px}
+  .p-title{font-size:13.5px;line-height:1.35;padding-right:16px}
+  .p-sub{font-size:12px;color:var(--muted);margin-top:2px}
+  .set-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .set-row:last-child{border-bottom:0}
+  .set-row small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+  .switch{width:42px;height:24px;border-radius:12px;background:#c9cee0;position:relative;transition:background .15s;flex:none}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .switch[aria-checked="true"]{background:var(--primary)}
+  .switch[aria-checked="true"]::after{left:21px}
+  .switch:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 
-/* ---------- Main ---------- */
-.main{flex:1;padding:28px 32px 32px;min-height:0;display:flex}
-.canvas{flex:1;background:#fff;border-radius:32px;box-shadow:0 18px 48px -24px rgba(13,59,76,.28),0 2px 6px rgba(13,59,76,.04);position:relative;overflow:hidden}
-.canvas .deco{position:absolute;inset:0;transition:opacity .3s;background-image:radial-gradient(rgba(13,59,76,.07) 1.2px,transparent 1.4px);background-size:28px 28px;-webkit-mask-image:radial-gradient(ellipse at center,transparent 30%,#000 100%);mask-image:radial-gradient(ellipse at center,transparent 30%,#000 100%)}
-.canvas svg.net{position:absolute;inset:0;width:100%;height:100%;transition:opacity .3s}
-.canvas.plain .deco,.canvas.plain svg.net{opacity:0}
+  /* ---------- Main ---------- */
+  .main{
+    position:fixed;top:var(--hd-h);left:var(--sb-w);right:0;bottom:0;
+    padding:24px 28px 28px 24px;transition:left .22s ease;
+  }
+  .content{
+    width:100%;height:100%;
+    background:var(--surface);border:1px solid var(--line);border-radius:20px;
+    box-shadow:0 4px 18px rgba(16,26,58,.05);
+    overflow:auto;
+  }
 
-.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--petrol);color:#fff;font-size:13px;padding:11px 18px;border-radius:12px;box-shadow:0 12px 30px -10px rgba(13,59,76,.6);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60}
-.toast.show{opacity:1;transform:translate(-50%,0)}
+  /* ---------- Toast ---------- */
+  .toast{
+    position:fixed;left:50%;bottom:44px;transform:translate(-50%,20px);
+    background:var(--navy);color:#fff;padding:12px 20px;border-radius:12px;font-size:13.5px;
+    box-shadow:0 12px 30px rgba(16,26,58,.3);opacity:0;pointer-events:none;
+    transition:opacity .2s,transform .2s;z-index:90;display:flex;align-items:center;gap:10px;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .toast .ico{width:18px;height:18px;color:var(--accent)}
 
-/* ================= SLOT: ALUNOS · PERFIL ================= */
-.content{position:absolute;inset:0;z-index:1;padding:20px 26px 22px;display:flex;flex-direction:column;gap:14px;overflow:auto}
-.hello{display:flex;align-items:center;justify-content:space-between;flex:0 0 auto}
-.hello h1{font-size:23px;font-weight:700;letter-spacing:-.4px;line-height:1.2}
-.hello p{font-size:13.5px;color:var(--muted);margin-top:3px}
-.seal{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 14px;border-radius:16px;background:#EEF4F6;font-size:12px;font-weight:600;color:var(--petrol)}
-.pulse{width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 0 rgba(255,122,0,.5);animation:pulse 2s infinite}
-@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(255,122,0,0)}100%{box-shadow:0 0 0 0 rgba(255,122,0,0)}}
+  /* =====================================================
+     MÓDULO ALUNOS – PERFIL (somente dentro do slot)
+     ===================================================== */
+  .pg{height:100%;min-height:740px;padding:16px 22px 18px;display:flex;flex-direction:column;gap:12px}
+  .pg-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .crumb{font-size:11.5px;color:var(--muted);margin-bottom:1px}
+  .pg-top h1{font-size:22px;font-weight:700;letter-spacing:-.3px}
+  .pg-top p{color:var(--muted);font-size:13.5px;margin-top:1px}
+  .live{
+    display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:20px;
+    background:var(--teal-soft);color:var(--teal);font-size:12.5px;font-weight:600;white-space:nowrap;
+  }
+  .live i{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(25,195,177,.6)}70%{box-shadow:0 0 0 7px rgba(25,195,177,0)}100%{box-shadow:0 0 0 0 rgba(25,195,177,0)}}
 
-.cols{flex:1 1 auto;min-height:540px;display:grid;grid-template-columns:300px 1fr 322px;gap:14px}
-.col{display:flex;flex-direction:column;gap:14px;min-height:0}
-.card{background:#fff;border-radius:16px;border:1px solid var(--line);box-shadow:0 6px 18px -12px rgba(13,59,76,.25);padding:14px 16px}
-.card h3{font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .cols{flex:1;min-height:0;display:grid;grid-template-columns:316px 1fr 338px;gap:12px}
+  .card{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:14px 16px;min-width:0}
+  .card-t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
 
-/* perfil */
-.prof{display:flex;flex-direction:column}
-.prof-top{display:flex;flex-direction:column;align-items:center;text-align:center;padding:6px 0 14px;border-bottom:1px solid var(--line)}
-.av-lg{width:60px;height:60px;border-radius:50%;background:#E3EEF2;color:var(--petrol);font-size:20px;font-weight:700;display:grid;place-items:center}
-.prof-top h2{font-size:18px;font-weight:700;letter-spacing:-.2px;margin-top:10px}
-.meta{font-size:12.5px;color:var(--muted);margin-top:3px}
-.meta b{color:var(--petrol);font-weight:600}
-.pills{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;justify-content:center}
-.pill{font-size:11px;font-weight:600;padding:4px 10px;border-radius:9px;background:#E3EEF2;color:var(--petrol)}
-.pill.alta{background:var(--orange);color:#fff;font-weight:700;letter-spacing:.4px;box-shadow:0 6px 14px -6px rgba(255,122,0,.7)}
-.inds{list-style:none;flex:1;display:flex;flex-direction:column;justify-content:space-around;padding-top:6px}
-.inds li{display:flex;align-items:center;gap:12px}
-.ind-ic{flex:0 0 36px;height:36px;border-radius:11px;background:#EEF4F6;color:var(--petrol);display:grid;place-items:center}
-.inds small{display:block;font-size:11.5px;color:var(--muted)}
-.inds b{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;margin-top:1px}
-.inds .warn b{color:#A84C00}
-.inds .warn .ind-ic{background:#FFF0E0;color:#C25400}
-.fix{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--petrol);text-decoration:underline;padding:3px 5px;border-radius:6px}
-.fix:hover{color:var(--orange)}
+  /* perfil */
+  .stu-hd{display:flex;gap:12px;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .ini{width:50px;height:50px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:16px;background:var(--primary-soft);color:var(--primary)}
+  .stu-hd h2{font-size:17px;font-weight:700}
+  .stu-hd small{display:block;font-size:12.5px;color:var(--muted);margin-top:1px}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .prio{padding:3px 9px;border-radius:6px;font-size:10.5px;font-weight:700;letter-spacing:.5px}
+  .prio.alta{background:var(--bad-soft);color:var(--bad)}
+  .tag{padding:3px 9px;border-radius:6px;font-size:11.5px;font-weight:600}
+  .tag.warn{background:var(--warn-soft);color:var(--warn)}
+  .tag.bad{background:var(--bad-soft);color:var(--bad)}
+  .tag.ok{background:var(--ok-soft);color:var(--ok)}
+  .kv{list-style:none;margin-top:4px}
+  .kv li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12.5px}
+  .kv li:last-child{border-bottom:0}
+  .kv .k{color:var(--muted)}
+  .kv .v{font-weight:600;text-align:right}
+  .kv .v small{display:block;font-weight:500;color:var(--muted);font-size:11.5px;margin-top:2px}
+  .fix{font-size:11.5px;font-weight:700;color:var(--primary);text-decoration:underline;margin-left:6px}
+  .fix:disabled{opacity:.4;cursor:not-allowed}
 
-/* alerta */
-.alert{border-color:rgba(255,122,0,.5);background:linear-gradient(135deg,#FFF9F2,#fff 70%);transition:.3s}
-.alert.ok{border-color:var(--line);background:#fff}
-.tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:9px;background:#FFE9D3;color:#A84C00}
-.alert.ok .tag{background:#E3EEF2;color:var(--petrol)}
-.alert h2{font-size:17px;font-weight:700;letter-spacing:-.2px;margin-top:9px}
-.a-main{font-size:13.5px;font-weight:600;margin-top:5px}
-.a-exp{font-size:12.5px;color:var(--muted);margin-top:3px;font-style:italic}
-.a-grid{display:grid;grid-template-columns:1fr 212px;gap:16px;margin-top:13px;align-items:stretch}
-.a-grid h4{font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:600;margin-bottom:4px}
-.fct{list-style:none}
-.fct li{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:500;padding:7px 0;border-bottom:1px solid #F3E9DE}
-.fct li:last-child{border-bottom:0}
-.fct svg{flex:0 0 17px;color:#D96500}
-.fct li.ok svg{color:var(--petrol)}
-.fct li.ok{color:var(--muted)}
-.confbox{background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px 14px;display:flex;flex-direction:column}
-.confbox small{font-size:11.5px;color:var(--muted);font-weight:600}
-.conf-v{font-size:28px;font-weight:700;letter-spacing:-.6px;line-height:1.15;margin-top:2px}
-.conf-v span{font-size:11.5px;font-weight:600;letter-spacing:0;margin-left:6px;color:#A84C00}
-.confbox.hi .conf-v span{color:var(--petrol)}
-.bar{height:8px;border-radius:4px;background:#E6EBF0;overflow:hidden;margin-top:6px}
-.bar i{display:block;height:100%;border-radius:4px;background:var(--orange);transition:width .5s ease,background .3s}
-.confbox.hi .bar i{background:var(--petrol)}
-.confbox p{font-size:11.5px;color:var(--muted);line-height:1.4;margin-top:8px}
-.loading .bar i{width:100%!important;background:linear-gradient(90deg,#E6EBF0,#9DB4BE,#E6EBF0);background-size:200% 100%;animation:sh 1s linear infinite}
-@keyframes sh{to{background-position:-200% 0}}
+  /* alerta */
+  .alert{border:1.5px solid var(--warn-line);background:linear-gradient(180deg,var(--warn-soft),var(--surface) 46%);display:flex;flex-direction:column}
+  .alert.ok{border-color:var(--accent);background:linear-gradient(180deg,var(--teal-soft),var(--surface) 46%)}
+  .a-lb{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--warn)}
+  .alert.ok .a-lb{color:var(--teal)}
+  .a-lb .ico{width:16px;height:16px}
+  .alert h2{font-size:18px;font-weight:700;margin-top:4px}
+  .a-main{font-size:14px;font-weight:600;margin-top:6px;line-height:1.4}
+  .a-exp{font-size:13px;color:var(--muted);margin-top:3px;line-height:1.4}
+  .fl{list-style:none;margin:10px 0 0;display:flex;flex-direction:column;gap:6px}
+  .fl li{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:13px}
+  .fl .fi{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--warn-soft);color:var(--warn);flex:none}
+  .fl .fi .ico{width:13px;height:13px;stroke-width:2.2}
+  .fl li.res{color:var(--ok);font-weight:600}
+  .fl li.res .fi{background:var(--ok-soft);color:var(--ok)}
+  .fl li span.by{margin-left:auto;font-size:11px;color:var(--muted);font-weight:500}
+  .conf{margin-top:auto;padding-top:10px}
+  .conf-top{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--muted)}
+  .conf-top b{font-size:20px;color:var(--text)}
+  .bar{height:9px;border-radius:5px;background:var(--line);margin:5px 0;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:5px;transition:width .5s ease,background .3s}
+  .bar i.low{background:linear-gradient(90deg,#e5484d,#f0a03c)}
+  .bar i.mid{background:linear-gradient(90deg,#f0a03c,#e8c44a)}
+  .bar i.high{background:linear-gradient(90deg,#5b67e6,#19c3b1)}
+  .conf.busy .bar i{width:35%!important;animation:slide 1s infinite ease-in-out}
+  @keyframes slide{0%{margin-left:-35%}100%{margin-left:100%}}
+  .conf-note{font-size:12px;color:var(--muted)}
+  .dirty{display:flex;align-items:center;gap:8px;margin-top:8px;padding:7px 10px;border-radius:10px;background:var(--primary-soft);color:var(--primary);font-size:12px;font-weight:600}
+  .dirty .ico{width:15px;height:15px}
 
-/* explicação */
-.exp{flex:1;display:flex;flex-direction:column}
-.xai{flex:0 0 26px;height:26px;border-radius:8px;background:#FFF0E0;color:#C25400;display:grid;place-items:center}
-.exp .sub{font-size:12px;color:var(--muted);font-weight:600;margin-top:10px}
-.an{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:7px;flex:1}
-.an li{display:flex;gap:9px;align-items:flex-start;background:var(--gray);border-radius:11px;padding:9px 11px}
-.ck{flex:0 0 18px;height:18px;border-radius:50%;background:var(--petrol);color:#fff;display:grid;place-items:center;margin-top:1px}
-.an b{display:block;font-size:12.5px;font-weight:600}
-.an small{display:block;font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.35}
-.transp{display:flex;gap:9px;align-items:center;margin-top:10px;font-size:11.5px;line-height:1.4;color:var(--petrol);border:1px dashed rgba(13,59,76,.35);border-radius:11px;padding:8px 11px}
-.transp svg{flex:0 0 17px;color:var(--orange)}
+  /* coluna direita */
+  .rcol{display:flex;flex-direction:column;gap:12px;min-height:0}
+  .xai{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--teal-soft);color:var(--teal);flex:none}
+  .xai .ico{width:16px;height:16px}
+  .an-lb{font-size:12px;color:var(--muted);margin:9px 0 6px}
+  .an{list-style:none;display:grid;grid-template-columns:1fr;gap:6px}
+  .an li{display:flex;align-items:center;gap:8px;font-size:13px}
+  .ck{width:18px;height:18px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;flex:none}
+  .ck .ico{width:11px;height:11px;stroke-width:2.6}
+  .seal{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;background:var(--primary-soft);color:var(--primary)}
+  .seal .ico{width:13px;height:13px}
+  .why .seal{margin-top:10px}
+  .rec{flex:1;background:var(--primary-soft);border-color:transparent;display:flex;flex-direction:column}
+  .rec .card-t{color:var(--primary)}
+  .rec .card-t .ico{width:18px;height:18px}
+  .rec p{font-size:13px;line-height:1.45;margin-top:7px}
+  .wait{margin-top:auto;padding-top:10px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--warn)}
+  .wait i{width:8px;height:8px;border-radius:50%;background:#f0a03c;animation:pulseW 1.8s infinite}
+  @keyframes pulseW{0%{box-shadow:0 0 0 0 rgba(240,160,60,.6)}70%{box-shadow:0 0 0 7px rgba(240,160,60,0)}100%{box-shadow:0 0 0 0 rgba(240,160,60,0)}}
+  .wait.done{color:var(--ok)}
+  .wait.done i{background:var(--ok);animation:none}
+  .wait.rej{color:var(--muted)}
+  .wait.rej i{background:var(--muted);animation:none}
 
-/* recomendação */
-.rec p{font-size:13px;line-height:1.5;margin-top:9px}
-.wait{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11.5px;font-weight:600;color:var(--petrol);background:#EEF4F6;border-radius:10px;padding:7px 10px}
-.wait svg{flex:0 0 15px}
-.shield{flex:0 0 26px;height:26px;border-radius:8px;background:#EEF4F6;color:var(--petrol);display:grid;place-items:center}
+  /* decisão */
+  .dec{padding:12px 16px}
+  .dec-t{display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:14px}
+  .dec-t span{font-size:11.500px;font-weight:500;color:var(--muted)}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;margin:9px 0 8px;align-items:center}
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:10px;
+    font-size:13px;font-weight:600;border:1.5px solid var(--line);background:var(--surface);color:var(--text);
+    transition:background .12s,border-color .12s,color .12s,opacity .12s,box-shadow .12s;white-space:nowrap;
+  }
+  .btn .ico{width:16px;height:16px}
+  .btn:hover{border-color:var(--primary);color:var(--primary)}
+  .btn.pri{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn.pri:hover{background:#414cc0;border-color:#414cc0;color:#fff}
+  .btn.dng{color:var(--bad)}
+  .btn.dng:hover{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+  .btn.hint{border-color:var(--primary);color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;border-color:var(--line);color:var(--muted);background:var(--surface);box-shadow:none}
+  .btn.pri:disabled{background:var(--muted);border-color:var(--muted);color:#fff}
+  .btn:focus-visible,.fix:focus-visible,.m-x:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+  .human{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted)}
+  .human .ico{width:15px;height:15px;color:var(--primary)}
+  .result{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:13px;margin-top:9px;line-height:1.35}
+  .result .ico{width:18px;height:18px}
+  .result.ok{background:var(--ok-soft);color:var(--ok)}
+  .result.rej{background:var(--bg);color:var(--text)}
+  .result span{flex:1}
+  .result button{font-weight:700;font-size:12.5px;text-decoration:underline;color:inherit;white-space:nowrap}
 
-/* decisão */
-.dec{flex:1;display:flex;flex-direction:column;min-height:0}
-.dec-body{margin-top:11px;display:flex;flex-direction:column;gap:8px}
-.btn{height:36px;border-radius:11px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;transition:.15s;border:1.5px solid var(--petrol);color:var(--petrol);background:#fff;position:relative}
-.btn:hover{background:#EEF4F6}
-.btn:active{transform:scale(.985)}
-.btn.primary{height:42px;background:var(--orange);border-color:var(--orange);color:#fff;font-size:13.5px;box-shadow:0 8px 18px -8px rgba(255,122,0,.7)}
-.btn.primary:hover{background:#EB7000;border-color:#EB7000}
-.btn:disabled{opacity:.55;cursor:default}
-.btn.hint::after{content:"";position:absolute;top:-4px;right:-4px;width:11px;height:11px;border-radius:50%;background:var(--orange);border:2px solid #fff}
-.btn:focus-visible,.fix:focus-visible,.opt:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
-.note{margin-top:auto;display:flex;gap:9px;align-items:flex-start;font-size:11.5px;line-height:1.45;color:var(--muted);background:var(--gray);border-radius:11px;padding:9px 11px}
-.note svg{flex:0 0 16px;color:var(--petrol);margin-top:1px}
-.lbl{font-size:12px;font-weight:600}
-.inp,.dec-body select,.dec-body textarea{font-family:inherit;font-size:13px;color:var(--petrol);border:1.5px solid var(--line);border-radius:10px;padding:0 10px;height:36px;outline:none;width:100%;background:#fff}
-.dec-body textarea{height:58px;padding:8px 10px;resize:none}
-.inp:focus,.dec-body select:focus,.dec-body textarea:focus{border-color:var(--petrol)}
-.inp.bad{border-color:#D96500;background:#FFF9F2}
-.err{font-size:11.5px;color:#A84C00;min-height:14px}
-.chk{display:flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer}
-.chk input{width:16px;height:16px;accent-color:#FF7A00}
-.two{display:grid;grid-template-columns:1fr 1.4fr;gap:8px}
-.two .btn,.two .btn.primary{height:38px}
-.opt{min-height:36px;border-radius:10px;border:1.5px solid var(--line);font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px;padding:6px 10px;text-align:left;transition:.15s;width:100%}
-.opt::before{content:"";flex:0 0 14px;height:14px;border-radius:50%;border:1.5px solid #9DB4BE}
-.opt:hover:not(:disabled){border-color:var(--petrol)}
-.opt[aria-checked="true"]{border-color:var(--orange);background:#FFF6EC}
-.opt[aria-checked="true"]::before{border:4px solid var(--orange)}
-.opt:disabled{opacity:.5;cursor:not-allowed}
-.opt em{margin-left:auto;font-style:normal;font-size:10.5px;font-weight:600;color:#A84C00}
-.result{border:1px solid var(--line);border-radius:12px;padding:13px;display:flex;gap:11px;align-items:flex-start;background:#F8FBFC}
-.result .ck{flex:0 0 26px;height:26px;margin:0}
-.result.no .ck{background:#9DB4BE}
-.result strong{display:block;font-size:13.5px}
-.result p{font-size:12.5px;color:var(--muted);line-height:1.45;margin-top:3px}
-.result q{display:block;font-size:12px;color:var(--petrol);margin-top:6px;font-style:italic}
-.tip{font-size:11.5px;color:#A84C00;background:#FFF6EC;border-radius:9px;padding:7px 10px;line-height:1.4}
+  /* timeline */
+  .tl{display:flex;align-items:center;gap:18px;padding:11px 16px}
+  .tl-t{font-weight:700;font-size:13px;white-space:nowrap}
+  .tl ol{list-style:none;display:flex;flex:1;align-items:center}
+  .tl li{display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+  .tl li:last-child{flex:none}
+  .tl .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;flex:none;background:var(--primary);color:#fff}
+  .tl .n.w{background:#f0a03c}
+  .tl .n.c{background:var(--surface);color:var(--primary);border:2px solid var(--primary);animation:pulseP 1.8s infinite}
+  .tl .n.d{background:var(--ok);color:#fff;animation:none;border:0}
+  @keyframes pulseP{0%{box-shadow:0 0 0 0 rgba(79,91,213,.5)}70%{box-shadow:0 0 0 7px rgba(79,91,213,0)}100%{box-shadow:0 0 0 0 rgba(79,91,213,0)}}
+  .tl .tx{font-size:12.5px;font-weight:600;line-height:1.25;white-space:nowrap}
+  .tl .tx small{display:block;font-weight:500;color:var(--muted);font-size:11px}
+  .tl .ar{flex:1;height:2px;background:var(--line);margin:0 12px;position:relative;min-width:20px}
+  .tl .ar::after{content:"";position:absolute;right:-1px;top:-4px;border-left:7px solid var(--line);border-top:5px solid transparent;border-bottom:5px solid transparent}
 
-/* timeline */
-.tl-card{flex:0 0 auto;display:flex;align-items:center;gap:22px;padding:13px 18px}
-.tl-card h3{flex:0 0 auto;white-space:nowrap}
-.tl{list-style:none;flex:1;display:flex;align-items:center}
-.tl li{display:flex;align-items:center;gap:10px;flex:1}
-.tl li:last-child{flex:0 0 auto}
-.tl li:not(:last-child)::after{content:"";flex:1;height:2px;background:var(--petrol);opacity:.25;margin:0 14px;border-radius:1px}
-.tl i{flex:0 0 28px;height:28px;border-radius:50%;background:var(--petrol);color:#fff;font-style:normal;font-size:12px;font-weight:700;display:grid;place-items:center}
-.tl li.now i{background:var(--orange);box-shadow:0 0 0 4px rgba(255,122,0,.2)}
-.tl li.warn i{background:#fff;color:#C25400;border:2px solid var(--orange)}
-.tl b{display:block;font-size:12.5px;font-weight:600;white-space:nowrap}
-.tl small{display:block;font-size:11px;color:var(--muted);white-space:nowrap}
+  /* modal */
+  .ovl{position:fixed;inset:0;background:rgba(12,18,38,.55);display:grid;place-items:center;z-index:80}
+  .modal{width:540px;max-height:84vh;display:flex;flex-direction:column;background:var(--surface);border-radius:18px;box-shadow:0 30px 70px rgba(0,0,0,.35);overflow:hidden}
+  .m-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line)}
+  .m-hd h3{font-size:16px}
+  .m-x{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--muted)}
+  .m-x:hover{background:var(--bg);color:var(--text)}
+  .m-bd{padding:16px 20px;overflow:auto;font-size:13px;line-height:1.5}
+  .m-ft{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line)}
+  .fld{margin-bottom:13px}
+  .fld label.lb{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px}
+  .inp,textarea,select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font:inherit;font-size:13px;color:var(--text);background:var(--surface)}
+  textarea{min-height:76px;resize:vertical}
+  .inp:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary)}
+  .inp[readonly]{background:var(--bg);color:var(--muted)}
+  .chk{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;cursor:pointer}
+  .chk input{accent-color:var(--primary);width:16px;height:16px}
+  .err{color:var(--bad);font-size:12px;font-weight:600;margin-top:5px}
+  .note{padding:10px 12px;border-radius:10px;background:var(--bg);font-size:12.5px;color:var(--muted)}
+  .opt{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;margin-bottom:7px;cursor:pointer}
+  .opt:has(input:checked){border-color:var(--primary);background:var(--primary-soft)}
+  .opt:has(input:disabled){opacity:.55;cursor:not-allowed}
+  .opt input{accent-color:var(--primary);width:16px;height:16px}
+  .opt b{font-weight:600}
+  .opt small{display:block;font-size:11.5px;color:var(--muted)}
+  .opt small.w{color:var(--warn)}
+  .opt small.g{color:var(--ok)}
+  .opt .seal{margin-left:auto}
 </style>
 </head>
 <body>
+
+<!-- Símbolos SVG reutilizáveis -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <!-- Logo MonitorIA: pessoas (nós com arco), dados (conexões) e IA (núcleo laranja) -->
-    <symbol id="logo-mark" viewBox="0 0 44 44">
-      <rect x="1" y="1" width="42" height="42" rx="13" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".28"/>
-      <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none">
-        <path d="M22 22 L12 13"/><path d="M22 22 L32 13"/><path d="M22 22 L22 33.5"/>
-        <path d="M7.5 20 a5 5 0 0 1 9 0" opacity=".85"/>
-        <path d="M27.5 20 a5 5 0 0 1 9 0" opacity=".85"/>
-      </g>
-      <circle cx="12" cy="12" r="3" fill="currentColor"/>
-      <circle cx="32" cy="12" r="3" fill="currentColor"/>
-      <circle cx="22" cy="34" r="2.6" fill="currentColor"/>
-      <circle cx="22" cy="22" r="6.2" fill="#FF7A00"/>
-      <path d="M22 18.4 l1 2.6 2.6 1 -2.6 1 -1 2.6 -1 -2.6 -2.6 -1 2.6 -1z" fill="#fff"/>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5b67e6"/><stop offset="1" stop-color="#19c3b1"/>
+    </linearGradient>
+    <symbol id="logo" viewBox="0 0 40 40">
+      <rect width="40" height="40" rx="11" fill="url(#lg)"/>
+      <path d="M7 22h6l3-8 5 14 4-10 2 4h6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M30 6l1.2 2.8L34 10l-2.8 1.2L30 14l-1.2-2.8L26 10l2.800-1.200z" fill="#fff"/>
     </symbol>
-    <symbol id="i-ai" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="6.5" width="11" height="11" rx="2.5"/><path d="M12 9.5l.9 1.6 1.6.9-1.6.9-.9 1.6-.9-1.6-1.6-.9 1.6-.9z"/><path d="M9.5 3v3.5M14.5 3v3.5M9.5 17.5V21M14.5 17.5V21M3 9.500h3.500M3 14.500h3.500M17.500 9.500H21M17.500 14.500H21"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12.500l4 4 8-9"/></symbol>
-    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.500M12 7.600v.2"/></symbol>
-    <symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 15.500H3z"/><path d="M12 10v4.500M12 17v.2"/></symbol>
-    <symbol id="i-okc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.500l3 3 5.500-6.500"/></symbol>
+    <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="10" rx="2"/><rect x="13" y="3" width="8" height="6" rx="2"/><rect x="13" y="11" width="8" height="10" rx="2"/><rect x="3" y="15" width="8" height="6" rx="2"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.500 20c.5-3.600 3.200-5.500 6.500-5.500s6 1.900 6.500 5.500"/><path d="M16 4.800a3.500 3.500 0 010 6.400M18.500 14.800c1.700.8 2.700 2.500 3 5.200"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 011 1v10a1 1 0 01-1 1h-8l-5 4v-4H4a1 1 0 01-1-1V6a1 1 0 011-1z"/><path d="M8 10h8M8 13h5"/></symbol>
+    <symbol id="i-ai" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="3"/><path d="M10 10.500v3M14 10.500v3M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></symbol>
+    <symbol id="i-report" viewBox="0 0 24 24"><path d="M6 3h9l4 4v13a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M14 3v5h5M9 17v-3M12 17v-6M15 17v-4"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.500 2.500 0 114 2c-.9.7-1.500 1.200-1.500 2.500M12 17.200v.1"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0112 0v5l1.500 2h-15z"/><path d="M10 20.500a2 2 0 004 0"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.500"/><path d="M3.500 7l8.500 6 8.500-6"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.800l1.300 2.400 2.700-.6 1 2.500 2.600 1-.6 2.700 2.200 1.200-2.200 1.200.6 2.700-2.600 1-1 2.500-2.700-.6-1.300 2.400-1.300-2.400-2.700.6-1-2.500-2.600-1 .6-2.700L2.800 12 5 10.800l-.6-2.700 2.600-1 1-2.500 2.700.6z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.500v.1"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.1"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.500l4.500 4.500L19 7.500"/></symbol>
+    <symbol id="i-checkc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.300l2.800 2.800L16 9.500"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.500 6.500l4 4"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 01-14.300 4.900M4 12a8 8 0 0114.300-4.900"/><path d="M18.500 3.500v4h-4M5.500 20.500v-4h4"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 17h6M10 20.500h4"/><path d="M12 3a6 6 0 00-3.500 10.900c.5.4.8 1 .8 1.600V17h5.400v-1.500c0-.6.3-1.200.8-1.600A6 6 0 0012 3z"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.500-3.200 7.800-8 9-4.800-1.200-8-4.500-8-9V6z"/><path d="M9 12l2.200 2.200L15 10.500"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.500 20.500c.7-4 3.700-6 7.500-6s6.800 2 7.500 6"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.500 12S6 5.500 12 5.500 21.500 12 21.500 12 18 18.500 12 18.500 2.500 12 2.500 12z"/><circle cx="12" cy="12" r="2.800"/></symbol>
   </defs>
 </svg>
 
-<div class="app" id="app">
-  <!-- MENU LATERAL -->
-  <aside class="sidebar" id="sidebar" aria-label="Menu principal">
-    <div class="brand" aria-label="MonitorIA">
-      <svg width="44" height="44" style="color:#fff"><use href="#logo-mark"/></svg>
-      <div class="wordmark">Monitor<b>IA</b></div>
-    </div>
-    <p class="tagline">Sistema Inteligente de Apoio à Jornada Digital do Estudante em Ambientes Virtuais de Aprendizagem</p>
+<!-- MENU LATERAL -->
+<aside class="sidebar" id="sidebar" aria-label="Menu principal">
+  <div class="sb-brand">
+    <a class="logo" href="dashboard.html" aria-label="MonitorIA">
+      <svg class="logo-mark"><use href="#logo"/></svg>
+      <span class="logo-word">Monitor<b>IA</b></span>
+    </a>
+    <p class="sb-desc">Sistema Inteligente de Apoio à Jornada Digital do Estudante em Ambientes Virtuais de Aprendizagem</p>
+  </div>
 
-    <nav class="nav">
-      <a class="nav-item" href="dashboard.html" title="Dashboard">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="9" rx="2"/><rect x="13.5" y="3.5" width="7" height="5" rx="2"/><rect x="13.5" y="11.5" width="7" height="9" rx="2"/><rect x="3.5" y="15.5" width="7" height="5" rx="2"/></svg>
-        <span>Dashboard</span>
-      </a>
-      <a class="nav-item active" href="alunos.html" title="Alunos" aria-current="page">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.4c2.1.8 3.5 2.8 3.5 5.6"/></svg>
-        <span>Alunos</span>
-      </a>
-      <button class="nav-item" type="button" data-off="Comunicação" title="Comunicação">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-7l-4.5 3.5V17.500H4A1.500 1.500 0 0 1 2.500 16V7A1.500 1.500 0 0 1 4 5.500z"/><path d="M7.500 10h9M7.500 13.500h5.500"/></svg>
-        <span>Comunicação</span>
-      </button>
-      <button class="nav-item" type="button" data-off="Inteligência Artificial" title="Inteligência Artificial">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.500" y="6.500" width="11" height="11" rx="2.500"/><path d="M12 9.500l.9 1.600 1.600.9-1.600.9-.9 1.600-.9-1.600-1.600-.9 1.600-.9z"/><path d="M9.500 3v3.500M14.500 3v3.500M9.500 17.500V21M14.500 17.500V21M3 9.500h3.500M3 14.500h3.500M17.500 9.500H21M17.500 14.500H21"/></svg>
-        <span>Inteligência Artificial</span>
-      </button>
-      <a class="nav-item" href="relatorios.html" title="Relatórios">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.500 3h8l4.500 4.500V19.500A1.500 1.500 0 0 1 17.500 21h-11A1.500 1.500 0 0 1 5 19.500v-15A1.500 1.500 0 0 1 6.500 3z"/><path d="M14 3v5h5"/><path d="M9 17v-3M12 17v-5.500M15 17v-2"/></svg>
-        <span>Relatórios</span>
-      </a>
-      <button class="nav-item" type="button" data-off="Ajuda" title="Ajuda">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.600 2.600 0 1 1 3.700 2.300c-.8.4-1.200 1-1.200 1.900"/><path d="M12 16.800v.2"/></svg>
-        <span>Ajuda</span>
-      </button>
-    </nav>
+  <div class="sb-label">Menu</div>
+  <ul class="nav">
+    <li><a class="nav-item" href="dashboard.html" title="Dashboard"><svg class="ico"><use href="#i-dash"/></svg><span>Dashboard</span></a></li>
+    <li><a class="nav-item active" href="alunos.html" title="Alunos" aria-current="page"><svg class="ico"><use href="#i-users"/></svg><span>Alunos</span></a></li>
+    <li><button class="nav-item" type="button" data-off="Comunicação" title="Comunicação"><svg class="ico"><use href="#i-chat"/></svg><span>Comunicação</span></button></li>
+    <li><button class="nav-item" type="button" data-off="Inteligência Artificial" title="Inteligência Artificial"><svg class="ico"><use href="#i-ai"/></svg><span>Inteligência Artificial</span></button></li>
+    <li><a class="nav-item" href="relatorios.html" title="Relatórios"><svg class="ico"><use href="#i-report"/></svg><span>Relatórios</span></a></li>
+    <li><button class="nav-item" type="button" data-off="Ajuda" title="Ajuda"><svg class="ico"><use href="#i-help"/></svg><span>Ajuda</span></button></li>
+  </ul>
 
-    <div class="side-deco" aria-hidden="true">
-      <svg viewBox="0 0 288 210" fill="none">
-        <g stroke="#fff" stroke-width="1" opacity=".16">
-          <path d="M-10 190 L48 150 L96 176 L150 120 L208 158 L262 104 L300 130"/>
-          <path d="M48 150 L70 96 L150 120 L176 60 L262 104"/>
-          <path d="M96 176 L130 215M208 158 L230 215M70 96 L20 70M176 60 L230 30"/>
-        </g>
-        <g fill="#fff" opacity=".35">
-          <circle cx="48" cy="150" r="3"/><circle cx="96" cy="176" r="2.500"/><circle cx="208" cy="158" r="3"/><circle cx="262" cy="104" r="2.500"/><circle cx="70" cy="96" r="2.500"/><circle cx="176" cy="60" r="2"/><circle cx="20" cy="70" r="1.800"/><circle cx="230" cy="30" r="1.800"/>
-        </g>
-        <circle cx="150" cy="120" r="4" fill="#FF7A00" opacity=".9"/>
-        <circle cx="150" cy="120" r="9" stroke="#FF7A00" opacity=".35"/>
-      </svg>
-    </div>
-  </aside>
+  <div class="sb-foot"><span>MonitorIA · v1.0</span></div>
+</aside>
 
-  <div class="right">
-    <!-- CABEÇALHO -->
-    <header class="topbar">
-      <div class="top-left">
-        <button class="menu-btn" id="menuBtn" type="button" aria-label="Recolher ou expandir menu" aria-expanded="true" aria-controls="sidebar">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round"><path d="M4.500 7h15M4.500 12h15M4.500 17h15"/></svg>
-        </button>
-        <div class="brand" aria-label="MonitorIA">
-          <svg width="38" height="38" style="color:#0D3B4C;flex:0 0 38px"><use href="#logo-mark"/></svg>
-          <div class="wordmark">Monitor<b>IA</b></div>
-        </div>
+<!-- CABEÇALHO -->
+<header class="header">
+  <div class="hd-left">
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Recolher ou expandir menu" aria-controls="sidebar" aria-expanded="true">
+      <svg class="ico"><use href="#i-menu"/></svg>
+    </button>
+    <a class="logo" href="dashboard.html" aria-label="MonitorIA">
+      <svg class="logo-mark"><use href="#logo"/></svg>
+      <span class="logo-word">Monitor<b>IA</b></span>
+    </a>
+  </div>
+
+  <div class="hd-right">
+    <div class="icon-wrap">
+      <button class="icon-btn" type="button" data-panel="pNotif" aria-label="Notificações" aria-expanded="false">
+        <svg class="ico"><use href="#i-bell"/></svg><span class="badge" id="bNotif">3</span>
+      </button>
+      <div class="panel" id="pNotif" role="dialog" aria-label="Notificações">
+        <div class="panel-hd"><h3>Notificações</h3><button class="link-btn" type="button" data-readall="pNotif">Marcar todas como lidas</button></div>
+        <ul class="p-list">
+          <li><button class="p-row unread" type="button"><span class="p-dot"><svg class="ico"><use href="#i-alert"/></svg></span><span><span class="p-title">5 alunos sem acesso ao AVA há mais de 7 dias</span><div class="p-sub">há 12 min</div></span></button></li>
+          <li><button class="p-row unread" type="button"><span class="p-dot"><svg class="ico"><use href="#i-report"/></svg></span><span><span class="p-title">Relatório semanal de engajamento disponível</span><div class="p-sub">há 1 h</div></span></button></li>
+          <li><button class="p-row unread" type="button"><span class="p-dot"><svg class="ico"><use href="#i-info"/></svg></span><span><span class="p-title">Prazo da Atividade 3 encerra amanhã</span><div class="p-sub">há 3 h</div></span></button></li>
+        </ul>
       </div>
+    </div>
 
-      <div class="top-right">
-        <div class="pop-wrap">
-          <button class="icon-btn" type="button" data-pop="popNotif" aria-label="Notificações" aria-expanded="false">
-            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16.500V11a6 6 0 0 1 12 0v5.500l1.500 2h-15z"/><path d="M10 21a2.200 2.200 0 0 0 4 0"/></svg>
-            <span class="badge" id="notifBadge">3</span>
-          </button>
-          <div class="pop" id="popNotif" role="dialog" aria-label="Notificações">
-            <div class="pop-head">Notificações <button type="button" id="markRead">Marcar como lidas</button></div>
-            <button class="pop-row" type="button"><i class="dot"></i><span>Novos alertas de engajamento disponíveis<small>há 12 min</small></span></button>
-            <button class="pop-row" type="button"><i class="dot"></i><span>Sincronização com o AVA concluída<small>há 1 h</small></span></button>
-            <button class="pop-row" type="button"><i class="dot"></i><span>Relatório semanal pronto para consulta<small>ontem</small></span></button>
-          </div>
-        </div>
-
-        <div class="pop-wrap">
-          <button class="icon-btn" type="button" data-pop="popMsg" aria-label="Mensagens" aria-expanded="false">
-            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.500" width="18" height="13" rx="2.500"/><path d="M3.800 7.500l8.200 6 8.200-6"/></svg>
-            <span class="badge" id="msgBadge">2</span>
-          </button>
-          <div class="pop" id="popMsg" role="dialog" aria-label="Mensagens">
-            <div class="pop-head">Mensagens</div>
-            <button class="pop-row" type="button"><i class="ini">CT</i><span>Coordenação de Tutoria<small>Reunião de alinhamento confirmada.</small></span></button>
-            <button class="pop-row" type="button"><i class="ini">ST</i><span>Suporte Técnico<small>Seu chamado foi atualizado.</small></span></button>
-          </div>
-        </div>
-
-        <div class="pop-wrap">
-          <button class="icon-btn" type="button" data-pop="popSet" aria-label="Configurações" aria-expanded="false">
-            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.800l1.600 2.500 2.900-.6.900 2.800 2.800.9-.600 2.900 2.500 1.600-2.500 1.600.600 2.900-2.800.9-.900 2.800-2.900-.600-1.600 2.500-1.600-2.500-2.900.600-.900-2.800-2.800-.900.600-2.900L1.900 12.900l2.500-1.600-.600-2.900 2.800-.900.900-2.800 2.900.600z" transform="translate(1.200 1.200) scale(.9)"/></svg>
-          </button>
-          <div class="pop" id="popSet" role="dialog" aria-label="Configurações">
-            <div class="pop-head">Configurações</div>
-            <div class="set-row"><span id="lblCompact">Menu lateral compacto</span><button class="switch" id="swCompact" type="button" role="switch" aria-checked="false" aria-labelledby="lblCompact"></button></div>
-            <div class="set-row"><span id="lblDeco">Detalhes visuais de fundo</span><button class="switch" id="swDeco" type="button" role="switch" aria-checked="true" aria-labelledby="lblDeco"></button></div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="pop-wrap">
-          <button class="profile" type="button" data-pop="popUser" aria-label="Perfil de Maria Monitor" aria-expanded="false">
-            <span class="avatar">
-              <svg width="46" height="46" viewBox="0 0 46 46">
-                <defs>
-                  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#DCE8EC"/><stop offset="1" stop-color="#B9CDD5"/></linearGradient>
-                  <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3C9A8"/><stop offset="1" stop-color="#E2AC88"/></linearGradient>
-                  <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5A3625"/><stop offset="1" stop-color="#2E1A12"/></linearGradient>
-                </defs>
-                <rect width="46" height="46" fill="url(#bg)"/>
-                <path d="M10.500 30c-2.500-9-1-21 12.500-21s15 12 12.500 21c-1 3.500-3 6-5 7H15.500c-2-1-4-3.500-5-7z" fill="url(#hair)"/>
-                <path d="M5 46c1-8 7-11 13-12h10c6 1 12 4 13 12z" fill="#0D3B4C"/>
-                <path d="M18 34l5 6 5-6-2.500-1h-5z" fill="#fff"/>
-                <rect x="19.800" y="27" width="6.400" height="8" rx="3" fill="#D9A07C"/>
-                <ellipse cx="23" cy="21" rx="7.600" ry="9" fill="url(#skin)"/>
-                <path d="M14.800 20c1-6 5-8.500 9.500-8.500 4 0 7 2.500 7.200 8-3-.5-6.500-2.500-8.500-5.500-1.500 3-4.500 5-8.200 6z" fill="url(#hair)"/>
-                <ellipse cx="20" cy="21.500" rx=".9" ry="1.100" fill="#3A2318"/><ellipse cx="26" cy="21.500" rx=".9" ry="1.100" fill="#3A2318"/>
-                <path d="M18.600 19.600q1.400-.9 2.800 0M24.600 19.600q1.400-.9 2.800 0" stroke="#4A2D1F" stroke-width=".7" fill="none" stroke-linecap="round"/>
-                <path d="M20.300 25.600q2.700 2 5.400 0" stroke="#B5564A" stroke-width="1.100" fill="none" stroke-linecap="round"/>
-                <ellipse cx="18.300" cy="24" rx="1.500" ry=".9" fill="#E89A86" opacity=".45"/><ellipse cx="27.700" cy="24" rx="1.500" ry=".9" fill="#E89A86" opacity=".45"/>
-              </svg>
-            </span>
-            <span>
-              <span class="p-name" style="display:block">Maria Monitor</span>
-              <span class="p-role" style="display:block">Monitoria EaD</span>
-            </span>
-            <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M6.500 9.500l5.500 5.500 5.500-5.500"/></svg>
-          </button>
-          <div class="pop small" id="popUser" role="menu" aria-label="Menu do usuário">
-            <button class="pop-row" type="button" role="menuitem" data-msg="Perfil de Maria Monitor — Monitoria EaD">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round"><circle cx="12" cy="8.500" r="3.500"/><path d="M5 20c0-3.600 3.100-6 7-6s7 2.400 7 6"/></svg>Meu perfil</button>
-            <hr>
-            <button class="pop-row" type="button" role="menuitem" data-msg="Sair não está disponível neste protótipo">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.500h3.500A1.500 1.500 0 0 1 19 6v12a1.500 1.500 0 0 1-1.500 1.500H14"/><path d="M10.500 8.500L14 12l-3.500 3.500M14 12H4.500"/></svg>Sair</button>
-          </div>
-        </div>
+    <div class="icon-wrap">
+      <button class="icon-btn" type="button" data-panel="pMsg" aria-label="Mensagens" aria-expanded="false">
+        <svg class="ico"><use href="#i-mail"/></svg><span class="badge" id="bMsg">2</span>
+      </button>
+      <div class="panel" id="pMsg" role="dialog" aria-label="Mensagens">
+        <div class="panel-hd"><h3>Mensagens</h3><button class="link-btn" type="button" data-readall="pMsg">Marcar todas como lidas</button></div>
+        <ul class="p-list">
+          <li><button class="p-row unread" type="button"><span class="p-dot">JS</span><span><span class="p-title">João Silva</span><div class="p-sub">Professora, não consegui enviar a atividade…</div></span></button></li>
+          <li><button class="p-row unread" type="button"><span class="p-dot">AC</span><span><span class="p-title">Ana Costa</span><div class="p-sub">Obrigada pelo retorno sobre o fórum!</div></span></button></li>
+          <li><button class="p-row" type="button"><span class="p-dot">CP</span><span><span class="p-title">Coordenação Pedagógica</span><div class="p-sub">Reunião de monitoria na sexta, 14h.</div></span></button></li>
+        </ul>
       </div>
-    </header>
+    </div>
 
-    <!-- ÁREA CENTRAL DINÂMICA: módulo Alunos · Perfil (cenário HAX "When Wrong") -->
-    <main class="main">
-      <section class="canvas" id="canvas" aria-label="Alunos – Perfil do Aluno">
-        <div class="deco" aria-hidden="true"></div>
-        <svg class="net" viewBox="0 0 1320 800" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true">
-          <g stroke="#0D3B4C" stroke-width="1" opacity=".07">
-            <path d="M1320 90 L1210 130 L1130 70 L1040 150 L1150 230 L1210 130"/>
-            <path d="M1150 230 L1250 300 L1320 260M1040 150 L960 90 L900 0M1130 70 L1160 0"/>
-            <path d="M0 700 L90 650 L170 720 L260 640 L150 570 L90 650"/>
-            <path d="M260 640 L360 700 L420 800M170 720 L190 800M150 570 L60 520 L0 540"/>
-            <path d="M1320 720 L1240 680 L1180 740 L1100 800"/>
-          </g>
-          <g fill="#0D3B4C" opacity=".12">
-            <circle cx="1210" cy="130" r="4"/><circle cx="1130" cy="70" r="3"/><circle cx="1150" cy="230" r="3"/><circle cx="960" cy="90" r="2.500"/><circle cx="1250" cy="300" r="2.500"/>
-            <circle cx="90" cy="650" r="4"/><circle cx="170" cy="720" r="3"/><circle cx="150" cy="570" r="3"/><circle cx="360" cy="700" r="2.500"/><circle cx="60" cy="520" r="2.500"/>
-            <circle cx="1240" cy="680" r="3"/><circle cx="1180" cy="740" r="2.500"/>
-          </g>
-          <g fill="#FF7A00" opacity=".28">
-            <circle cx="1040" cy="150" r="4"/><circle cx="260" cy="640" r="4"/>
-          </g>
-          <g stroke="#FF7A00" opacity=".12"><circle cx="1040" cy="150" r="11"/><circle cx="260" cy="640" r="11"/></g>
+    <div class="icon-wrap">
+      <button class="icon-btn" type="button" data-panel="pSet" aria-label="Configurações" aria-expanded="false">
+        <svg class="ico"><use href="#i-gear"/></svg>
+      </button>
+      <div class="panel" id="pSet" role="dialog" aria-label="Configurações" style="width:300px">
+        <div class="panel-hd"><h3>Configurações</h3></div>
+        <div class="set-row"><div>Menu compacto<small>Exibir apenas os ícones</small></div><button class="switch" id="swCompact" type="button" role="switch" aria-checked="false" aria-label="Menu compacto"></button></div>
+        <div class="set-row"><div>Modo escuro<small>Reduz o brilho da interface</small></div><button class="switch" id="swDark" type="button" role="switch" aria-checked="false" aria-label="Modo escuro"></button></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="profile" aria-label="Usuária logada: Maria Monitor, Monitoria EaD">
+      <div class="avatar">
+        <svg viewBox="0 0 96 96" role="img" aria-label="Foto de Maria Monitor">
+          <defs>
+            <linearGradient id="avBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dfe6f3"/><stop offset="1" stop-color="#b9c6de"/></linearGradient>
+            <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3cdb0"/><stop offset="1" stop-color="#dba584"/></linearGradient>
+            <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a3a26"/><stop offset="1" stop-color="#2e1b11"/></linearGradient>
+          </defs>
+          <rect width="96" height="96" fill="url(#avBg)"/>
+          <path d="M21 46c-2-22 9-35 27-35s29 13 27 35c-1 12 3 22 6 30H15c3-8 7-18 6-30z" fill="url(#hair)"/>
+          <path d="M10 96c1-15 12-22 26-24h24c14 2 25 9 26 24z" fill="#1f2b55"/>
+          <path d="M38 72l10 14 10-14-4-3H42z" fill="#f7f8fc"/>
+          <path d="M36 72l12 24H30zM60 72L48 96h18z" fill="#2a3970"/>
+          <path d="M40 58h16v13c-2 5-14 5-16 0z" fill="#d49d7c"/>
+          <ellipse cx="48" cy="43" rx="17" ry="20.500" fill="url(#skin)"/>
+          <path d="M30 42c0-15 8-22 19-22 12 0 18 8 18 22-4-6-9-11-14-13-6 5-16 7-23 13z" fill="url(#hair)"/>
+          <path d="M37 39.500c2-1.600 5-1.600 7 0M52 39.500c2-1.600 5-1.600 7 0" stroke="#3a2416" stroke-width="1.400" fill="none" stroke-linecap="round"/>
+          <ellipse cx="40.500" cy="44" rx="2" ry="1.700" fill="#2b1a10"/><ellipse cx="55.500" cy="44" rx="2" ry="1.700" fill="#2b1a10"/>
+          <circle cx="41.100" cy="43.500" r=".5" fill="#fff"/><circle cx="56.100" cy="43.500" r=".5" fill="#fff"/>
+          <path d="M48 46v5.500c-.8.8-1.800.9-2.500.6" stroke="#c48a6b" stroke-width="1.100" fill="none" stroke-linecap="round"/>
+          <path d="M42.500 55.500c3.500 2.600 7.500 2.600 11 0" stroke="#b5524f" stroke-width="1.900" fill="none" stroke-linecap="round"/>
+          <circle cx="36.500" cy="51" r="3" fill="#e9a48f" opacity=".45"/><circle cx="59.500" cy="51" r="3" fill="#e9a48f" opacity=".45"/>
         </svg>
+      </div>
+      <div>
+        <div class="p-name">Maria Monitor</div>
+        <div class="p-role">Monitoria EaD</div>
+      </div>
+    </div>
+  </div>
+</header>
 
-        <div class="content">
-          <div class="hello">
+<!-- ÁREA CENTRAL DINÂMICA — MÓDULO ALUNOS / PERFIL -->
+<main class="main">
+  <section class="content" id="area-dinamica" aria-label="Perfil do Aluno">
+    <div class="pg">
+
+      <div class="pg-top">
+        <div>
+          <div class="crumb">Alunos › João Pereira</div>
+          <h1>Perfil do Aluno</h1>
+          <p>Análise inteligente e acompanhamento do primeiro acesso</p>
+        </div>
+        <span class="live"><i></i><span id="liveTxt">IA analisando dados do estudante</span></span>
+      </div>
+
+      <div class="cols">
+        <!-- 1. PERFIL -->
+        <div class="card">
+          <div class="stu-hd">
+            <span class="ini">JP</span>
             <div>
-              <h1>Perfil do Aluno</h1>
-              <p>Análise inteligente e acompanhamento do primeiro acesso</p>
-            </div>
-            <span class="seal"><i class="pulse"></i>IA analisando dados do estudante</span>
-          </div>
-
-          <div class="cols">
-            <!-- 1. Perfil do estudante -->
-            <div class="card prof">
-              <div class="prof-top">
-                <div class="av-lg">JP</div>
-                <h2>João Pereira</h2>
-                <div class="meta">Curso: <b>Técnico em Logística</b></div>
-                <div class="pills">
-                  <span class="pill">AVA: Aguardando primeiro acesso</span>
-                  <span class="pill alta">PRIORIDADE ALTA</span>
-                </div>
-              </div>
-              <ul class="inds">
-                <li>
-                  <span class="ind-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><rect x="3.500" y="5" width="17" height="15.500" rx="2.500"/><path d="M3.500 10h17M8 3v4M16 3v4"/></svg></span>
-                  <div><small>Data de matrícula</small><b>10/06/2026</b></div>
-                </li>
-                <li>
-                  <span class="ind-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.500"/><path d="M12 7.500V12l3 2"/></svg></span>
-                  <div><small>Última tentativa de contato</small><b>18/06/2026</b></div>
-                </li>
-                <li>
-                  <span class="ind-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l16-7-6 16-2.500-6.500z"/></svg></span>
-                  <div><small>Canal utilizado</small><b>E-mail institucional</b></div>
-                </li>
-                <li class="warn">
-                  <span class="ind-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.500" width="18" height="13" rx="2.500"/><path d="M3.800 7.500l8.200 6 8.200-6"/></svg></span>
-                  <div><small>Situação do e-mail</small><b>Não ativado</b></div>
-                  <button class="fix" type="button" data-fix="alt">Corrigir</button>
-                </li>
-                <li class="warn" id="phoneRow">
-                  <span class="ind-ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2.500"/><path d="M11 17.500h2"/></svg></span>
-                  <div><small>Telefone</small><b id="phoneVal">Necessita confirmação</b></div>
-                  <button class="fix" type="button" data-fix="phone">Corrigir</button>
-                </li>
-              </ul>
-            </div>
-
-            <!-- 2. Alerta inteligente da IA -->
-            <div class="col">
-              <div class="card alert" id="alert" aria-live="polite">
-                <span class="tag" id="aTag"></span>
-                <h2 id="aTitle"></h2>
-                <p class="a-main" id="aMain"></p>
-                <p class="a-exp" id="aExp"></p>
-                <div class="a-grid">
-                  <div>
-                    <h4>Fatores encontrados</h4>
-                    <ul class="fct" id="fct"></ul>
-                  </div>
-                  <div class="confbox" id="confbox">
-                    <small>Nível de confiança da IA</small>
-                    <div class="conf-v"><b id="confN">42%</b><span id="confL">Baixa</span></div>
-                    <div class="bar" role="progressbar" aria-label="Nível de confiança da IA" aria-valuemin="0" aria-valuemax="100" aria-valuenow="42" id="confBar"><i style="width:42%"></i></div>
-                    <p id="confMsg"></p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card exp">
-                <h3><span class="xai"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.500 10.900c.6.500 1 1.200 1 2.100h5c0-.9.400-1.600 1-2.100A6 6 0 0 0 12 3z"/></svg></span>Por que a IA sinalizou este problema?</h3>
-                <div class="sub">A IA analisou:</div>
-                <ul class="an">
-                  <li><i class="ck"><svg width="11" height="11"><use href="#i-check"/></svg></i><div><b>Histórico de comunicação</b><small>1 e-mail enviado, não entregue</small></div></li>
-                  <li><i class="ck"><svg width="11" height="11"><use href="#i-check"/></svg></i><div><b>Dados cadastrais</b><small id="anData">E-mail inativo e telefone sem confirmação</small></div></li>
-                  <li><i class="ck"><svg width="11" height="11"><use href="#i-check"/></svg></i><div><b>Tentativas anteriores</b><small>1 tentativa, em 18/06/2026</small></div></li>
-                  <li><i class="ck"><svg width="11" height="11"><use href="#i-check"/></svg></i><div><b>Status de acesso ao AVA</b><small>Nenhum acesso desde a matrícula</small></div></li>
-                </ul>
-                <div class="transp"><svg width="17" height="17"><use href="#i-ai"/></svg><span><b>IA explicável · Transparência.</b> Quando os dados não sustentam uma escolha, a IA informa a limitação em vez de recomendar um canal.</span></div>
-              </div>
-            </div>
-
-            <!-- 3. Controle do monitor -->
-            <div class="col">
-              <div class="card rec">
-                <h3><span class="shield"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.500 3v5.500c0 4.500-3 8-7.500 9.500-4.500-1.500-7.500-5-7.500-9.500V6z"/><path d="M8.800 12l2.300 2.300 4.200-4.800"/></svg></span>Recomendação segura</h3>
-                <p id="recTxt"></p>
-                <div class="wait" id="wait"></div>
-              </div>
-
-              <div class="card dec">
-                <h3>Decisão da Monitoria</h3>
-                <div class="dec-body" id="decBody"></div>
-                <div class="note"><svg width="16" height="16"><use href="#i-info"/></svg><span>O monitor mantém o controle da decisão. Nenhuma ação será executada automaticamente.</span></div>
-              </div>
+              <h2>João Pereira</h2>
+              <small>Curso: Técnico em Logística</small>
             </div>
           </div>
+          <div class="tags">
+            <span class="tag warn">Status AVA: Aguardando primeiro acesso</span>
+            <span class="prio alta">PRIORIDADE ALTA</span>
+          </div>
+          <ul class="kv">
+            <li><span class="k">Data de matrícula</span><span class="v">10/06/2026</span></li>
+            <li><span class="k">Última tentativa de contato</span><span class="v">18/06/2026</span></li>
+            <li><span class="k">Canal utilizado</span><span class="v">E-mail institucional</span></li>
+            <li><span class="k">Situação do e-mail</span><span class="v"><span class="tag bad">Não ativado</span></span></li>
+            <li><span class="k">Telefone<button class="fix" type="button" id="fixPhone">Corrigir</button></span><span class="v" id="vPhone"></span></li>
+            <li id="rowAlt" hidden><span class="k">E-mail pessoal</span><span class="v" id="vAlt"></span></li>
+          </ul>
+        </div>
 
-          <!-- Histórico da análise -->
-          <div class="card tl-card">
-            <h3>Histórico da análise</h3>
-            <ol class="tl" id="tl"></ol>
+        <!-- 2. ALERTA DA IA -->
+        <div class="card alert" id="alert" aria-live="polite">
+          <span class="a-lb" id="aLb"></span>
+          <h2 id="aTitle"></h2>
+          <p class="a-main" id="aMain"></p>
+          <p class="a-exp" id="aExp"></p>
+          <ul class="fl" id="aFactors"></ul>
+          <div class="dirty" id="dirty" hidden><svg class="ico"><use href="#i-refresh"/></svg>Dados alterados desde a última análise. Solicite nova análise para atualizar a confiança.</div>
+          <div class="conf" id="confBox">
+            <div class="conf-top"><span>Nível de confiança da IA</span><b id="cVal"></b></div>
+            <div class="bar" id="cWrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Nível de confiança da IA"><i id="cBar"></i></div>
+            <div class="conf-note" id="cNote"></div>
           </div>
         </div>
-      </section>
-    </main>
+
+        <!-- EXPLICAÇÃO + RECOMENDAÇÃO -->
+        <div class="rcol">
+          <div class="card why">
+            <div class="card-t"><span class="xai"><svg class="ico"><use href="#i-bulb"/></svg></span>Por que a IA sinalizou este problema?</div>
+            <div class="an-lb">A IA analisou:</div>
+            <ul class="an">
+              <li><span class="ck"><svg class="ico"><use href="#i-check"/></svg></span>Histórico de comunicação</li>
+              <li><span class="ck"><svg class="ico"><use href="#i-check"/></svg></span>Dados cadastrais</li>
+              <li><span class="ck"><svg class="ico"><use href="#i-check"/></svg></span>Tentativas anteriores</li>
+              <li><span class="ck"><svg class="ico"><use href="#i-check"/></svg></span>Status de acesso ao AVA</li>
+            </ul>
+            <span class="seal"><svg class="ico"><use href="#i-eye"/></svg>IA explicável · transparência</span>
+          </div>
+          <div class="card rec">
+            <div class="card-t"><svg class="ico"><use href="#i-shield"/></svg>Recomendação segura</div>
+            <p id="recTxt"></p>
+            <div class="wait" id="wait"><i></i><span id="waitTxt"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. CONTROLE DO MONITOR -->
+      <div class="card dec">
+        <div class="dec-t">Decisão da Monitoria <span>Corrija, ajuste, rejeite ou intervenha</span></div>
+        <div class="btns">
+          <button class="btn pri" type="button" id="bUpdate"><svg class="ico"><use href="#i-check"/></svg>Atualizar dados cadastrais</button>
+          <button class="btn" type="button" id="bChannel"><svg class="ico"><use href="#i-edit"/></svg>Alterar canal de comunicação</button>
+          <button class="btn" type="button" id="bRe"><svg class="ico"><use href="#i-refresh"/></svg>Solicitar nova análise da IA</button>
+          <button class="btn dng" type="button" id="bReject"><svg class="ico"><use href="#i-x"/></svg>Rejeitar recomendação</button>
+          <button class="btn" type="button" id="bManual"><svg class="ico"><use href="#i-user"/></svg>Registrar intervenção manual</button>
+        </div>
+        <div class="human"><svg class="ico"><use href="#i-shield"/></svg>O monitor mantém o controle da decisão. Nenhuma ação será executada automaticamente.</div>
+        <div class="result" id="result" hidden><svg class="ico"><use href="#i-checkc"/></svg><span id="resultTxt"></span><button type="button" id="bUndo">Desfazer</button></div>
+      </div>
+
+      <!-- HISTÓRICO -->
+      <div class="card tl">
+        <div class="tl-t">Histórico da análise</div>
+        <ol>
+          <li><span class="n">1</span><span class="tx">IA identificou risco<small>17/06/2026</small></span><span class="ar"></span></li>
+          <li><span class="n">2</span><span class="tx">Tentativa de contato realizada<small>18/06/2026 · e-mail</small></span><span class="ar"></span></li>
+          <li><span class="n w">3</span><span class="tx">Problema encontrado<small>Mensagem não entregue</small></span><span class="ar"></span></li>
+          <li><span class="n c" id="t4n">4</span><span class="tx"><span id="t4t"></span><small id="t4s"></small></span></li>
+        </ol>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- Modal -->
+<div class="ovl" id="ovl" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="m-hd"><h3 id="mTitle"></h3><button class="m-x" type="button" id="mX" aria-label="Fechar"><svg class="ico"><use href="#i-x"/></svg></button></div>
+    <div class="m-bd" id="mBody"></div>
+    <div class="m-ft" id="mFoot"></div>
   </div>
 </div>
 
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico"><use href="#i-info"/></svg><span id="toastTxt"></span></div>
 
 <script>
 (function(){
-  var app=document.getElementById('app'), menuBtn=document.getElementById('menuBtn'),
-      swCompact=document.getElementById('swCompact'), swDeco=document.getElementById('swDeco'),
-      canvas=document.getElementById('canvas'), toast=document.getElementById('toast'), tt;
-  function $(id){return document.getElementById(id)}
-  function showToast(m){toast.textContent=m;toast.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('show')},2600)}
+  var body = document.body;
+  var $ = function(id){ return document.getElementById(id); };
+  var menuBtn = $('menuBtn'), swCompact = $('swCompact'), swDark = $('swDark');
 
-  /* ---------- Frame ---------- */
-  function setCollapsed(c){
-    app.classList.toggle('collapsed',c);
-    menuBtn.setAttribute('aria-expanded',String(!c));
-    swCompact.setAttribute('aria-checked',String(c));
+  /* ---------- Frame: menu lateral ---------- */
+  function setCollapsed(on){
+    body.classList.toggle('collapsed', on);
+    menuBtn.setAttribute('aria-expanded', String(!on));
+    swCompact.setAttribute('aria-checked', String(on));
   }
-  menuBtn.addEventListener('click',function(){setCollapsed(!app.classList.contains('collapsed'))});
-  swCompact.addEventListener('click',function(){setCollapsed(!app.classList.contains('collapsed'))});
-  swDeco.addEventListener('click',function(){
-    var on=swDeco.getAttribute('aria-checked')!=='true';
-    swDeco.setAttribute('aria-checked',String(on));
-    canvas.classList.toggle('plain',!on);
+  menuBtn.addEventListener('click', function(){ setCollapsed(!body.classList.contains('collapsed')); });
+  swCompact.addEventListener('click', function(){ setCollapsed(!body.classList.contains('collapsed')); });
+  swDark.addEventListener('click', function(){
+    var on = !body.classList.contains('dark');
+    body.classList.toggle('dark', on);
+    swDark.setAttribute('aria-checked', String(on));
   });
-  var triggers=[].slice.call(document.querySelectorAll('[data-pop]'));
+
+  /* ---------- Frame: painéis do cabeçalho ---------- */
+  var triggers = document.querySelectorAll('[data-panel]');
   function closeAll(except){
     triggers.forEach(function(t){
-      if(t===except)return;
-      t.setAttribute('aria-expanded','false');
-      $(t.dataset.pop).classList.remove('open');
+      var p = $(t.dataset.panel);
+      if(p !== except){ p.classList.remove('open'); t.setAttribute('aria-expanded','false'); }
     });
   }
   triggers.forEach(function(t){
-    t.addEventListener('click',function(e){
+    t.addEventListener('click', function(e){
       e.stopPropagation();
-      var p=$(t.dataset.pop), open=!p.classList.contains('open');
-      closeAll(t);
-      p.classList.toggle('open',open);
-      t.setAttribute('aria-expanded',String(open));
+      var p = $(t.dataset.panel);
+      var open = !p.classList.contains('open');
+      closeAll(p);
+      p.classList.toggle('open', open);
+      t.setAttribute('aria-expanded', String(open));
     });
   });
-  document.querySelectorAll('.pop').forEach(function(p){p.addEventListener('click',function(e){e.stopPropagation()})});
-  document.addEventListener('click',function(){closeAll()});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll()});
-  var nb=$('notifBadge');
-  function updateNotif(){
-    var n=document.querySelectorAll('#popNotif .pop-row:not(.read)').length;
-    nb.textContent=n; nb.hidden=n===0;
+  document.querySelectorAll('.panel').forEach(function(p){
+    p.addEventListener('click', function(e){ e.stopPropagation(); });
+  });
+  document.addEventListener('click', function(){ closeAll(null); });
+
+  var badges = { pNotif: $('bNotif'), pMsg: $('bMsg') };
+  function refreshBadge(id){
+    var panel = $(id);
+    var n = panel.querySelectorAll('.p-row.unread').length;
+    badges[id].textContent = n;
+    badges[id].hidden = n === 0;
+    panel.querySelector('[data-readall]').disabled = n === 0;
   }
-  document.querySelectorAll('#popNotif .pop-row').forEach(function(r){
-    r.addEventListener('click',function(){r.classList.add('read');updateNotif()});
-  });
-  $('markRead').addEventListener('click',function(){
-    document.querySelectorAll('#popNotif .pop-row').forEach(function(r){r.classList.add('read')});updateNotif();
-  });
-  var mb=$('msgBadge');
-  document.querySelectorAll('#popMsg .pop-row').forEach(function(r){
-    r.addEventListener('click',function(){
-      if(!r.dataset.read){r.dataset.read='1';r.style.opacity='.6';
-        var n=document.querySelectorAll('#popMsg .pop-row:not([data-read])').length;mb.textContent=n;mb.hidden=n===0;}
+  ['pNotif','pMsg'].forEach(function(id){
+    var panel = $(id);
+    panel.querySelectorAll('.p-row').forEach(function(r){
+      r.addEventListener('click', function(){ r.classList.remove('unread'); refreshBadge(id); });
     });
+    panel.querySelector('[data-readall]').addEventListener('click', function(){
+      panel.querySelectorAll('.p-row.unread').forEach(function(r){ r.classList.remove('unread'); });
+      refreshBadge(id);
+    });
+    refreshBadge(id);
   });
-  document.querySelectorAll('#popUser [data-msg]').forEach(function(b){
-    b.addEventListener('click',function(){closeAll();showToast(b.dataset.msg)});
-  });
+
+  /* ---------- Toast ---------- */
+  var toast = $('toast'), toastTxt = $('toastTxt'), timer;
+  function showToast(msg){
+    toastTxt.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(timer);
+    timer = setTimeout(function(){ toast.classList.remove('show'); }, 3200);
+  }
   document.querySelectorAll('[data-off]').forEach(function(b){
-    b.addEventListener('click',function(){showToast('Módulo "'+b.dataset.off+'" não faz parte deste protótipo')});
-  });
-
-  /* ---------- Perfil do aluno ---------- */
-  var st={phone:'(11) 98765-4321',phoneOk:false,alt:'',dirty:false,resolved:false,conf:42,dec:null,mode:'btns',loading:false,ch:null};
-  function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
-  var W='<svg width="17" height="17"><use href="#i-warn"/></svg>', OK='<svg width="17" height="17"><use href="#i-okc"/></svg>';
-
-  function renderProfile(){
-    var row=$('phoneRow');
-    row.classList.toggle('warn',!st.phoneOk);
-    $('phoneVal').textContent=st.phoneOk?st.phone+' · Confirmado':'Necessita confirmação';
-    row.querySelector('.fix').textContent=st.phoneOk?'Editar':'Corrigir';
-    $('anData').textContent=st.phoneOk?'E-mail inativo; telefone confirmado':'E-mail inativo e telefone sem confirmação';
-  }
-
-  function renderAlert(){
-    var a=$('alert'), r=st.resolved;
-    a.classList.toggle('ok',r);
-    $('aTag').innerHTML=r?'<svg width="14" height="14"><use href="#i-okc"/></svg>Análise atualizada':'<svg width="14" height="14"><use href="#i-warn"/></svg>Atenção';
-    $('aTitle').textContent=r?'Inconsistência principal resolvida':'A IA encontrou uma inconsistência';
-    $('aMain').textContent=r?'O telefone confirmado permite indicar um canal de comunicação com segurança.':'Não foi possível confirmar com segurança o melhor canal de comunicação.';
-    $('aExp').textContent=r?'"Com a sua correção, voltei a ter dados suficientes para sugerir um canal."':'"Identifiquei possíveis problemas nos dados antes de recomendar uma nova ação."';
-    $('fct').innerHTML=
-      '<li>'+W+'E-mail institucional ainda não ativado</li>'+
-      '<li>'+W+'Última mensagem enviada não foi entregue</li>'+
-      (st.phoneOk?'<li class="ok">'+OK+'Telefone confirmado pela monitoria</li>':'<li>'+W+'Telefone precisa de confirmação</li>');
-    var hi=st.conf>=70, box=$('confbox');
-    box.classList.toggle('hi',hi); box.classList.toggle('loading',st.loading);
-    $('confN').textContent=st.loading?'…':st.conf+'%';
-    $('confL').textContent=st.loading?'':(hi?'Alta':'Baixa');
-    $('confBar').firstElementChild.style.width=st.conf+'%'; $('confBar').setAttribute('aria-valuenow',st.conf);
-    $('confMsg').textContent=st.loading?'Reanalisando os dados do estudante…':
-      st.dirty?'Os dados foram alterados depois desta análise. Solicite uma nova análise.':
-      hi?'Confiança recuperada após a correção dos dados.':'Confiança reduzida devido à ausência de dados suficientes.';
-  }
-
-  function renderRec(){
-    $('recTxt').textContent=st.resolved?
-      'Faça o contato por ligação ou WhatsApp no telefone confirmado. Nenhuma mensagem será enviada sem a sua aprovação.':
-      'Atualize os dados de contato ou escolha uma nova estratégia antes de enviar uma comunicação automática.';
-    $('wait').innerHTML=st.dec?
-      '<svg width="15" height="15"><use href="#i-okc"/></svg>Decisão registrada pela monitoria':
-      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.500"/><path d="M12 7.500V12l3 2"/></svg>IA aguardando validação humana';
-  }
-
-  function channels(){
-    var u=st.phoneOk?'':'telefone não confirmado';
-    return [
-      {n:'Ligação telefônica',h:u},{n:'WhatsApp',h:u},{n:'SMS',h:u},
-      {n:'E-mail pessoal',h:st.alt?'':'não cadastrado',off:!st.alt},
-      {n:'E-mail institucional',h:'não ativado',off:true}
-    ];
-  }
-
-  function renderDecision(){
-    var el=$('decBody'), h='';
-    if(st.dec){
-      var d=st.dec;
-      h='<div class="result'+(d.t==='no'?' no':'')+'"><i class="ck"><svg width="14" height="14"><use href="#i-check"/></svg></i><div><strong>'+d.title+'</strong><p>'+esc(d.text)+'</p>'+
-        (d.note?'<q>'+esc(d.note)+'</q>':'')+'</div></div><button class="btn" type="button" data-a="undo">Desfazer decisão</button>';
-    }else if(st.mode==='data'){
-      h='<label class="lbl" for="fPhone">Telefone do aluno</label>'+
-        '<input class="inp" id="fPhone" type="tel" value="'+esc(st.phone)+'" autocomplete="off">'+
-        '<label class="chk"><input type="checkbox" id="fOk"'+(st.phoneOk?' checked':'')+'>Confirmei este número com o aluno</label>'+
-        '<label class="lbl" for="fAlt">E-mail pessoal (opcional)</label>'+
-        '<input class="inp" id="fAlt" type="email" value="'+esc(st.alt)+'" placeholder="nome@exemplo.com" autocomplete="off">'+
-        '<div class="err" id="fErr" role="alert"></div>'+
-        '<div class="two"><button class="btn" type="button" data-a="cancel">Cancelar</button><button class="btn primary" type="button" data-a="saveData">Salvar dados</button></div>';
-    }else if(st.mode==='channel'){
-      h='<span class="lbl" id="chL">Novo canal de comunicação</span><div role="radiogroup" aria-labelledby="chL" style="display:flex;flex-direction:column;gap:6px">'+
-        channels().map(function(c){return '<button class="opt" type="button" role="radio" data-ch="'+c.n+'" aria-checked="'+(c.n===st.ch)+'"'+(c.off?' disabled':'')+'>'+c.n+(c.h?'<em>'+c.h+'</em>':'')+'</button>'}).join('')+
-        '</div><div class="err" id="fErr" role="alert"></div>'+
-        '<div class="two"><button class="btn" type="button" data-a="cancel">Cancelar</button><button class="btn primary" type="button" data-a="saveCh">Definir canal</button></div>';
-    }else if(st.mode==='manual'){
-      h='<label class="lbl" for="mType">Tipo de intervenção</label>'+
-        '<select id="mType"><option>Ligação telefônica realizada</option><option>Atendimento presencial no polo</option><option>Contato com a coordenação do curso</option><option>Outra intervenção</option></select>'+
-        '<label class="lbl" for="mNote">O que foi feito?</label>'+
-        '<textarea id="mNote" placeholder="Descreva brevemente a intervenção"></textarea>'+
-        '<div class="err" id="fErr" role="alert"></div>'+
-        '<div class="two"><button class="btn" type="button" data-a="cancel">Cancelar</button><button class="btn primary" type="button" data-a="saveManual">Registrar</button></div>';
-    }else{
-      h=(st.dirty?'<div class="tip">Dados atualizados. Solicite uma nova análise para a IA reavaliar o caso.</div>':'')+
-        '<button class="btn primary" type="button" data-a="data"><svg width="17" height="17"><use href="#i-check"/></svg>Atualizar dados cadastrais</button>'+
-        '<button class="btn" type="button" data-a="channel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4.500L16.500 4l3.500 3.500L8.500 19z"/><path d="M14 6.500l3.500 3.500"/></svg>Alterar canal de comunicação</button>'+
-        '<button class="btn'+(st.dirty?' hint':'')+'" type="button" data-a="re"'+(st.loading?' disabled':'')+'><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-14 5.300M4 12a8 8 0 0 1 14-5.300"/><path d="M18.500 3v4h-4M5.500 21v-4h4"/></svg>'+(st.loading?'Analisando…':'Solicitar nova análise da IA')+'</button>'+
-        '<button class="btn" type="button" data-a="manual"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round"><circle cx="12" cy="8.500" r="3.500"/><path d="M5 20c0-3.600 3.100-6 7-6s7 2.400 7 6"/></svg>Registrar intervenção manual</button>'+
-        '<button class="btn" type="button" data-a="reject"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>Rejeitar recomendação</button>';
-    }
-    el.innerHTML=h;
-  }
-
-  function renderTimeline(){
-    var last=st.dec?
-      '<li><i><svg width="13" height="13"><use href="#i-check"/></svg></i><div><b>Decisão registrada</b><small>'+esc(st.dec.short)+'</small></div></li>':
-      '<li class="now"><i>4</i><div><b>Aguardando decisão do monitor</b><small>Em aberto</small></div></li>';
-    $('tl').innerHTML=
-      '<li><i>1</i><div><b>IA identificou risco</b><small>17/06/2026</small></div></li>'+
-      '<li><i>2</i><div><b>Tentativa de contato realizada</b><small>18/06/2026 · E-mail</small></div></li>'+
-      '<li class="warn"><i>3</i><div><b>Problema encontrado</b><small>Mensagem não entregue</small></div></li>'+last;
-  }
-
-  function renderAll(){renderProfile();renderAlert();renderRec();renderDecision();renderTimeline()}
-
-  function err(m,el){$('fErr').textContent=m;if(el){el.classList.add('bad');el.focus()}}
-
-  $('decBody').addEventListener('click',function(e){
-    var o=e.target.closest('.opt');
-    if(o){if(o.disabled)return;st.ch=o.dataset.ch;document.querySelectorAll('.opt').forEach(function(x){x.setAttribute('aria-checked',String(x===o))});$('fErr').textContent='';return}
-    var b=e.target.closest('[data-a]'); if(!b||b.disabled)return;
-    var a=b.dataset.a;
-    if(a==='data'||a==='channel'||a==='manual'){st.mode=a;if(a==='channel')st.ch=null;renderDecision();
-      var f=$('decBody').querySelector('input,select,button.opt:not(:disabled)');if(f)f.focus();return}
-    if(a==='cancel'){st.mode='btns';renderDecision();return}
-    if(a==='saveData'){
-      var p=$('fPhone'), al=$('fAlt'), ok=$('fOk').checked, pv=p.value.trim(), av=al.value.trim();
-      p.classList.remove('bad');al.classList.remove('bad');
-      if(pv.replace(/\D/g,'').length<10){err('Informe um telefone com DDD.',p);return}
-      if(av&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(av)){err('Informe um e-mail válido ou deixe em branco.',al);return}
-      var changed=pv!==st.phone||ok!==st.phoneOk||av!==st.alt;
-      st.phone=pv;st.phoneOk=ok;st.alt=av;st.mode='btns';
-      if(changed){st.dirty=true;showToast(ok?'Dados atualizados. Telefone confirmado.':'Dados salvos. O telefone ainda não foi confirmado.')}
-      renderAll();return;
-    }
-    if(a==='saveCh'){
-      if(!st.ch){err('Escolha um canal para continuar.');return}
-      st.dec={t:'ch',title:'Canal definido por você: '+st.ch,text:'Contato com João Pereira via '+st.ch+' adicionado à sua fila de ações. Nenhum envio automático será feito.',short:'Canal: '+st.ch};
-      st.mode='btns';showToast('Canal de comunicação definido: '+st.ch);renderAll();return;
-    }
-    if(a==='saveManual'){
-      var n=$('mNote'), nv=n.value.trim(), ty=$('mType').value;
-      if(!nv){err('Descreva a intervenção realizada.',n);return}
-      st.dec={t:'man',title:'Intervenção manual registrada',text:ty+'.',note:nv,short:'Intervenção manual'};
-      st.mode='btns';showToast('Intervenção manual registrada no histórico');renderAll();return;
-    }
-    if(a==='reject'){
-      st.dec={t:'no',title:'Recomendação rejeitada',text:'Nenhuma ação foi criada. O caso permanece na sua lista de acompanhamento.',short:'Recomendação rejeitada'};
-      showToast('Recomendação rejeitada');renderAll();return;
-    }
-    if(a==='undo'){st.dec=null;st.mode='btns';showToast('Decisão desfeita');renderAll();return}
-    if(a==='re'){
-      st.loading=true;renderAlert();renderDecision();
-      setTimeout(function(){
-        st.loading=false;
-        var was=st.resolved;
-        st.resolved=st.phoneOk;st.conf=st.phoneOk?84:42;
-        if(!st.dirty&&was===st.resolved)showToast('Nenhum dado novo. A confiança permanece em '+st.conf+'%.');
-        else showToast(st.resolved?'Nova análise concluída: confiança de 84%.':'Nova análise concluída: os dados ainda são insuficientes.');
-        st.dirty=false;renderAll();
-      },1400);
-    }
-  });
-
-  document.querySelectorAll('.fix').forEach(function(b){
-    b.addEventListener('click',function(){
-      if(st.dec){showToast('Desfaça a decisão registrada para editar os dados');return}
-      st.mode='data';renderDecision();
-      var f=$(b.dataset.fix==='alt'?'fAlt':'fPhone');f.focus();f.select();
+    b.addEventListener('click', function(){
+      showToast('O módulo "' + b.dataset.off + '" não está disponível neste protótipo.');
     });
   });
 
-  renderAll();
+  /* ---------- Modal ---------- */
+  var ovl = $('ovl'), lastFocus = null;
+  function openModal(title, html, footHtml){
+    lastFocus = document.activeElement;
+    $('mTitle').textContent = title;
+    $('mBody').innerHTML = html;
+    $('mFoot').innerHTML = footHtml;
+    ovl.hidden = false;
+    var first = $('mBody').querySelector('input:not([disabled]):not([readonly]),select,textarea');
+    (first || $('mX')).focus();
+  }
+  function closeModal(){
+    ovl.hidden = true;
+    if(lastFocus && document.contains(lastFocus)) lastFocus.focus();
+  }
+  $('mX').addEventListener('click', closeModal);
+  ovl.addEventListener('click', function(e){ if(e.target === ovl) closeModal(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ if(!ovl.hidden) closeModal(); else closeAll(null); }
+  });
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  /* =====================================================
+     MÓDULO ALUNOS – PERFIL DE JOÃO PEREIRA
+     ===================================================== */
+  var data = { phone:'(11) 98765-4321', phoneOk:false, altEmail:'' };
+  var snap = { phoneOk:false, altEmail:'' };   // dados usados na última análise
+  var conf = 42, busy = false, decision = null;
+
+  function calcConf(d){ return 42 + (d.phoneOk ? 36 : 0) + (d.altEmail ? (d.phoneOk ? 6 : 19) : 0); }
+  function isDirty(){ return data.phoneOk !== snap.phoneOk || data.altEmail !== snap.altEmail; }
+  function suggestion(){ return snap.phoneOk ? 'WhatsApp' : null; }
+
+  function texts(){
+    if(snap.phoneOk) return {
+      lb:'Atualizado', ok:true, title:'Inconsistência parcialmente resolvida',
+      main:'Com o telefone confirmado, já existe um canal de contato confiável.',
+      exp:'Reavaliei os dados após a sua correção. O e-mail institucional continua não ativado e não deve ser usado.',
+      note:'Confiança aumentou após a confirmação do telefone feita por você.',
+      rec:'Sugestão: contato via WhatsApp no número confirmado. Defina o canal em "Alterar canal de comunicação" — nada será enviado sem a sua validação.'
+    };
+    if(snap.altEmail) return {
+      lb:'Atenção', ok:false, title:'A IA ainda encontra uma inconsistência',
+      main:'Há um e-mail pessoal informado, mas ele ainda não foi verificado.',
+      exp:'Reavaliei os dados após a sua correção. O telefone ainda precisa de confirmação.',
+      note:'Confiança moderada: ainda faltam dados confirmados para recomendar um canal.',
+      rec:'Confirme o telefone ou valide o e-mail pessoal antes de definir o canal. Se preferir, registre uma intervenção manual.'
+    };
+    return {
+      lb:'Atenção', ok:false, title:'A IA encontrou uma inconsistência',
+      main:'Não foi possível confirmar com segurança o melhor canal de comunicação.',
+      exp:'Identifiquei possíveis problemas nos dados antes de recomendar uma nova ação.',
+      note:'Confiança reduzida devido à ausência de dados suficientes.',
+      rec:'Atualize os dados de contato ou escolha uma nova estratégia antes de enviar uma comunicação automática.'
+    };
+  }
+
+  function factor(txt, resolved){
+    return '<li' + (resolved ? ' class="res"' : '') + '><span class="fi"><svg class="ico"><use href="#' + (resolved ? 'i-check' : 'i-alert') + '"/></svg></span>' +
+           txt + (resolved ? '<span class="by">corrigido por você</span>' : '') + '</li>';
+  }
+
+  function render(){
+    var t = texts();
+    /* perfil */
+    $('vPhone').innerHTML = data.phoneOk
+      ? '<span class="tag ok">Confirmado</span><small>' + esc(data.phone) + '</small>'
+      : '<span class="tag warn">Necessita confirmação</span><small>' + esc(data.phone) + '</small>';
+    $('rowAlt').hidden = !data.altEmail;
+    $('vAlt').innerHTML = esc(data.altEmail) + '<small>Não verificado</small>';
+
+    /* alerta */
+    $('alert').classList.toggle('ok', t.ok);
+    $('aLb').innerHTML = '<svg class="ico"><use href="#' + (t.ok ? 'i-checkc' : 'i-alert') + '"/></svg>' + t.lb;
+    $('aTitle').textContent = t.title;
+    $('aMain').textContent = t.main;
+    $('aExp').textContent = t.exp;
+    $('aFactors').innerHTML =
+      factor('E-mail institucional ainda não ativado', false) +
+      factor('Última mensagem enviada não foi entregue', false) +
+      (data.phoneOk ? factor('Telefone confirmado', true) : factor('Telefone precisa de confirmação', false));
+    $('dirty').hidden = !isDirty() || !!decision;
+    $('cVal').textContent = conf + '%';
+    $('cBar').style.width = conf + '%';
+    $('cBar').className = conf < 50 ? 'low' : (conf < 75 ? 'mid' : 'high');
+    $('cWrap').setAttribute('aria-valuenow', conf);
+    $('cNote').textContent = t.note;
+
+    /* recomendação */
+    $('recTxt').textContent = t.rec;
+    var w = $('wait');
+    if(!decision){ w.className = 'wait'; $('waitTxt').textContent = 'Aguardando validação humana'; }
+    else if(decision.type === 'rejected'){ w.className = 'wait rej'; $('waitTxt').textContent = 'Rejeitada por Maria Monitor'; }
+    else { w.className = 'wait done'; $('waitTxt').textContent = 'Decisão tomada por Maria Monitor'; }
+
+    /* decisão */
+    ['bUpdate','bChannel','bRe','bReject','bManual','fixPhone'].forEach(function(id){ $(id).disabled = !!decision || busy; });
+    $('bRe').classList.toggle('hint', isDirty() && !decision && !busy);
+    var res = $('result');
+    if(decision){
+      var txt;
+      if(decision.type === 'channel') txt = 'Canal definido por você: ' + decision.channel + '. Nenhuma mensagem foi enviada automaticamente — o envio depende de você.';
+      else if(decision.type === 'manual') txt = 'Intervenção manual registrada (' + decision.kind + '): "' + decision.note + '".';
+      else txt = 'Você rejeitou a recomendação da IA. Nenhuma ação foi executada e o caso permanece sob seu acompanhamento.';
+      $('resultTxt').textContent = txt;
+      res.className = 'result ' + (decision.type === 'rejected' ? 'rej' : 'ok');
+      res.hidden = false;
+    } else res.hidden = true;
+
+    /* timeline */
+    var n = $('t4n');
+    if(decision){
+      n.className = 'n d'; n.textContent = '✓';
+      $('t4t').textContent = 'Decisão registrada pela monitoria';
+      $('t4s').textContent = 'Agora · Maria Monitor';
+    } else {
+      n.className = 'n c'; n.textContent = '4';
+      $('t4t').textContent = 'Aguardando decisão do monitor';
+      $('t4s').textContent = 'Agora';
+    }
+  }
+
+  /* ---- Atualizar dados cadastrais (G9) ---- */
+  function openUpdate(){
+    openModal('Atualizar dados cadastrais — João Pereira',
+      '<div class="fld"><label class="lb" for="fPhone">Telefone / WhatsApp</label>' +
+        '<input class="inp" id="fPhone" type="tel" value="' + esc(data.phone) + '">' +
+        '<label class="chk"><input type="checkbox" id="fOk"' + (data.phoneOk ? ' checked' : '') + '>Confirmei este número com o estudante</label>' +
+        '<div class="err" id="ePhone" hidden></div></div>' +
+      '<div class="fld"><label class="lb" for="fInst">E-mail institucional</label>' +
+        '<input class="inp" id="fInst" type="text" value="Não ativado — a ativação depende do estudante" readonly></div>' +
+      '<div class="fld"><label class="lb" for="fAlt">E-mail pessoal (opcional)</label>' +
+        '<input class="inp" id="fAlt" type="email" placeholder="nome@exemplo.com" value="' + esc(data.altEmail) + '">' +
+        '<div class="err" id="eAlt" hidden></div></div>' +
+      '<div class="note">Depois de salvar, solicite uma nova análise para que a IA recalcule a confiança com os dados corrigidos.</div>',
+      '<button class="btn" type="button" id="mCancel">Cancelar</button><button class="btn pri" type="button" id="mSave">Salvar dados</button>');
+    $('mCancel').addEventListener('click', closeModal);
+    $('mSave').addEventListener('click', function(){
+      var phone = $('fPhone').value.trim(), ok = $('fOk').checked, alt = $('fAlt').value.trim();
+      var digits = phone.replace(/\D/g,'').length, valid = true;
+      $('ePhone').hidden = true; $('eAlt').hidden = true;
+      if(digits < 10 || digits > 11){ $('ePhone').textContent = 'Informe um telefone com DDD (10 ou 11 dígitos).'; $('ePhone').hidden = false; valid = false; }
+      if(alt && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(alt)){ $('eAlt').textContent = 'Informe um e-mail válido ou deixe em branco.'; $('eAlt').hidden = false; valid = false; }
+      if(!valid) return;
+      var changed = phone !== data.phone || ok !== data.phoneOk || alt !== data.altEmail;
+      if(phone !== data.phone && !ok){ /* número novo sem confirmação continua pendente */ }
+      data.phone = phone; data.phoneOk = ok; data.altEmail = alt;
+      ovl.hidden = true;
+      render();
+      if(!changed) showToast('Nenhuma alteração nos dados cadastrais.');
+      else if(isDirty()){ showToast('Dados atualizados por você. Solicite nova análise da IA para recalcular a confiança.'); $('bRe').focus(); }
+      else showToast('Dados cadastrais atualizados.');
+    });
+  }
+  $('bUpdate').addEventListener('click', openUpdate);
+  $('fixPhone').addEventListener('click', openUpdate);
+
+  /* ---- Alterar canal de comunicação ---- */
+  $('bChannel').addEventListener('click', function(){
+    var sug = suggestion();
+    var phoneNote = data.phoneOk ? '<small class="g">Telefone confirmado</small>' : '<small class="w">Telefone não confirmado — risco de não entrega</small>';
+    var list = [
+      {v:'E-mail institucional', note:'<small>Indisponível: não ativado pelo estudante</small>', dis:true},
+      {v:'WhatsApp', note:phoneNote},
+      {v:'Ligação telefônica', note:phoneNote},
+      {v:'SMS', note:phoneNote},
+      {v:'E-mail pessoal', note: data.altEmail ? '<small class="w">' + esc(data.altEmail) + ' — não verificado</small>' : '<small>Indisponível: não cadastrado</small>', dis:!data.altEmail}
+    ];
+    var html = list.map(function(o){
+      return '<label class="opt"><input type="radio" name="canal" value="' + o.v + '"' + (o.dis ? ' disabled' : '') + (o.v === sug ? ' checked' : '') + '>' +
+             '<span><b>' + o.v + '</b>' + o.note + '</span>' + (o.v === sug ? '<span class="seal">Sugerido pela IA</span>' : '') + '</label>';
+    }).join('');
+    openModal('Alterar canal de comunicação',
+      html + '<div class="err" id="eCh" hidden>Selecione um canal para continuar.</div>' +
+      '<div class="note" style="margin-top:8px">A escolha do canal fica registrada como decisão sua. Nenhuma mensagem é enviada automaticamente.</div>',
+      '<button class="btn" type="button" id="mCancel">Cancelar</button><button class="btn pri" type="button" id="mSave">Definir canal</button>');
+    $('mCancel').addEventListener('click', closeModal);
+    $('mSave').addEventListener('click', function(){
+      var sel = document.querySelector('input[name="canal"]:checked');
+      if(!sel){ $('eCh').hidden = false; return; }
+      decision = { type:'channel', channel: sel.value };
+      ovl.hidden = true; render();
+      showToast('Canal definido por você: ' + sel.value + '. Nada foi enviado automaticamente.');
+      $('bUndo').focus();
+    });
+  });
+
+  /* ---- Solicitar nova análise ---- */
+  $('bRe').addEventListener('click', function(){
+    if(busy) return;
+    busy = true;
+    var had = isDirty();
+    $('confBox').classList.add('busy');
+    $('cVal').textContent = '…';
+    $('cNote').textContent = 'Reanalisando os dados do estudante…';
+    $('liveTxt').textContent = 'IA reanalisando dados do estudante…';
+    $('dirty').hidden = true;
+    ['bUpdate','bChannel','bRe','bReject','bManual','fixPhone'].forEach(function(id){ $(id).disabled = true; });
+    $('bRe').classList.remove('hint');
+    setTimeout(function(){
+      snap = { phoneOk:data.phoneOk, altEmail:data.altEmail };
+      conf = calcConf(snap);
+      busy = false;
+      $('confBox').classList.remove('busy');
+      $('liveTxt').textContent = 'IA analisando dados do estudante';
+      render();
+      if(!had) showToast('Nova análise concluída: nenhum dado novo. Confiança mantida em ' + conf + '%.');
+      else if(conf >= 75) showToast('Nova análise concluída: confiança de ' + conf + '%. A decisão continua sendo sua.');
+      else showToast('Nova análise concluída: confiança de ' + conf + '%. Ainda faltam dados confirmados.');
+    }, 1600);
+  });
+
+  /* ---- Rejeitar ---- */
+  $('bReject').addEventListener('click', function(){
+    decision = { type:'rejected' };
+    render();
+    showToast('Recomendação rejeitada. Você pode desfazer a qualquer momento.');
+    $('bUndo').focus();
+  });
+
+  /* ---- Intervenção manual ---- */
+  $('bManual').addEventListener('click', function(){
+    openModal('Registrar intervenção manual',
+      '<div class="fld"><label class="lb" for="fKind">Tipo de intervenção</label>' +
+        '<select id="fKind"><option>Ligação telefônica realizada</option><option>Atendimento presencial no polo</option><option>Contato com a coordenação do curso</option><option>Outra ação</option></select></div>' +
+      '<div class="fld"><label class="lb" for="fNote">O que foi feito?</label>' +
+        '<textarea id="fNote" maxlength="160" placeholder="Ex.: falei com o estudante por telefone; ele ativará o e-mail institucional amanhã."></textarea>' +
+        '<div class="err" id="eNote" hidden>Descreva brevemente a intervenção (mínimo de 10 caracteres).</div></div>' +
+      '<div class="note">O registro fica no histórico do aluno em seu nome. A IA não executa nenhuma ação a partir dele.</div>',
+      '<button class="btn" type="button" id="mCancel">Cancelar</button><button class="btn pri" type="button" id="mSave">Registrar intervenção</button>');
+    $('mCancel').addEventListener('click', closeModal);
+    $('mSave').addEventListener('click', function(){
+      var note = $('fNote').value.trim();
+      if(note.length < 10){ $('eNote').hidden = false; $('fNote').focus(); return; }
+      decision = { type:'manual', kind:$('fKind').value, note:note };
+      ovl.hidden = true; render();
+      showToast('Intervenção manual registrada no histórico de João Pereira.');
+      $('bUndo').focus();
+    });
+  });
+
+  /* ---- Desfazer ---- */
+  $('bUndo').addEventListener('click', function(){
+    decision = null;
+    render();
+    showToast('Decisão desfeita. O caso voltou a aguardar sua decisão.');
+    $('bUpdate').focus();
+  });
+
+  render();
 })();
 </script>
 </body>
